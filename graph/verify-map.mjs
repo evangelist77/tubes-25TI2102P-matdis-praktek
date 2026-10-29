@@ -366,9 +366,12 @@ assert.ok(!html.includes('($S_1, S_2 \\to T_1, T_2$)'), 'Tidak boleh membiarkan 
 assert.match(specContent, /Supersource|Super Source/i, 'GRAPH_SPEC_LLM.md harus memuat transformasi Supersource');
 assert.match(specContent, /Supersink|Super Sink/i, 'GRAPH_SPEC_LLM.md harus memuat transformasi Supersink');
 
-// 14. Cek redesain marker anti-clutter (Circle Pin) dan legenda peta
+// 14. Cek redesain marker anti-clutter (Circle Pin), warna biru tua CCTV, format transit card, & metro stepper
 assert.match(html, /cctv-circle-pin/, 'Harus memiliki class .cctv-circle-pin untuk pin sirkular CCTV');
 assert.match(html, /manual-circle-pin/, 'Harus memiliki class .manual-circle-pin untuk pin sirkular survei manual');
+assert.match(html, /#1e3a8a/, 'Pin CCTV dan tombol toggle CCTV harus menggunakan warna biru tua (#1e3a8a)');
+assert.match(html, /path-endpoints/, 'Kartu path harus memiliki format transit .path-endpoints');
+assert.match(html, /metro-stepper/, 'Detail path harus memuat visualisasi alur transit .metro-stepper');
 assert.match(html, /id="map-legend"/, 'Harus memiliki elemen #map-legend untuk legenda visual peta');
 assert.match(html, /SOURCE|Sumber/i, 'Harus memuat identitas Sumber (Source) pada terminal');
 assert.match(html, /SINK|Muara/i, 'Harus memuat identitas Muara (Sink) pada terminal');

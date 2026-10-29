@@ -107,9 +107,9 @@
       width: 100%;
       margin-top: 8px;
       padding: 8px 12px;
-      background: #800000;
+      background: #1e3a8a;
       color: #ffffff;
-      border: 1px solid #991b1b;
+      border: 1px solid #3b82f6;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 700;
@@ -118,7 +118,7 @@
     }
 
     .btn-toggle-cctv:hover {
-      background: #660000;
+      background: #172554;
     }
 
     .btn-toggle-cctv.inactive {
@@ -131,8 +131,8 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: #800000;
-      border: 2px solid #fecaca;
+      background: #1e3a8a;
+      border: 2px solid #93c5fd;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
       display: flex;
       align-items: center;
@@ -144,7 +144,7 @@
 
     .cctv-circle-pin:hover {
       transform: scale(1.22);
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.85);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.85);
       z-index: 1000;
     }
 
@@ -231,6 +231,18 @@
     .legend-dot.junction-dot {
       background: #ffffff;
       border: 1.5px solid #0f172a;
+    }
+
+    .legend-dot.cctv-dot {
+      background: #1e3a8a;
+      border: 1.5px solid #93c5fd;
+      box-shadow: 0 0 6px #3b82f6;
+    }
+
+    .legend-dot.manual-dot {
+      background: #d97706;
+      border: 1.5px solid #fef3c7;
+      box-shadow: 0 0 6px #d97706;
     }
 
     .legend-icon {
@@ -342,16 +354,55 @@
       color: var(--text-muted);
     }
 
-    .path-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
+    .path-endpoints {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin: 6px 0 5px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #f8fafc;
     }
 
-    .path-preview {
+    .endpoint-name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .endpoint-arrow {
       font-size: 11px;
-      color: var(--text-muted);
+      font-weight: 800;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+
+    .path-corridor {
+      margin-bottom: 5px;
+    }
+
+    .corridor-badge {
+      display: inline-block;
+      font-size: 10px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-weight: 600;
+    }
+
+    .path-via {
+      font-size: 11px;
+      color: #94a3b8;
       line-height: 1.35;
+    }
+
+    .via-label {
+      color: #cbd5e1;
+      font-weight: 600;
     }
 
     #path-detail {
@@ -365,38 +416,122 @@
 
     #path-detail h3 {
       font-size: 13px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       color: #f8fafc;
     }
 
-    .street-step-list {
-      list-style: none;
+    /* Metro-Style Stepper */
+    .metro-stepper {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
-    .street-step {
+    .metro-step {
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.35;
+      gap: 10px;
     }
 
-    .step-index {
-      min-width: 20px;
-      height: 20px;
+    .metro-marker-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 14px;
+      flex-shrink: 0;
+    }
+
+    .metro-bullet {
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
-      background: #1e293b;
-      border: 1px solid #475569;
+      background: #ffffff;
+      border: 2px solid #0f172a;
+      z-index: 2;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .metro-bullet.source {
+      background: #22c55e;
+      border-color: #14532d;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .metro-bullet.sink {
+      background: #ef4444;
+      border-color: #7f1d1d;
+      box-shadow: 0 0 6px #ef4444;
+    }
+
+    .metro-line {
+      width: 2px;
+      flex: 1;
+      min-height: 24px;
+      margin: 2px 0;
+      opacity: 0.65;
+    }
+
+    .metro-content {
+      flex: 1;
+      padding-bottom: 10px;
+    }
+
+    .metro-node-head {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .metro-node-id {
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .metro-node-name {
+      color: #cbd5e1;
+      font-size: 11.5px;
+    }
+
+    .metro-road-link {
+      margin-top: 4px;
+      padding: 3px 7px;
+      background: rgba(30, 41, 59, 0.75);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #94a3b8;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 10px;
+      gap: 5px;
+      border: 1px solid rgba(51, 65, 85, 0.5);
+    }
+
+    .metro-cctv-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 9.5px;
+      background: #1e3a8a;
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
+      border-radius: 3px;
+      padding: 1px 4px;
       font-weight: 700;
-      color: #e2e8f0;
-      flex-shrink: 0;
+    }
+
+    .metro-manual-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 9.5px;
+      background: #78350f;
+      color: #fde68a;
+      border: 1px solid #d97706;
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-weight: 700;
     }
 
     .node-badges {
@@ -658,8 +793,8 @@
         <div class="legend-item"><span class="legend-dot source-dot"></span> <span><strong>S₁, S₂</strong>: Titik Sumber (Inflow)</span></div>
         <div class="legend-item"><span class="legend-dot sink-dot"></span> <span><strong>T₁, T₂</strong>: Titik Muara (Outflow)</span></div>
         <div class="legend-item"><span class="legend-dot junction-dot"></span> <span><strong>V</strong>: Simpul Persimpangan</span></div>
-        <div class="legend-item"><span class="legend-icon">📹</span> <span><strong>CCTV</strong>: Kamera Pelindung (10)</span></div>
-        <div class="legend-item"><span class="legend-icon">📍</span> <span><strong>Manual</strong>: Titik Survei Lapangan (6)</span></div>
+        <div class="legend-item"><span class="legend-dot cctv-dot"></span> <span><strong>📹 CCTV</strong>: Kamera Pelindung (10)</span></div>
+        <div class="legend-item"><span class="legend-dot manual-dot"></span> <span><strong>📍 Manual</strong>: Titik Survei Lapangan (6)</span></div>
       </div>
     </div>
   </main>
@@ -702,6 +837,10 @@
         {
           id: 'S1-T1',
           name: 'S₁ (Pasupati / Tamansari) → T₁ (PUSDAI / Surapati Timur)',
+          fromName: 'Pasupati (Tamansari)',
+          toName: 'PUSDAI (Surapati Timur)',
+          corridor: 'Koridor Utara Gasibu',
+          via: 'Jl. Singaperbangsa • Jl. Tikukur • Jl. Gagak',
           source: 'S1',
           sink: 'T1',
           color: '#10b981',
@@ -761,6 +900,10 @@
         {
           id: 'S1-T2',
           name: 'S₁ (Pasupati / Tamansari) → T₂ (Diponegoro)',
+          fromName: 'Pasupati (Tamansari)',
+          toName: 'Diponegoro Timur (PUSDAI)',
+          corridor: 'Koridor Selatan Belakang Gedung Sate',
+          via: 'Jl. Sulanjana • Jl. Cilamaya • Jl. Cisangkuy',
           source: 'S1',
           sink: 'T2',
           color: '#ec4899',
@@ -822,6 +965,10 @@
         {
           id: 'S2-T1',
           name: 'S₂ (Dipatiukur) → T₁ (PUSDAI / Surapati Timur)',
+          fromName: 'Dipatiukur (Unpad)',
+          toName: 'PUSDAI (Surapati Timur)',
+          corridor: 'Koridor Utara Dipatiukur – Monju',
+          via: 'Jl. Singaperbangsa • Jl. Merak • Jl. Surapati',
           source: 'S2',
           sink: 'T1',
           color: '#3b82f6',
@@ -866,6 +1013,10 @@
         {
           id: 'S2-T2',
           name: 'S₂ (Dipatiukur) → T₂ (Diponegoro)',
+          fromName: 'Dipatiukur (Unpad)',
+          toName: 'Diponegoro Timur (PUSDAI)',
+          corridor: 'Koridor Selatan Dago – Diponegoro',
+          via: 'Jl. Hasanuddin • Jl. Djuanda • Jl. Cisanggarung',
           source: 'S2',
           sink: 'T2',
           color: '#f59e0b',
@@ -1693,12 +1844,21 @@
               <div class="path-card-header">
                 <span class="path-id-pill" style="color: ${p.color}">
                   <span class="color-dot" style="background: ${p.color}"></span>
-                  ${p.id}
+                  ${formatNodeHtml(p.source)} ➔ ${formatNodeHtml(p.sink)}
                 </span>
                 <span class="path-meta">${p.distanceInfo}</span>
               </div>
-              <div class="path-title">${p.name}</div>
-              <div class="path-preview">${p.streets.join(' → ')}</div>
+              <div class="path-endpoints">
+                <span class="endpoint-name">${p.fromName}</span>
+                <span class="endpoint-arrow" style="color: ${p.color}">──▶</span>
+                <span class="endpoint-name" style="text-align: right;">${p.toName}</span>
+              </div>
+              <div class="path-corridor">
+                <span class="corridor-badge">🏷️ ${p.corridor}</span>
+              </div>
+              <div class="path-via">
+                <span class="via-label">🛣️ via:</span> ${p.via}
+              </div>
             </div>
           `;
         })
@@ -1716,19 +1876,55 @@
         detailEl.innerHTML = `
           <h3>Mode: Semua 4 Jalur Aktif</h3>
           <p style="color: #94a3b8; line-height: 1.4;">
-            Keempat jalur (S<sub>1</sub>, S<sub>2</sub> → T<sub>1</sub>, T<sub>2</sub>) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan jalan dan simpul yang dilalui.
+            Keempat jalur (S<sub>1</sub>, S<sub>2</sub> → T<sub>1</sub>, T<sub>2</sub>) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan rute transit dan simpul yang dilalui.
           </p>
         `;
       } else {
-        const stepsHtml = selected.streets
-          .map(
-            (s, idx) => `
-              <li class="street-step">
-                <span class="step-index" style="border-color: ${selected.color}">${idx + 1}</span>
-                <span>${s}</span>
-              </li>
-            `
-          )
+        const cctvMap = new Map();
+        GRAPH_DATA.cctvPoints.forEach((c) => cctvMap.set(c.nodeId, c));
+        const manualMap = new Map();
+        GRAPH_DATA.manualSurveyPoints.forEach((m) => manualMap.set(m.nodeId, m));
+
+        const metroHtml = selected.nodeIds
+          .map((nid, idx) => {
+            const node = GRAPH_DATA.nodes[nid] || { label: nid };
+            const isSource = node.type === 'source';
+            const isSink = node.type === 'sink';
+            const isLast = idx === selected.nodeIds.length - 1;
+            const street = selected.streets[idx] || '';
+
+            let tagHtml = '';
+            if (cctvMap.has(nid)) {
+              tagHtml += `<span class="metro-cctv-tag" title="Tersedia rekaman CCTV Pelindung">📹 CCTV</span>`;
+            }
+            if (manualMap.has(nid)) {
+              tagHtml += `<span class="metro-manual-tag" title="Titik survei manual lapangan">📍 Survei</span>`;
+            }
+
+            const cleanLabel = node.label ? node.label.replace(/^.+?:\s*/, '') : nid;
+
+            return `
+              <div class="metro-step">
+                <div class="metro-marker-col">
+                  <span class="metro-bullet ${isSource ? 'source' : isSink ? 'sink' : ''}"></span>
+                  ${!isLast ? `<span class="metro-line" style="background: ${selected.color}"></span>` : ''}
+                </div>
+                <div class="metro-content">
+                  <div class="metro-node-head">
+                    <span class="metro-node-id">${formatNodeHtml(nid)}</span>
+                    <span class="metro-node-name">${cleanLabel}</span>
+                    ${tagHtml}
+                  </div>
+                  ${!isLast && street ? `
+                    <div class="metro-road-link">
+                      <span class="road-icon">🛣️</span>
+                      <span class="road-name">${street}</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          })
           .join('');
 
         const nodesHtml = selected.nodeIds
@@ -1736,10 +1932,17 @@
           .join(' → ');
 
         detailEl.innerHTML = `
-          <h3 style="color: ${selected.color}">${selected.name} (${selected.distanceInfo})</h3>
-          <div style="font-size: 11px; color: #94a3b8;">Urutan Arah Jalan:</div>
-          <ol class="street-step-list">${stepsHtml}</ol>
-          <div style="font-size: 11px; color: #94a3b8; margin-top: 10px;">Simpul Graf (${selected.nodeIds.length} Vertex):</div>
+          <h3 style="color: ${selected.color}; margin-bottom: 2px;">
+            ${formatNodeHtml(selected.source)} ➔ ${formatNodeHtml(selected.sink)}: ${selected.corridor}
+          </h3>
+          <div style="font-size: 11px; color: #94a3b8; margin-bottom: 12px;">${selected.distanceInfo} • Dari ${selected.fromName} ke ${selected.toName}</div>
+
+          <div style="font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+            Urutan Aliran Jalan (Transit Metro Line):
+          </div>
+          <div class="metro-stepper">${metroHtml}</div>
+
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 14px; margin-bottom: 6px;">Simpul Graf (${selected.nodeIds.length} Vertex):</div>
           <div class="node-badges">${nodesHtml}</div>
         `;
       }
@@ -1839,7 +2042,7 @@
       m.bindTooltip(
         `
         <div class="segment-tooltip">
-          <div class="seg-name" style="color: #f87171;">📹 CCTV Pelindung — ${formatNodeHtml(pt.nodeId)}</div>
+          <div class="seg-name" style="color: #60a5fa;">📹 CCTV Pelindung — ${formatNodeHtml(pt.nodeId)}</div>
           <div class="seg-detail"><strong>Titik:</strong> ${pt.name}</div>
           <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas}</div>
           <div class="seg-detail">${pt.role}</div>
