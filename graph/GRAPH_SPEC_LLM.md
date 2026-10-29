@@ -1,0 +1,221 @@
+# Jaringan Aliran Jalan (Network Flow Graph) — Kasus 4: Pasar Tumpah Kawasan Gasibu–Monju, Bandung
+
+Dokumen ini berisi spesifikasi topologi graf terarah (*directed network flow*) yang merepresentasikan 4 jalur utama pengalihan arus kendaraan di sekitar kawasan Gasibu, Monumen Perjuangan (Monju), dan PUSDAI Kota Bandung. Dokumen ini dirancang agar dapat langsung dimasukkan ke dalam konteks LLM (Large Language Model) untuk analisis graf, kapasitas jalan, pemodelan *Maximum Flow / Minimum Cut* (algoritma Ford-Fulkerson / Edmonds-Karp), maupun perancangan rekayasa lalu lintas.
+
+---
+
+## 1. Konteks Masalah
+- **Kasus:** Kasus 4 — Kemacetan Pasar Tumpah Kawasan Gasibu – Monju (Tugas Besar Matematika Diskrit Lanjut, D4 Teknik Informatika POLBAN).
+- **Titik Asal (Source / Titik Masuk Arus Kendaraan):**
+  - **$S_1$ (Tamansari / Turun Flyover Pasupati):** Aliran kendaraan dari arah barat (Pasteur / Pasupati) yang turun di Jl. Tamansari.
+  - **$S_2$ (Dipatiukur / Kawasan Kampus Unpad):** Aliran kendaraan dari arah utara (Dago Atas / Coblong) yang melintasi Jl. Dipati Ukur.
+- **Titik Tujuan (Sink / Titik Keluar Arus Bebas):**
+  - **$T_1$ (PUSDAI / Jl. Surapati Timur):** Akses keluar menuju Jalan Surapati bagian timur / Cicaheum.
+  - **$T_2$ (Jl. Diponegoro Timur / Depan PUSDAI No. 61):** Akses keluar menuju Jalan Diponegoro bagian timur / Supratman.
+
+---
+
+## 2. Taksonomi Simpul Graf (Vertices / Nodes)
+
+Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan jalan) dengan koordinat OpenStreetMap yang akurat:
+
+| ID Simpul | Tipe | Nama Persimpangan / Titik | Latitude | Longitude |
+|:---|:---:|:---|:---:|:---:|
+| **S1** | Source | Turun Pasupati / Jl. Tamansari | -6.89550 | 107.60870 |
+| **S2** | Source | Jl. Dipatiukur (Depan Kampus Unpad) | -6.89190 | 107.61758 |
+| **T1** | Sink | PUSDAI / Jl. Surapati Timur | -6.89955 | 107.62709 |
+| **T2** | Sink | Jl. Diponegoro Timur (No. 61 / Dekat PUSDAI) | -6.90115 | 107.62485 |
+| **V_Cikapayang** | Junction | Simpang Jl. Tamansari – Jl. Cikapayang | -6.89806 | 107.60967 |
+| **V_Sulanjana** | Junction | Simpang Jl. Tamansari – Jl. Sulanjana | -6.89950 | 107.60997 |
+| **V_DU_Selatan** | Junction | Simpang Jl. Cikapayang – Jl. Dipatiukur Selatan | -6.89885 | 107.61283 |
+| **V_Hasanuddin** | Junction | Simpang Jl. Dipatiukur – Jl. Hasanuddin | -6.89474 | 107.61743 |
+| **V_Djuanda_Hasanuddin** | Junction | Simpang Jl. Hasanuddin – Jl. Ir. H. Djuanda (Dago) | -6.89492 | 107.61321 |
+| **V_Djuanda_Diponegoro** | Junction | Simpang Dago / Sulanjana – Jl. Diponegoro Barat | -6.90025 | 107.61262 |
+| **V_Singaperbangsa** | Junction | Simpang Jl. Dipatiukur – Jl. Singaperbangsa | -6.89559 | 107.61688 |
+| **V_Titiran** | Junction | Simpang Jl. Singaperbangsa – Jl. Titiran | -6.89543 | 107.61898 |
+| **V_Merak** | Junction | Simpang Jl. Titiran – Jl. Merak | -6.89761 | 107.62025 |
+| **V_Surapati_Merak** | Junction | Simpang Jl. Merak – Jl. Surapati | -6.89928 | 107.62032 |
+| **V_Tikukur** | Junction | Simpang Jl. Titiran – Jl. Tikukur | -6.89718 | 107.62153 |
+| **V_Gagak** | Junction | Simpang Jl. Tikukur / Puyuh – Jl. Gagak | -6.89810 | 107.62387 |
+| **V_Surapati_Gagak** | Junction | Simpang Jl. Gagak – Jl. Surapati | -6.89923 | 107.62373 |
+| **V_AriaJipang** | Junction | Simpang Jl. Diponegoro – Jl. Aria Jipang | -6.90063 | 107.61507 |
+| **V_Cilamaya** | Junction | Simpang Jl. Diponegoro – Jl. Cilamaya | -6.90134 | 107.61697 |
+| **V_Cimandiri** | Junction | Simpang Jl. Cilamaya – Jl. Cimandiri | -6.90351 | 107.61725 |
+| **V_Cisanggarung** | Junction | Simpang Jl. Cimandiri – Jl. Cisanggarung | -6.90334 | 107.62020 |
+| **V_Citarum** | Junction | Simpang Jl. Cisanggarung – Jl. Citarum | -6.90449 | 107.62250 |
+| **V_Cisangkuy** | Junction | Simpang Jl. Cisanggarung / Cimanuk – Jl. Cisangkuy | -6.90276 | 107.62191 |
+
+---
+
+## 3. Rincian 4 Path Aliran Terarah (Directed Flow Paths)
+
+### Path 1: S2-T1 (`S2 (Dipatiukur) → T1 (PUSDAI / Surapati Timur)`)
+- **Karakteristik:** Jarak ±2,3 km • Estimasi waktu tempuh ±8 menit • Warna Visual: Biru (`#3b82f6`).
+- **Urutan Nama Jalan:**
+  1. Jalan Dipati Ukur
+  2. Belok Kanan Jl. Singaperbangsa
+  3. Jl. Titiran
+  4. Jl. Merak
+  5. Jl. Surapati
+  6. PUSDAI
+- **Urutan Simpul Graf:**  
+  `S2` $\to$ `V_Singaperbangsa` $\to$ `V_Titiran` $\to$ `V_Merak` $\to$ `V_Surapati_Merak` $\to$ `T1`
+- **Daftar Edge Terarah:**
+  - $(S_2, V_{Singaperbangsa})$ via Jl. Dipati Ukur
+  - $(V_{Singaperbangsa}, V_{Titiran})$ via Jl. Singaperbangsa
+  - $(V_{Titiran}, V_{Merak})$ via Jl. Titiran
+  - $(V_{Merak}, V_{Surapati\_Merak})$ via Jl. Merak
+  - $(V_{Surapati\_Merak}, T_1)$ via Jl. Surapati $\to$ PUSDAI
+
+---
+
+### Path 2: S2-T2 (`S2 (Dipatiukur) → T2 (Diponegoro)`)
+- **Karakteristik:** Jarak ±3,8 km • Estimasi waktu tempuh ±10 menit • Warna Visual: Oranye (`#f59e0b`).
+- **Urutan Nama Jalan:**
+  1. Jalan Dipati Ukur
+  2. Jl. Hasanuddin
+  3. Jl. Ir H Djuanda
+  4. Jl. Diponegoro
+  5. Jl. Aria Jipang
+  6. Jl. Cilamaya
+  7. Jl. Cimandiri
+  8. Jl. Cisanggarung
+  9. Jl. Citarum
+  10. Jl. Diponegoro Timur
+- **Urutan Simpul Graf:**  
+  `S2` $\to$ `V_Hasanuddin` $\to$ `V_Djuanda_Hasanuddin` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Citarum` $\to$ `T2`
+- **Daftar Edge Terarah:**
+  - $(S_2, V_{Hasanuddin})$ via Jl. Dipati Ukur
+  - $(V_{Hasanuddin}, V_{Djuanda\_Hasanuddin})$ via Jl. Hasanuddin
+  - $(V_{Djuanda\_Hasanuddin}, V_{Djuanda\_Diponegoro})$ via Jl. Ir. H. Djuanda
+  - $(V_{Djuanda\_Diponegoro}, V_{AriaJipang})$ via Jl. Diponegoro
+  - $(V_{AriaJipang}, V_{Cilamaya})$ via Jl. Aria Jipang $\to$ Jl. Diponegoro
+  - $(V_{Cilamaya}, V_{Cimandiri})$ via Jl. Cilamaya
+  - $(V_{Cimandiri}, V_{Cisanggarung})$ via Jl. Cimandiri
+  - $(V_{Cisanggarung}, V_{Citarum})$ via Jl. Cisanggarung
+  - $(V_{Citarum}, T_2)$ via Jl. Citarum $\to$ Jl. Diponegoro Timur
+
+---
+
+### Path 3: S1-T1 (`S1 (Pasupati / Tamansari) → T1 (PUSDAI / Surapati Timur)`)
+- **Karakteristik:** Jarak ±3,4 km • Estimasi waktu tempuh ±11 menit • Warna Visual: Hijau (`#10b981`).
+- **Urutan Nama Jalan:**
+  1. Turun Pasupati/Jl. Tamansari
+  2. Jl. Dipatiukur
+  3. Jl. Singaperbangsa
+  4. Jl. Titiran
+  5. Jl. Tikukur
+  6. Jl. Gagak
+  7. PUSDAI/Surapati Timur
+- **Urutan Simpul Graf:**  
+  `S1` $\to$ `V_Cikapayang` $\to$ `V_DU_Selatan` $\to$ `V_Singaperbangsa` $\to$ `V_Titiran` $\to$ `V_Tikukur` $\to$ `V_Gagak` $\to$ `V_Surapati_Gagak` $\to$ `T1`
+- **Daftar Edge Terarah:**
+  - $(S_1, V_{Cikapayang})$ via Jl. Tamansari
+  - $(V_{Cikapayang}, V_{DU\_Selatan})$ via Jl. Cikapayang
+  - $(V_{DU\_Selatan}, V_{Singaperbangsa})$ via Jl. Dipatiukur
+  - $(V_{Singaperbangsa}, V_{Titiran})$ via Jl. Singaperbangsa
+  - $(V_{Titiran}, V_{Tikukur})$ via Jl. Titiran
+  - $(V_{Tikukur}, V_{Gagak})$ via Jl. Tikukur / Jl. Puyuh
+  - $(V_{Gagak}, V_{Surapati\_Gagak})$ via Jl. Gagak
+  - $(V_{Surapati\_Gagak}, T_1)$ via Jl. Surapati $\to$ PUSDAI
+
+---
+
+### Path 4: S1-T2 (`S1 (Pasupati / Tamansari) → T2 (Diponegoro)`)
+- **Karakteristik:** Jarak ±3,1 km • Estimasi waktu tempuh ±9 menit • Warna Visual: Merah Muda (`#ec4899`).
+- **Urutan Nama Jalan:**
+  1. Turun Pasupati/Jl. Tamansari
+  2. Jl. Sulanjana
+  3. Jl. Aria Jipang
+  4. Jl. Cilamaya
+  5. Jl. Cimandiri
+  6. Jl. Cisanggarung
+  7. Jl. Cisangkuy
+  8. Jl. Diponegoro Timur/Pusdai
+- **Urutan Simpul Graf:**  
+  `S1` $\to$ `V_Sulanjana` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Cisangkuy` $\to$ `T2`
+- **Daftar Edge Terarah:**
+  - $(S_1, V_{Sulanjana})$ via Jl. Tamansari $\to$ Simpang Sulanjana
+  - $(V_{Sulanjana}, V_{Djuanda\_Diponegoro})$ via Jl. Sulanjana
+  - $(V_{Djuanda\_Diponegoro}, V_{AriaJipang})$ via Jl. Diponegoro
+  - $(V_{AriaJipang}, V_{Cilamaya})$ via Jl. Aria Jipang $\to$ Jl. Diponegoro
+  - $(V_{Cilamaya}, V_{Cimandiri})$ via Jl. Cilamaya
+  - $(V_{Cimandiri}, V_{Cisanggarung})$ via Jl. Cimandiri
+  - $(V_{Cisanggarung}, V_{Cisangkuy})$ via Jl. Cisanggarung $\to$ Jl. Cimanuk
+  - $(V_{Cisangkuy}, T_2)$ via Jl. Cisangkuy $\to$ Jl. Diponegoro Timur/Pusdai
+
+---
+
+## 4. Analisis Ruas Jalan Bersama (Shared Edges & Bottleneck Max-Flow)
+
+Untuk analisis pemodelan kapasitas jaringan aliran (*Network Flow*), beberapa ruas jalan dilalui bersama oleh lebih dari satu jalur. Ruas ini merupakan titik kritis (*bottleneck*) terjadinya kemacetan saat volume kendaraan dari kedua sumber bertemu:
+
+| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Jalur yang Menggunakan | Dampak Kapasitas Graf |
+|:---|:---:|:---:|:---:|:---|
+| **Jl. Singaperbangsa** | `V_Singaperbangsa` | `V_Titiran` | $P_1$ (S2-T1) & $P_3$ (S1-T1) | Arus kendaraan dari Dipatiukur utara dan Pasupati bertemu di jalan sempit Singaperbangsa menuju Titiran. |
+| **Jl. Diponegoro Barat** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Arus dari Dago dan Sulanjana menyatu sebelum masuk kawasan perkantoran/Gedung Sate. |
+| **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Segmen penghubung penting di belakang Gedung Sate. |
+| **Jl. Cimandiri** | `V_Cimandiri` | `V_Cisanggarung` | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Jalan lokal sempit yang menampung gabungan arus $P_2$ dan $P_4$. |
+| **Jl. Surapati Timur** | `V_Surapati_Merak` / `V_Surapati_Gagak` | `T1` | $P_1$ (S2-T1) & $P_3$ (S1-T1) | Arus masuk ke tujuan PUSDAI dari Jl. Merak dan Jl. Gagak menyatu di jalan arteri Surapati. |
+
+---
+
+## 5. Diagram Topologi Graf (Mermaid Flowchart)
+
+```mermaid
+flowchart TD
+    subgraph Sources ["Sumber Aliran (Sources)"]
+        S1["S1: Pasupati / Tamansari"]
+        S2["S2: Dipatiukur (Unpad)"]
+    end
+
+    subgraph NorthCorridor ["Koridor Utara (Rute T1)"]
+        S2 -->|Jl. Dipatiukur| V_SPB["V_Singaperbangsa"]
+        S1 -->|Jl. Tamansari| V_Ckp["V_Cikapayang"]
+        V_Ckp -->|Jl. Cikapayang| V_DU_S["V_DU_Selatan"]
+        V_DU_S -->|Jl. Dipatiukur| V_SPB
+
+        V_SPB -->|Jl. Singaperbangsa (Shared)| V_Ttr["V_Titiran"]
+
+        V_Ttr -->|Jl. Merak| V_Mrk["V_Merak"]
+        V_Mrk -->|Jl. Merak| V_Sur_M["V_Surapati_Merak"]
+        V_Sur_M -->|Jl. Surapati| T1["T1: PUSDAI / Surapati Timur"]
+
+        V_Ttr -->|Jl. Tikukur| V_Tkk["V_Tikukur"]
+        V_Tkk -->|Jl. Puyuh / Gagak| V_Ggk["V_Gagak"]
+        V_Ggk -->|Jl. Gagak| V_Sur_G["V_Surapati_Gagak"]
+        V_Sur_G -->|Jl. Surapati| T1
+    end
+
+    subgraph SouthCorridor ["Koridor Selatan (Rute T2)"]
+        S2 -->|Jl. Hasanuddin| V_Hsn["V_Hasanuddin"]
+        V_Hsn -->|Jl. Ir. H. Djuanda| V_Dju_Dip["V_Djuanda_Diponegoro"]
+
+        S1 -->|Jl. Sulanjana| V_Sul["V_Sulanjana"]
+        V_Sul -->|Jl. Sulanjana| V_Dju_Dip
+
+        V_Dju_Dip -->|Jl. Diponegoro (Shared)| V_AJ["V_AriaJipang"]
+        V_AJ -->|Jl. Cilamaya (Shared)| V_Clm["V_Cilamaya"]
+        V_Clm -->|Jl. Cimandiri (Shared)| V_Cmd["V_Cimandiri"]
+        V_Cmd -->|Jl. Cisanggarung (Shared)| V_Csg["V_Cisanggarung"]
+
+        V_Csg -->|Jl. Citarum| V_Ctr["V_Citarum"]
+        V_Ctr -->|Jl. Diponegoro Timur| T2["T2: Jl. Diponegoro Timur"]
+
+        V_Csg -->|Jl. Cimanuk / Cisangkuy| V_Csk["V_Cisangkuy"]
+        V_Csk -->|Jl. Diponegoro Timur| T2
+    end
+
+    subgraph Sinks ["Tujuan Aliran (Sinks)"]
+        T1
+        T2
+    end
+```
+
+---
+
+## 6. Template Prompt Siap Pakai untuk LLM (Prompt Template)
+
+Salin teks berikut bersama isi dokumen ini ketika Anda ingin meminta LLM melakukan analisis pemodelan Matematika Diskrit:
+
+> *"Berikut adalah spesifikasi jaringan aliran jalan (Directed Network Flow Graph) dari Kasus 4 Pasar Tumpah Kawasan Gasibu–Monju Bandung, mencakup 2 Source ($S_1, S_2$), 2 Sink ($T_1, T_2$), 19 Simpul Persimpangan, dan 4 Path aliran. Berdasarkan dokumen ini, mohon lakukan [PILIH: hitung Maximum Flow dengan menentukan kapasitas realistis tiap ruas / cari Minimum Cut bottleneck pemotongan arus / buat matriks ketetanggaan graf / rancang rute alternatif pengalihan arus]."*

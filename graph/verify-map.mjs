@@ -161,4 +161,32 @@ try {
   await new Promise((resolve) => server.close(resolve));
 }
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, interaksi, dan server HTTP lokal berhasil.');
+// 6. Cek dokumen spesifikasi graf untuk LLM (GRAPH_SPEC_LLM.md)
+const specPath = new URL('./GRAPH_SPEC_LLM.md', import.meta.url);
+assert.ok(fs.existsSync(specPath), 'GRAPH_SPEC_LLM.md harus ada');
+
+const specContent = fs.readFileSync(specPath, 'utf8');
+
+// Memastikan memuat identitas kasus & masalah Tubes
+assert.match(specContent, /Kasus 4:\s*Pasar Tumpah/i, 'Harus memuat informasi Kasus 4 Pasar Tumpah');
+assert.match(specContent, /Maximum Flow|Network Flow/i, 'Harus memuat konteks Maximum Flow');
+
+// Memastikan memuat simpul terminal S1, S2, T1, T2 beserta koordinat
+for (const term of ['S1', 'S2', 'T1', 'T2']) {
+  assert.ok(specContent.includes(term), `Dokumen LLM harus mendefinisikan simpul ${term}`);
+}
+
+// Memastikan memuat ke-4 rute beserta urutan jalannya
+for (const path of GRAPH_DATA.paths) {
+  assert.ok(specContent.includes(path.id), `Dokumen LLM harus memuat rute ${path.id}`);
+  for (const st of path.streets) {
+    assert.ok(specContent.includes(st), `Dokumen LLM harus mencantumkan jalan '${st}' pada ${path.id}`);
+  }
+}
+
+// Memastikan memuat diagram Mermaid dan bagian Shared Edges / Bottleneck
+assert.match(specContent, /```mermaid[\s\S]*?flowchart/i, 'Harus memiliki diagram Mermaid flowchart');
+assert.match(specContent, /Shared Edges|Ruas Bersama|Bottleneck/i, 'Harus memiliki analisis shared edges untuk Max-Flow');
+assert.match(specContent, /Prompt Template/i, 'Harus menyediakan template prompt siap pakai untuk LLM');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, interaksi, server HTTP lokal, dan dokumen LLM berhasil.');
