@@ -245,7 +245,8 @@ const highlightScriptPath = new URL('./pelindung-highlight.js', import.meta.url)
 assert.ok(fs.existsSync(highlightScriptPath), 'File pelindung-highlight.js harus ada');
 
 const highlightCode = fs.readFileSync(highlightScriptPath, 'utf8');
-assert.match(highlightCode, /drop-shadow/, 'Script harus memberikan efek bayangan merah (drop-shadow)');
+assert.ok(!highlightCode.includes('drop-shadow'), 'Script tidak boleh menggunakan filter drop-shadow/glow');
+assert.match(highlightCode, /invert|hue-rotate/i, 'Script harus menggunakan filter CSS pewarnaan maroon/merah tua');
 assert.match(highlightCode, /CCTV DIPATIUKUR SEKELOA 01/, 'Script harus memuat target CCTV DIPATIUKUR SEKELOA 01');
 assert.match(highlightCode, /SP SULANJANA/, 'Script harus memuat target SP SULANJANA');
 
@@ -307,7 +308,9 @@ vm.runInContext(highlightCode, pelindungSandbox);
 
 assert.ok(Array.isArray(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS), 'window.PELINDUNG_MAXFLOW_TARGETS harus berupa array');
 assert.ok(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length >= 20, 'Harus mencakup minimal 20 kamera CCTV relevan');
-// 11. Cek layer CCTV Pelindung & Titik Survei Manual di index.html dan GRAPH_SPEC_LLM.md
+assert.match(mockMarkerIconTarget.style.filter || '', /invert|hue-rotate/, 'Pinpoint target harus diberi filter maroon');
+assert.ok(!((mockMarkerIconTarget.style.filter || '').includes('drop-shadow')), 'Pinpoint target tidak boleh memiliki filter drop-shadow');
+assert.equal(mockMarkerIconOther.style.opacity, '0.25', 'Pinpoint non-target harus diredupkan (opacity 0.25)');
 assert.ok(Array.isArray(GRAPH_DATA.cctvPoints), 'GRAPH_DATA.cctvPoints harus berupa array');
 assert.equal(GRAPH_DATA.cctvPoints.length, 10, 'Harus terdapat 10 titik lokasi CCTV Pelindung pada graf');
 assert.ok(Array.isArray(GRAPH_DATA.manualSurveyPoints), 'GRAPH_DATA.manualSurveyPoints harus berupa array');

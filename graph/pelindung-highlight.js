@@ -55,36 +55,28 @@
     { id: '57215230-6f3b-4a50-8f6d-c0f065d92844', name: 'CCTV PUSDAI 02', node: 'T2', role: 'Outflow Sink T2 (Jl. Diponegoro Timur)', lat: -6.901174, lng: 107.626364 }
   ];
 
-  const RED_PIN_FILTER =
-    'brightness(0) saturate(100%) invert(16%) sepia(99%) saturate(7404%) hue-rotate(357deg) brightness(98%) contrast(118%) drop-shadow(0 0 8px #ff0000) drop-shadow(0 0 16px rgba(255, 0, 0, 0.95))';
+  const MAROON_PIN_FILTER =
+    'brightness(0) saturate(100%) invert(11%) sepia(86%) saturate(4648%) hue-rotate(346deg) brightness(88%) contrast(110%)';
 
   function injectHighlightStyles(doc) {
     if (!doc.head) return;
     const styleEl = doc.createElement('style');
     styleEl.id = 'maxflow-pelindung-style';
     styleEl.textContent = `
-      @keyframes maxflowPulseRed {
-        0%, 100% {
-          filter: ${RED_PIN_FILTER};
-        }
-        50% {
-          filter: brightness(0) saturate(100%) invert(21%) sepia(99%) saturate(7404%) hue-rotate(357deg) brightness(110%) contrast(120%) drop-shadow(0 0 14px #ff0000) drop-shadow(0 0 26px #ff1111);
-        }
-      }
+      img.leaflet-marker-icon.maxflow-maroon-pin,
       img.leaflet-marker-icon.maxflow-red-pin {
-        filter: ${RED_PIN_FILTER} !important;
-        animation: maxflowPulseRed 1.6s infinite ease-in-out !important;
+        filter: ${MAROON_PIN_FILTER} !important;
         z-index: 9999 !important;
       }
       .leaflet-tooltip.maxflow-node-badge {
-        background: #b91c1c !important;
+        background: #800000 !important;
         color: #ffffff !important;
-        border: 2px solid #fecaca !important;
+        border: 1px solid #5a0000 !important;
         border-radius: 6px !important;
         padding: 2px 7px !important;
         font-size: 11px !important;
         font-weight: 800 !important;
-        box-shadow: 0 3px 10px rgba(220, 38, 38, 0.85) !important;
+        box-shadow: none !important;
       }
     `;
     doc.head.appendChild(styleEl);
@@ -128,10 +120,10 @@
 
         const target = byId.get(item.id) || byName.get((item.cctv_name || '').trim().toUpperCase());
         if (target) {
-          icon.style.filter = RED_PIN_FILTER;
+          icon.style.filter = MAROON_PIN_FILTER;
           icon.style.opacity = '1';
           icon.style.zIndex = '9999';
-          icon.classList.add('maxflow-red-pin');
+          icon.classList.add('maxflow-maroon-pin', 'maxflow-red-pin');
           icon.setAttribute('title', `[${target.node}] ${target.name} — ${target.role}`);
           if (typeof marker.setZIndexOffset === 'function') {
             marker.setZIndexOffset(5000);
@@ -159,11 +151,11 @@
       const rawText = (li.textContent || '').trim().toUpperCase();
       const matchedTarget = PELINDUNG_MAXFLOW_TARGETS.find((t) => rawText === t.name.trim().toUpperCase() || rawText.includes(t.name.trim().toUpperCase()));
       if (matchedTarget) {
-        li.style.backgroundColor = '#7f1d1d';
+        li.style.backgroundColor = '#660000';
         li.style.color = '#ffffff';
         li.style.fontWeight = '700';
-        li.style.borderLeft = '6px solid #ef4444';
-        li.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.75)';
+        li.style.borderLeft = '6px solid #800000';
+        li.style.boxShadow = 'none';
         if (!li.textContent.includes(`[${matchedTarget.node}]`)) {
           li.textContent = `🔴 [${matchedTarget.node}] ${li.textContent.trim()}`;
         }
@@ -177,7 +169,7 @@
     });
 
     console.log(
-      `✅ [Max-Flow Pelindung Highlighter] Berhasil mewarnai ${highlightedPins} pinpoint peta & ${highlightedList} item daftar CCTV menjadi MERAH!`
+      `✅ [Max-Flow Pelindung Highlighter] Berhasil mewarnai ${highlightedPins} pinpoint peta & ${highlightedList} item daftar CCTV menjadi MAROON/MERAH TUA (tanpa glow)!`
     );
     console.table(
       PELINDUNG_MAXFLOW_TARGETS.map((t) => ({
