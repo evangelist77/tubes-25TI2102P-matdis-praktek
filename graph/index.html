@@ -127,28 +127,117 @@
       border-color: #475569;
     }
 
-    .cctv-pin-badge {
+    .cctv-circle-pin {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
       background: #800000;
-      color: #ffffff;
-      border: 1px solid #991b1b;
-      border-radius: 999px;
-      padding: 2px 7px;
-      font-size: 10px;
-      font-weight: 800;
-      white-space: nowrap;
-      box-shadow: none;
+      border: 2px solid #fecaca;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .manual-pin-badge {
-      background: #eab308;
-      color: #0f172a;
-      border: 2px solid #fef08a;
-      border-radius: 999px;
-      padding: 2px 7px;
-      font-size: 10px;
-      font-weight: 800;
-      white-space: nowrap;
-      box-shadow: 0 0 10px rgba(234, 179, 8, 0.85);
+    .cctv-circle-pin:hover {
+      transform: scale(1.22);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.85);
+      z-index: 1000;
+    }
+
+    .manual-circle-pin {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #d97706;
+      border: 2px solid #fef3c7;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .manual-circle-pin:hover {
+      transform: scale(1.22);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.85);
+      z-index: 1000;
+    }
+
+    .map-legend {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #f8fafc;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+    }
+
+    .map-legend .legend-title {
+      font-weight: 700;
+      font-size: 11px;
+      color: #38bdf8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .map-legend .legend-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .map-legend .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .legend-dot.source-dot {
+      background: #22c55e;
+      border: 1.5px solid #14532d;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .legend-dot.sink-dot {
+      background: #ef4444;
+      border: 1.5px solid #7f1d1d;
+      box-shadow: 0 0 6px #ef4444;
+    }
+
+    .legend-dot.junction-dot {
+      background: #ffffff;
+      border: 1.5px solid #0f172a;
+    }
+
+    .legend-icon {
+      font-size: 12px;
+      width: 14px;
+      text-align: center;
+      flex-shrink: 0;
     }
 
     .opacity-control {
@@ -562,7 +651,18 @@
     </details>
   </aside>
 
-  <main id="map"></main>
+  <main id="map" style="position: relative;">
+    <div id="map-legend" class="map-legend">
+      <div class="legend-title">Legenda Visual Graf</div>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="legend-dot source-dot"></span> <span><strong>S₁, S₂</strong>: Titik Sumber (Inflow)</span></div>
+        <div class="legend-item"><span class="legend-dot sink-dot"></span> <span><strong>T₁, T₂</strong>: Titik Muara (Outflow)</span></div>
+        <div class="legend-item"><span class="legend-dot junction-dot"></span> <span><strong>V</strong>: Simpul Persimpangan</span></div>
+        <div class="legend-item"><span class="legend-icon">📹</span> <span><strong>CCTV</strong>: Kamera Pelindung (10)</span></div>
+        <div class="legend-item"><span class="legend-icon">📍</span> <span><strong>Manual</strong>: Titik Survei Lapangan (6)</span></div>
+      </div>
+    </div>
+  </main>
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -1516,13 +1616,14 @@
       });
 
       if (isSource || isSink) {
+        const roleLabel = isSource ? 'Sumber' : 'Muara';
         L.marker([node.lat, node.lng], {
           interactive: false,
           icon: L.divIcon({
             className: '',
-            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${formatNodeHtml(node.id)}</div>`,
-            iconSize: [34, 22],
-            iconAnchor: [17, 30]
+            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${isSource ? '🟢' : '🔴'} ${formatNodeHtml(node.id)} (${roleLabel})</div>`,
+            iconSize: [88, 24],
+            iconAnchor: [44, 30]
           })
         }).addTo(map);
       }
@@ -1729,22 +1830,23 @@
       const m = L.marker([pt.lat, pt.lng], {
         icon: L.divIcon({
           className: '',
-          html: `<div class="cctv-pin-badge">📹 CCTV [${pt.nodeId}]</div>`,
-          iconSize: [110, 24],
-          iconAnchor: [55, -8]
+          html: `<div class="cctv-circle-pin" title="${pt.name}">📹</div>`,
+          iconSize: [26, 26],
+          iconAnchor: [13, 13]
         })
       }).addTo(map);
 
       m.bindTooltip(
         `
         <div class="segment-tooltip">
-          <div class="seg-name" style="color: #f87171;">📹 ${pt.name}</div>
-          <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas} • <strong>Simpul:</strong> ${formatNodeHtml(pt.nodeId)}</div>
+          <div class="seg-name" style="color: #f87171;">📹 CCTV Pelindung — ${formatNodeHtml(pt.nodeId)}</div>
+          <div class="seg-detail"><strong>Titik:</strong> ${pt.name}</div>
+          <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas}</div>
           <div class="seg-detail">${pt.role}</div>
           <div class="seg-nodes">Stream: ${pt.streamUrl}</div>
         </div>
         `,
-        { direction: 'top', className: 'segment-tooltip-container' }
+        { direction: 'top', className: 'segment-tooltip-container', offset: [0, -8] }
       );
       surveyMarkers.push(m);
     });
@@ -1753,20 +1855,21 @@
       const m = L.marker([pt.lat, pt.lng], {
         icon: L.divIcon({
           className: '',
-          html: `<div class="manual-pin-badge">📝 MANUAL [${pt.nodeId}]</div>`,
-          iconSize: [120, 24],
-          iconAnchor: [60, -8]
+          html: `<div class="manual-circle-pin" title="${pt.name}">📍</div>`,
+          iconSize: [26, 26],
+          iconAnchor: [13, 13]
         })
       }).addTo(map);
 
       m.bindTooltip(
         `
         <div class="segment-tooltip">
-          <div class="seg-name" style="color: #facc15;">📝 ${pt.name}</div>
-          <div class="seg-detail"><strong>Simpul:</strong> ${formatNodeHtml(pt.nodeId)} • ${pt.reason}</div>
+          <div class="seg-name" style="color: #facc15;">📍 Survei Lapangan — ${formatNodeHtml(pt.nodeId)}</div>
+          <div class="seg-detail"><strong>Titik:</strong> ${pt.name}</div>
+          <div class="seg-detail"><strong>Justifikasi:</strong> ${pt.reason}</div>
         </div>
         `,
-        { direction: 'top', className: 'segment-tooltip-container' }
+        { direction: 'top', className: 'segment-tooltip-container', offset: [0, -8] }
       );
       surveyMarkers.push(m);
     });
