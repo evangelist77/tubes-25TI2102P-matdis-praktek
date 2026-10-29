@@ -330,6 +330,48 @@
       pointer-events: none;
     }
 
+    /* Patch ruas jalan satuan */
+    .segment-patch {
+      cursor: pointer;
+      transition: stroke 0.15s ease, stroke-width 0.15s ease, opacity 0.15s ease;
+    }
+
+    .leaflet-tooltip.segment-tooltip-container {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .segment-tooltip {
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      color: #f8fafc;
+      padding: 7px 11px;
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+      font-size: 12px;
+      line-height: 1.4;
+      pointer-events: none;
+    }
+
+    .segment-tooltip .seg-name {
+      font-weight: 700;
+      color: #38bdf8;
+      font-size: 13px;
+    }
+
+    .segment-tooltip .seg-detail {
+      color: #e2e8f0;
+      margin-top: 2px;
+    }
+
+    .segment-tooltip .seg-nodes {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
     @media (max-width: 768px) {
       body {
         flex-direction: column-reverse;
@@ -649,6 +691,378 @@
             [-6.90115, 107.62485]
           ]
         }
+      ],
+
+      segments: [
+        {
+          id: 'seg_S2_singaperbangsa',
+          name: 'Jalan Dipati Ukur (Utara)',
+          fromNode: 'S2',
+          toNode: 'V_Singaperbangsa',
+          widthInfo: '~8 meter (2 lajur, Secondary)',
+          osmType: 'secondary',
+          coords: [
+            [-6.89190, 107.61758],
+            [-6.89231, 107.61778],
+            [-6.89350, 107.61802],
+            [-6.89474, 107.61743],
+            [-6.89559, 107.61688]
+          ]
+        },
+        {
+          id: 'seg_singaperbangsa_titiran',
+          name: 'Jalan Singaperbangsa',
+          fromNode: 'V_Singaperbangsa',
+          toNode: 'V_Titiran',
+          widthInfo: '~4-5 meter (1-2 lajur, Residential)',
+          osmType: 'residential',
+          coords: [
+            [-6.89559, 107.61688],
+            [-6.89597, 107.61746],
+            [-6.89596, 107.61834],
+            [-6.89595, 107.61891],
+            [-6.89543, 107.61898]
+          ]
+        },
+        {
+          id: 'seg_titiran_merak',
+          name: 'Jalan Titiran',
+          fromNode: 'V_Titiran',
+          toNode: 'V_Merak',
+          widthInfo: '3 meter (1 lajur, Residential)',
+          osmType: 'residential',
+          coords: [
+            [-6.89543, 107.61898],
+            [-6.89542, 107.61925],
+            [-6.89551, 107.61962],
+            [-6.89563, 107.61981],
+            [-6.89641, 107.61983],
+            [-6.89722, 107.61986],
+            [-6.89761, 107.61988],
+            [-6.89761, 107.62025]
+          ]
+        },
+        {
+          id: 'seg_merak_surapati',
+          name: 'Jalan Merak',
+          fromNode: 'V_Merak',
+          toNode: 'V_Surapati_Merak',
+          widthInfo: '4 meter (2 lajur, Residential)',
+          osmType: 'residential',
+          coords: [
+            [-6.89761, 107.62025],
+            [-6.89847, 107.62028],
+            [-6.89908, 107.62031],
+            [-6.89928, 107.62032]
+          ]
+        },
+        {
+          id: 'seg_surapati_pusdai',
+          name: 'Jalan Surapati (Arteri Timur)',
+          fromNode: 'V_Surapati_Merak',
+          toNode: 'T1',
+          widthInfo: '~11 meter (3 lajur oneway, Trunk)',
+          osmType: 'trunk',
+          coords: [
+            [-6.89928, 107.62032],
+            [-6.89924, 107.62235],
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'seg_S2_hasanuddin',
+          name: 'Jalan Dipati Ukur (Tengah)',
+          fromNode: 'S2',
+          toNode: 'V_Hasanuddin',
+          widthInfo: '~8 meter (2 lajur, Secondary)',
+          osmType: 'secondary',
+          coords: [
+            [-6.89190, 107.61758],
+            [-6.89231, 107.61778],
+            [-6.89350, 107.61802],
+            [-6.89474, 107.61743]
+          ]
+        },
+        {
+          id: 'seg_hasanuddin_djuanda',
+          name: 'Jalan Hasanuddin',
+          fromNode: 'V_Hasanuddin',
+          toNode: 'V_Djuanda_Hasanuddin',
+          widthInfo: '~6 meter (2 lajur, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.89474, 107.61743],
+            [-6.89485, 107.61663],
+            [-6.89487, 107.61605],
+            [-6.89490, 107.61450],
+            [-6.89492, 107.61321]
+          ]
+        },
+        {
+          id: 'seg_djuanda_diponegoro',
+          name: 'Jalan Ir. H. Djuanda (Dago)',
+          fromNode: 'V_Djuanda_Hasanuddin',
+          toNode: 'V_Djuanda_Diponegoro',
+          widthInfo: '~12 meter (3 lajur, Primary)',
+          osmType: 'primary',
+          coords: [
+            [-6.89492, 107.61321],
+            [-6.89650, 107.61305],
+            [-6.89810, 107.61290],
+            [-6.90025, 107.61262]
+          ]
+        },
+        {
+          id: 'seg_diponegoro_ariajipang',
+          name: 'Jalan Diponegoro (Barat)',
+          fromNode: 'V_Djuanda_Diponegoro',
+          toNode: 'V_AriaJipang',
+          widthInfo: '~14 meter (4 lajur, Primary)',
+          osmType: 'primary',
+          coords: [
+            [-6.90025, 107.61262],
+            [-6.90039, 107.61304],
+            [-6.90046, 107.61347],
+            [-6.90063, 107.61507]
+          ]
+        },
+        {
+          id: 'seg_ariajipang_cilamaya',
+          name: 'Jalan Aria Jipang',
+          fromNode: 'V_AriaJipang',
+          toNode: 'V_Cilamaya',
+          widthInfo: '~6 meter (2 lajur, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90063, 107.61507],
+            [-6.89991, 107.61569],
+            [-6.90063, 107.61507],
+            [-6.90115, 107.61595],
+            [-6.90134, 107.61697]
+          ]
+        },
+        {
+          id: 'seg_cilamaya_cimandiri',
+          name: 'Jalan Cilamaya',
+          fromNode: 'V_Cilamaya',
+          toNode: 'V_Cimandiri',
+          widthInfo: '~7 meter (2 lajur oneway, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90134, 107.61697],
+            [-6.90202, 107.61699],
+            [-6.90254, 107.61701],
+            [-6.90351, 107.61725]
+          ]
+        },
+        {
+          id: 'seg_cimandiri_cisanggarung',
+          name: 'Jalan Cimandiri',
+          fromNode: 'V_Cimandiri',
+          toNode: 'V_Cisanggarung',
+          widthInfo: '~6 meter (2 lajur oneway, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90351, 107.61725],
+            [-6.90374, 107.61757],
+            [-6.90379, 107.61792],
+            [-6.90368, 107.61868],
+            [-6.90366, 107.61970],
+            [-6.90334, 107.62020]
+          ]
+        },
+        {
+          id: 'seg_cisanggarung_citarum',
+          name: 'Jalan Cisanggarung',
+          fromNode: 'V_Cisanggarung',
+          toNode: 'V_Citarum',
+          widthInfo: '~6 meter (2 lajur oneway, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90334, 107.62020],
+            [-6.90392, 107.62075],
+            [-6.90429, 107.62129],
+            [-6.90449, 107.62250]
+          ]
+        },
+        {
+          id: 'seg_citarum_diponegoro',
+          name: 'Jalan Citarum',
+          fromNode: 'V_Citarum',
+          toNode: 'T2',
+          widthInfo: '~7 meter (2 lajur, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90449, 107.62250],
+            [-6.90374, 107.62312],
+            [-6.90257, 107.62408],
+            [-6.90156, 107.62493],
+            [-6.90111, 107.62530],
+            [-6.90115, 107.62485]
+          ]
+        },
+        {
+          id: 'seg_S1_cikapayang',
+          name: 'Turun Pasupati / Jalan Tamansari',
+          fromNode: 'S1',
+          toNode: 'V_Cikapayang',
+          widthInfo: '~7-8 meter (2 lajur, Secondary)',
+          osmType: 'secondary',
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89806, 107.60967]
+          ]
+        },
+        {
+          id: 'seg_cikapayang_du',
+          name: 'Jalan Cikapayang',
+          fromNode: 'V_Cikapayang',
+          toNode: 'V_DU_Selatan',
+          widthInfo: '~12 meter (3 lajur, Primary)',
+          osmType: 'primary',
+          coords: [
+            [-6.89806, 107.60967],
+            [-6.89842, 107.61063],
+            [-6.89875, 107.61157],
+            [-6.89905, 107.61214],
+            [-6.89885, 107.61283]
+          ]
+        },
+        {
+          id: 'seg_du_singaperbangsa',
+          name: 'Jalan Dipatiukur (Selatan)',
+          fromNode: 'V_DU_Selatan',
+          toNode: 'V_Singaperbangsa',
+          widthInfo: '~8 meter (2 lajur, Secondary)',
+          osmType: 'secondary',
+          coords: [
+            [-6.89885, 107.61283],
+            [-6.89795, 107.61398],
+            [-6.89731, 107.61503],
+            [-6.89559, 107.61688]
+          ]
+        },
+        {
+          id: 'seg_titiran_tikukur',
+          name: 'Jalan Titiran (Percabangan Tikukur)',
+          fromNode: 'V_Titiran',
+          toNode: 'V_Tikukur',
+          widthInfo: '3 meter (1 lajur, Residential)',
+          osmType: 'residential',
+          coords: [
+            [-6.89543, 107.61898],
+            [-6.89551, 107.61962],
+            [-6.89563, 107.61981],
+            [-6.89641, 107.61983],
+            [-6.89722, 107.61986],
+            [-6.89718, 107.62153]
+          ]
+        },
+        {
+          id: 'seg_tikukur_gagak',
+          name: 'Jalan Tikukur',
+          fromNode: 'V_Tikukur',
+          toNode: 'V_Gagak',
+          widthInfo: '3 meter (1 lajur, Residential)',
+          osmType: 'residential',
+          coords: [
+            [-6.89718, 107.62153],
+            [-6.89731, 107.62205],
+            [-6.89742, 107.62244],
+            [-6.89784, 107.62318],
+            [-6.89810, 107.62387]
+          ]
+        },
+        {
+          id: 'seg_gagak_surapati',
+          name: 'Jalan Gagak',
+          fromNode: 'V_Gagak',
+          toNode: 'V_Surapati_Gagak',
+          widthInfo: '3 meter (1 lajur oneway, Residential)',
+          osmType: 'residential',
+          coords: [
+            [-6.89810, 107.62387],
+            [-6.89852, 107.62378],
+            [-6.89923, 107.62373]
+          ]
+        },
+        {
+          id: 'seg_surapati_gagak_pusdai',
+          name: 'Jalan Surapati (Segmen Gagak → PUSDAI)',
+          fromNode: 'V_Surapati_Gagak',
+          toNode: 'T1',
+          widthInfo: '~11 meter (3 lajur oneway, Trunk)',
+          osmType: 'trunk',
+          coords: [
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'seg_S1_sulanjana',
+          name: 'Jalan Tamansari (Menuju Sulanjana)',
+          fromNode: 'S1',
+          toNode: 'V_Sulanjana',
+          widthInfo: '~7-8 meter (2 lajur, Secondary)',
+          osmType: 'secondary',
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89828, 107.60954],
+            [-6.89950, 107.60997]
+          ]
+        },
+        {
+          id: 'seg_sulanjana_djuanda',
+          name: 'Jalan Sulanjana',
+          fromNode: 'V_Sulanjana',
+          toNode: 'V_Djuanda_Diponegoro',
+          widthInfo: '~6 meter (2 lajur, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.89950, 107.60997],
+            [-6.89967, 107.61061],
+            [-6.89994, 107.61192],
+            [-6.90025, 107.61262]
+          ]
+        },
+        {
+          id: 'seg_cisanggarung_cisangkuy',
+          name: 'Jalan Cisanggarung / Cimanuk',
+          fromNode: 'V_Cisanggarung',
+          toNode: 'V_Cisangkuy',
+          widthInfo: '~6 meter (2 lajur, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90334, 107.62020],
+            [-6.90392, 107.62075],
+            [-6.90309, 107.62158],
+            [-6.90276, 107.62191]
+          ]
+        },
+        {
+          id: 'seg_cisangkuy_diponegoro',
+          name: 'Jalan Cisangkuy',
+          fromNode: 'V_Cisangkuy',
+          toNode: 'T2',
+          widthInfo: '~7 meter (2 lajur oneway, Tertiary)',
+          osmType: 'tertiary',
+          coords: [
+            [-6.90276, 107.62191],
+            [-6.90203, 107.62123],
+            [-6.90123, 107.62084],
+            [-6.90118, 107.62250],
+            [-6.90115, 107.62485]
+          ]
+        }
       ]
     };
 
@@ -709,6 +1123,52 @@
 
       baseLine.on('click', () => selectPath(p.id));
       pathLayers[p.id] = { baseLine, animLine, arrows, data: p };
+    });
+
+    // Render lapisan patch ruas jalan satuan interaktif dengan tooltip lebar jalan OSM
+    const segmentLayers = {};
+    GRAPH_DATA.segments.forEach((seg) => {
+      const patch = L.polyline(seg.coords, {
+        color: '#ffffff',
+        weight: 12,
+        opacity: 0.15,
+        lineCap: 'round',
+        lineJoin: 'round',
+        className: 'segment-patch'
+      }).addTo(map);
+
+      patch.bindTooltip(
+        `
+        <div class="segment-tooltip">
+          <div class="seg-name">${seg.name}</div>
+          <div class="seg-detail">📐 Lebar: <strong>${seg.widthInfo}</strong></div>
+          <div class="seg-nodes">Ruas: ${seg.fromNode} → ${seg.toNode}</div>
+        </div>
+        `,
+        {
+          sticky: true,
+          className: 'segment-tooltip-container'
+        }
+      );
+
+      patch.on('mouseover', () => {
+        patch.setStyle({
+          color: '#38bdf8',
+          weight: 16,
+          opacity: 0.9
+        });
+        patch.bringToFront();
+      });
+
+      patch.on('mouseout', () => {
+        patch.setStyle({
+          color: '#ffffff',
+          weight: 12,
+          opacity: 0.15
+        });
+      });
+
+      segmentLayers[seg.id] = patch;
     });
 
     // Render seluruh simpul (Source S1/S2, Sink T1/T2, dan persimpangan jalan)

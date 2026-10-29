@@ -61,6 +61,7 @@ const sandbox = {
       const p = {
         addTo: () => p,
         on: () => p,
+        bindTooltip: () => p,
         setStyle: () => p,
         bringToFront: () => p,
         getBounds: () => ({})
@@ -222,4 +223,21 @@ assert.equal(sandbox.window.getMapOpacity(), 0.5, 'setMapOpacity(0.5) harus meng
 sandbox.window.setMapOpacity(1.0);
 assert.equal(sandbox.window.getMapOpacity(), 1.0, 'setMapOpacity(1.0) harus mengembalikan opacity tileLayer ke 1.0');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, interaksi, server HTTP lokal, dokumen LLM, dan slider transparansi peta berhasil.');
+// 9. Cek struktur data ruas jalan satuan (GRAPH_DATA.segments) dan interaktivitasnya
+const { segments } = GRAPH_DATA;
+assert.ok(Array.isArray(segments), 'GRAPH_DATA.segments harus berupa array');
+assert.ok(segments.length >= 18, 'Harus terdapat minimal 18 ruas jalan satuan');
+
+for (const seg of segments) {
+  assert.ok(seg.id, 'Setiap segmen harus memiliki id');
+  assert.ok(seg.name, 'Setiap segmen harus memiliki nama jalan');
+  assert.ok(seg.fromNode && GRAPH_DATA.nodes[seg.fromNode], `Simpul asal ${seg.fromNode} harus valid`);
+  assert.ok(seg.toNode && GRAPH_DATA.nodes[seg.toNode], `Simpul tujuan ${seg.toNode} harus valid`);
+  assert.ok(typeof seg.widthInfo === 'string', 'Setiap segmen harus memiliki info lebar jalan');
+  assert.ok(seg.coords.length >= 2, 'Setiap segmen harus memiliki minimal 2 titik koordinat');
+}
+
+assert.match(html, /segment-tooltip/, 'Harus memiliki kelas CSS .segment-tooltip');
+assert.match(html, /segment-patch/, 'Harus memiliki kelas CSS .segment-patch');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, dan slider transparansi peta berhasil.');
