@@ -1,0 +1,116 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+
+const htmlPath = new URL('./index.html', import.meta.url);
+assert.ok(fs.existsSync(htmlPath), 'index.html harus ada');
+
+const html = fs.readFileSync(htmlPath, 'utf8');
+
+// Pastikan Leaflet, animasi CSS flowDash, dan kontainer utama tersedia
+assert.match(html, /leaflet\.css/, 'Harus memuat stylesheet Leaflet');
+assert.match(html, /@keyframes\s+flowDash/, 'Harus memiliki animasi @keyframes flowDash');
+assert.match(html, /id="map"/, 'Harus memiliki elemen #map');
+assert.match(html, /id="path-list"/, 'Harus memiliki daftar jalur #path-list');
+assert.match(html, /id="path-detail"/, 'Harus memiliki panel detail #path-detail');
+
+// Ekstrak script utama dan jalankan dalam sandbox dengan stub Leaflet untuk menguji GRAPH_DATA dan interaksi
+const match = html.match(/<script id="app-script">([\s\S]*?)<\/script>/);
+assert.ok(match, 'Harus memiliki <script id="app-script">');
+
+const sandbox = {
+  window: {},
+  document: {
+    getElementById: () => ({ innerHTML: '', addEventListener: () => {}, classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),
+    querySelectorAll: () => []
+  },
+  L: {
+    map: () => ({
+      setView: () => ({}),
+      fitBounds: () => ({}),
+      on: () => ({})
+    }),
+    tileLayer: () => ({ addTo: () => ({}) }),
+    polyline: () => {
+      const p = {
+        addTo: () => p,
+        on: () => p,
+        setStyle: () => p,
+        bringToFront: () => p,
+        getBounds: () => ({})
+      };
+      return p;
+    },
+    circleMarker: () => {
+      const c = {
+        addTo: () => c,
+        on: () => c,
+        bindTooltip: () => c,
+        setStyle: () => c,
+        bringToFront: () => c
+      };
+      return c;
+    },
+    marker: () => {
+      const m = {
+        addTo: () => m,
+        bindTooltip: () => m,
+        setOpacity: () => m
+      };
+      return m;
+    },
+    divIcon: (opts) => opts,
+    featureGroup: () => ({
+      getBounds: () => ({ pad: () => ({}) })
+    })
+  }
+};
+
+vm.createContext(sandbox);
+vm.runInContext(match[1], sandbox);
+
+const rawGraphData = sandbox.window.GRAPH_DATA;
+assert.ok(rawGraphData, 'window.GRAPH_DATA harus terdefinisi');
+const GRAPH_DATA = JSON.parse(JSON.stringify(rawGraphData));
+
+// 1. Cek simpul utama S1, S2, T1, T2
+for (const key of ['S1', 'S2', 'T1', 'T2']) {
+  assert.ok(GRAPH_DATA.nodes[key], `Node utama ${key} harus ada`);
+  assert.equal(typeof GRAPH_DATA.nodes[key].lat, 'number');
+  assert.equal(typeof GRAPH_DATA.nodes[key].lng, 'number');
+}
+
+// 2. Cek ke-4 jalur sesuai 4 file .txt
+assert.equal(GRAPH_DATA.paths.length, 4, 'Harus terdapat tepat 4 path');
+
+const expectedIds = ['S2-T1', 'S2-T2', 'S1-T1', 'S1-T2'];
+assert.deepEqual(GRAPH_DATA.paths.map((p) => p.id), expectedIds);
+
+const expectedStreets = {
+  'S2-T1': ['Jalan Dipati Ukur', 'Belok Kanan Jl. Singaperbangsa', 'Jl. Titiran', 'Jl. Merak', 'Jl. Surapati', 'PUSDAI'],
+  'S2-T2': ['Jalan Dipati Ukur', 'Jl. Hasanuddin', 'Jl. Ir H Djuanda', 'Jl. Diponegoro', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Citarum', 'Jl. Diponegoro Timur'],
+  'S1-T1': ['Turun Pasupati/Jl. Tamansari', 'Jl. Dipatiukur', 'Jl. Singaperbangsa', 'Jl. Titiran', 'Jl. Tikukur', 'Jl. Gagak', 'PUSDAI/Surapati Timur'],
+  'S1-T2': ['Turun Pasupati/Jl. Tamansari', 'Jl. Sulanjana', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Cisangkuy', 'Jl. Diponegoro Timur/Pusdai']
+};
+
+for (const path of GRAPH_DATA.paths) {
+  assert.deepEqual(
+    path.streets,
+    expectedStreets[path.id],
+    `Urutan jalan pada ${path.id} harus sama persis dengan file .txt`
+  );
+  assert.ok(path.nodeIds.length >= 5, `Path ${path.id} harus melewati simpul-simpul persimpangan`);
+  for (const nodeId of path.nodeIds) {
+    assert.ok(GRAPH_DATA.nodes[nodeId], `Node ${nodeId} pada path ${path.id} harus terdaftar di GRAPH_DATA.nodes`);
+  }
+  assert.ok(path.coords.length >= 15, `Path ${path.id} harus memiliki koordinat polyline jalan OSM yang detail`);
+}
+
+// 3. Cek fungsi seleksi path interaktif
+assert.equal(typeof sandbox.window.selectPath, 'function', 'window.selectPath harus tersedia untuk interaksi klik');
+sandbox.window.selectPath('S2-T1');
+assert.equal(sandbox.window.getActivePathId(), 'S2-T1', 'selectPath("S2-T1") harus mengubah activePathId menjadi S2-T1');
+sandbox.window.selectPath(null);
+assert.equal(sandbox.window.getActivePathId(), null, 'selectPath(null) harus mereset tampilan ke semua jalur');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, dan interaksi berhasil.');

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualisasi Graf Aliran Jalan (Maximum Flow) — Gasibu &amp; Monju Bandung</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    :root {
+      --bg-panel: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-panel);
+      color: var(--text-main);
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    #sidebar {
+      width: 390px;
+      min-width: 340px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #1d4ed8;
+      color: #dbeafe;
+      margin-bottom: 6px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .controls {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-reset {
+      width: 100%;
+      padding: 8px 12px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-reset:hover {
+      background: #1d4ed8;
+    }
+
+    .section-title {
+      padding: 12px 18px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    #path-list {
+      padding: 6px 18px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .path-card {
+      background: var(--bg-card);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .path-card:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .path-card.active {
+      border-color: var(--path-color, #38bdf8);
+      background: #1e293b;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .path-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .path-id-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .path-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .path-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .path-preview {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    #path-detail {
+      margin: 4px 18px 18px;
+      padding: 12px 14px;
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    #path-detail h3 {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #f8fafc;
+    }
+
+    .street-step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .street-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.35;
+    }
+
+    .step-index {
+      min-width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 1px solid #475569;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .node-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 10px;
+    }
+
+    .node-chip {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+    }
+
+    #map {
+      flex: 1;
+      height: 100vh;
+      background: #e2e8f0;
+    }
+
+    /* Animasi garis mengalir searah S -> T */
+    @keyframes flowDash {
+      from {
+        stroke-dashoffset: 36;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    path.flow-anim-line {
+      stroke-dasharray: 10, 8;
+      animation: flowDash 0.9s linear infinite;
+      pointer-events: none;
+    }
+
+    .terminal-label {
+      background: #0f172a;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .terminal-source {
+      background: #15803d;
+    }
+
+    .terminal-sink {
+      background: #b91c1c;
+    }
+
+    .arrow-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      text-shadow: 0 0 3px #000, 0 0 3px #000;
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column-reverse;
+      }
+      #sidebar {
+        width: 100%;
+        height: 46vh;
+      }
+      #map {
+        height: 54vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside id="sidebar">
+    <div class="header">
+      <span class="badge">Kasus 4 • Maximum Flow</span>
+      <h1>Jaringan Aliran Jalan Kawasan Gasibu – Monju</h1>
+      <p>Klik jalur di peta atau pilih kartu di bawah untuk menyorot arah aliran jalan &amp; simpul persimpangan.</p>
+    </div>
+
+    <div class="controls">
+      <button id="btn-show-all" class="btn-reset" type="button">
+        Tampilkan Semua 4 Jalur Sekaligus
+      </button>
+    </div>
+
+    <div class="section-title">Daftar 4 Path (Sumber S → Tujuan T)</div>
+    <div id="path-list"></div>
+
+    <div class="section-title">Detail Urutan Jalan &amp; Simpul</div>
+    <div id="path-detail"></div>
+  </aside>
+
+  <main id="map"></main>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script id="app-script">
+    const GRAPH_DATA = {
+      nodes: {
+        S1: { id: 'S1', type: 'source', label: 'S1: Turun Pasupati / Jl. Tamansari', lat: -6.89550, lng: 107.60870 },
+        S2: { id: 'S2', type: 'source', label: 'S2: Jl. Dipatiukur (Unpad)', lat: -6.89190, lng: 107.61758 },
+        T1: { id: 'T1', type: 'sink', label: 'T1: PUSDAI / Surapati Timur', lat: -6.89955, lng: 107.62709 },
+        T2: { id: 'T2', type: 'sink', label: 'T2: Jl. Diponegoro Timur / Pusdai', lat: -6.90115, lng: 107.62485 },
+
+        V_Cikapayang: { id: 'V_Cikapayang', type: 'junction', label: 'Simpang Tamansari – Cikapayang', lat: -6.89806, lng: 107.60967 },
+        V_Sulanjana: { id: 'V_Sulanjana', type: 'junction', label: 'Simpang Tamansari – Jl. Sulanjana', lat: -6.89950, lng: 107.60997 },
+        V_DU_Selatan: { id: 'V_DU_Selatan', type: 'junction', label: 'Simpang Cikapayang – Jl. Dipatiukur', lat: -6.89885, lng: 107.61283 },
+        V_Hasanuddin: { id: 'V_Hasanuddin', type: 'junction', label: 'Simpang Dipatiukur – Jl. Hasanuddin', lat: -6.89474, lng: 107.61743 },
+        V_Djuanda_Hasanuddin: { id: 'V_Djuanda_Hasanuddin', type: 'junction', label: 'Simpang Hasanuddin – Jl. Ir. H. Djuanda', lat: -6.89492, lng: 107.61321 },
+        V_Djuanda_Diponegoro: { id: 'V_Djuanda_Diponegoro', type: 'junction', label: 'Simpang Dago / Sulanjana – Jl. Diponegoro', lat: -6.90025, lng: 107.61262 },
+        V_Singaperbangsa: { id: 'V_Singaperbangsa', type: 'junction', label: 'Simpang Dipatiukur – Jl. Singaperbangsa', lat: -6.89559, lng: 107.61688 },
+        V_Titiran: { id: 'V_Titiran', type: 'junction', label: 'Simpang Singaperbangsa – Jl. Titiran', lat: -6.89543, lng: 107.61898 },
+        V_Merak: { id: 'V_Merak', type: 'junction', label: 'Simpang Titiran – Jl. Merak', lat: -6.89761, lng: 107.62025 },
+        V_Surapati_Merak: { id: 'V_Surapati_Merak', type: 'junction', label: 'Simpang Jl. Merak – Jl. Surapati', lat: -6.89928, lng: 107.62032 },
+        V_Tikukur: { id: 'V_Tikukur', type: 'junction', label: 'Simpang Titiran – Jl. Tikukur', lat: -6.89718, lng: 107.62153 },
+        V_Gagak: { id: 'V_Gagak', type: 'junction', label: 'Simpang Tikukur/Puyuh – Jl. Gagak', lat: -6.89810, lng: 107.62387 },
+        V_Surapati_Gagak: { id: 'V_Surapati_Gagak', type: 'junction', label: 'Simpang Jl. Gagak – Jl. Surapati', lat: -6.89923, lng: 107.62373 },
+        V_AriaJipang: { id: 'V_AriaJipang', type: 'junction', label: 'Simpang Diponegoro – Jl. Aria Jipang', lat: -6.90063, lng: 107.61507 },
+        V_Cilamaya: { id: 'V_Cilamaya', type: 'junction', label: 'Simpang Diponegoro – Jl. Cilamaya', lat: -6.90134, lng: 107.61697 },
+        V_Cimandiri: { id: 'V_Cimandiri', type: 'junction', label: 'Simpang Cilamaya – Jl. Cimandiri', lat: -6.90351, lng: 107.61725 },
+        V_Cisanggarung: { id: 'V_Cisanggarung', type: 'junction', label: 'Simpang Cimandiri – Jl. Cisanggarung', lat: -6.90334, lng: 107.62020 },
+        V_Citarum: { id: 'V_Citarum', type: 'junction', label: 'Simpang Cisanggarung – Jl. Citarum', lat: -6.90449, lng: 107.62250 },
+        V_Cisangkuy: { id: 'V_Cisangkuy', type: 'junction', label: 'Simpang Cisanggarung – Jl. Cisangkuy', lat: -6.90276, lng: 107.62191 }
+      },
+
+      paths: [
+        {
+          id: 'S2-T1',
+          name: 'S2 (Dipatiukur) → T1 (PUSDAI / Surapati Timur)',
+          source: 'S2',
+          sink: 'T1',
+          color: '#3b82f6',
+          distanceInfo: '2,3 km • ±8 mnt',
+          streets: [
+            'Jalan Dipati Ukur',
+            'Belok Kanan Jl. Singaperbangsa',
+            'Jl. Titiran',
+            'Jl. Merak',
+            'Jl. Surapati',
+            'PUSDAI'
+          ],
+          nodeIds: ['S2', 'V_Singaperbangsa', 'V_Titiran', 'V_Merak', 'V_Surapati_Merak', 'T1'],
+          coords: [
+            [-6.89190, 107.61758],
+            [-6.89231, 107.61778],
+            [-6.89350, 107.61802],
+            [-6.89474, 107.61743],
+            [-6.89559, 107.61688],
+            [-6.89597, 107.61746],
+            [-6.89596, 107.61834],
+            [-6.89595, 107.61891],
+            [-6.89543, 107.61898],
+            [-6.89542, 107.61925],
+            [-6.89551, 107.61962],
+            [-6.89563, 107.61981],
+            [-6.89641, 107.61983],
+            [-6.89722, 107.61986],
+            [-6.89761, 107.61988],
+            [-6.89761, 107.62025],
+            [-6.89847, 107.62028],
+            [-6.89908, 107.62031],
+            [-6.89928, 107.62032],
+            [-6.89924, 107.62235],
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'S2-T2',
+          name: 'S2 (Dipatiukur) → T2 (Diponegoro)',
+          source: 'S2',
+          sink: 'T2',
+          color: '#f59e0b',
+          distanceInfo: '3,8 km • ±10 mnt',
+          streets: [
+            'Jalan Dipati Ukur',
+            'Jl. Hasanuddin',
+            'Jl. Ir H Djuanda',
+            'Jl. Diponegoro',
+            'Jl. Aria Jipang',
+            'Jl. Cilamaya',
+            'Jl. Cimandiri',
+            'Jl. Cisanggarung',
+            'Jl. Citarum',
+            'Jl. Diponegoro Timur'
+          ],
+          nodeIds: [
+            'S2',
+            'V_Hasanuddin',
+            'V_Djuanda_Hasanuddin',
+            'V_Djuanda_Diponegoro',
+            'V_AriaJipang',
+            'V_Cilamaya',
+            'V_Cimandiri',
+            'V_Cisanggarung',
+            'V_Citarum',
+            'T2'
+          ],
+          coords: [
+            [-6.89190, 107.61758],
+            [-6.89231, 107.61778],
+            [-6.89350, 107.61802],
+            [-6.89474, 107.61743],
+            [-6.89485, 107.61663],
+            [-6.89487, 107.61605],
+            [-6.89490, 107.61450],
+            [-6.89492, 107.61321],
+            [-6.89650, 107.61305],
+            [-6.89810, 107.61290],
+            [-6.90025, 107.61262],
+            [-6.90039, 107.61304],
+            [-6.90046, 107.61347],
+            [-6.90063, 107.61507],
+            [-6.89991, 107.61569],
+            [-6.90063, 107.61507],
+            [-6.90115, 107.61595],
+            [-6.90134, 107.61697],
+            [-6.90202, 107.61699],
+            [-6.90254, 107.61701],
+            [-6.90351, 107.61725],
+            [-6.90374, 107.61757],
+            [-6.90379, 107.61792],
+            [-6.90368, 107.61868],
+            [-6.90366, 107.61970],
+            [-6.90334, 107.62020],
+            [-6.90392, 107.62075],
+            [-6.90429, 107.62129],
+            [-6.90449, 107.62250],
+            [-6.90374, 107.62312],
+            [-6.90257, 107.62408],
+            [-6.90156, 107.62493],
+            [-6.90111, 107.62530],
+            [-6.90115, 107.62485]
+          ]
+        },
+        {
+          id: 'S1-T1',
+          name: 'S1 (Pasupati / Tamansari) → T1 (PUSDAI / Surapati Timur)',
+          source: 'S1',
+          sink: 'T1',
+          color: '#10b981',
+          distanceInfo: '3,4 km • ±11 mnt',
+          streets: [
+            'Turun Pasupati/Jl. Tamansari',
+            'Jl. Dipatiukur',
+            'Jl. Singaperbangsa',
+            'Jl. Titiran',
+            'Jl. Tikukur',
+            'Jl. Gagak',
+            'PUSDAI/Surapati Timur'
+          ],
+          nodeIds: [
+            'S1',
+            'V_Cikapayang',
+            'V_DU_Selatan',
+            'V_Singaperbangsa',
+            'V_Titiran',
+            'V_Tikukur',
+            'V_Gagak',
+            'V_Surapati_Gagak',
+            'T1'
+          ],
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89806, 107.60967],
+            [-6.89842, 107.61063],
+            [-6.89875, 107.61157],
+            [-6.89905, 107.61214],
+            [-6.89885, 107.61283],
+            [-6.89795, 107.61398],
+            [-6.89731, 107.61503],
+            [-6.89559, 107.61688],
+            [-6.89597, 107.61746],
+            [-6.89596, 107.61834],
+            [-6.89595, 107.61891],
+            [-6.89543, 107.61898],
+            [-6.89551, 107.61962],
+            [-6.89563, 107.61981],
+            [-6.89641, 107.61983],
+            [-6.89722, 107.61986],
+            [-6.89718, 107.62153],
+            [-6.89731, 107.62205],
+            [-6.89742, 107.62244],
+            [-6.89784, 107.62318],
+            [-6.89810, 107.62387],
+            [-6.89852, 107.62378],
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'S1-T2',
+          name: 'S1 (Pasupati / Tamansari) → T2 (Diponegoro)',
+          source: 'S1',
+          sink: 'T2',
+          color: '#ec4899',
+          distanceInfo: '3,1 km • ±9 mnt',
+          streets: [
+            'Turun Pasupati/Jl. Tamansari',
+            'Jl. Sulanjana',
+            'Jl. Aria Jipang',
+            'Jl. Cilamaya',
+            'Jl. Cimandiri',
+            'Jl. Cisanggarung',
+            'Jl. Cisangkuy',
+            'Jl. Diponegoro Timur/Pusdai'
+          ],
+          nodeIds: [
+            'S1',
+            'V_Sulanjana',
+            'V_Djuanda_Diponegoro',
+            'V_AriaJipang',
+            'V_Cilamaya',
+            'V_Cimandiri',
+            'V_Cisanggarung',
+            'V_Cisangkuy',
+            'T2'
+          ],
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89828, 107.60954],
+            [-6.89950, 107.60997],
+            [-6.89967, 107.61061],
+            [-6.89994, 107.61192],
+            [-6.90025, 107.61262],
+            [-6.90039, 107.61304],
+            [-6.90046, 107.61347],
+            [-6.90063, 107.61507],
+            [-6.89991, 107.61569],
+            [-6.90063, 107.61507],
+            [-6.90115, 107.61595],
+            [-6.90134, 107.61697],
+            [-6.90202, 107.61699],
+            [-6.90254, 107.61701],
+            [-6.90351, 107.61725],
+            [-6.90374, 107.61757],
+            [-6.90379, 107.61792],
+            [-6.90368, 107.61868],
+            [-6.90366, 107.61970],
+            [-6.90334, 107.62020],
+            [-6.90392, 107.62075],
+            [-6.90309, 107.62158],
+            [-6.90276, 107.62191],
+            [-6.90203, 107.62123],
+            [-6.90123, 107.62084],
+            [-6.90118, 107.62250],
+            [-6.90115, 107.62485]
+          ]
+        }
+      ]
+    };
+
+    window.GRAPH_DATA = GRAPH_DATA;
+
+    const map = L.map('map').setView([-6.8982, 107.6180], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const pathLayers = {};
+    const nodeMarkers = {};
+    let activePathId = null;
+
+    function computeBearing(lat1, lng1, lat2, lng2) {
+      const dy = lat2 - lat1;
+      const dx = (lng2 - lng1) * Math.cos((lat1 * Math.PI) / 180);
+      return (Math.atan2(dx, dy) * 180) / Math.PI;
+    }
+
+    // Render seluruh 4 path beserta animasi mengalir dan penanda arah panah
+    GRAPH_DATA.paths.forEach((p) => {
+      const baseLine = L.polyline(p.coords, {
+        color: p.color,
+        weight: 7,
+        opacity: 0.75,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+
+      const animLine = L.polyline(p.coords, {
+        color: '#ffffff',
+        weight: 3,
+        opacity: 0.95,
+        className: 'flow-anim-line'
+      }).addTo(map);
+
+      const arrows = [];
+      for (let i = 2; i < p.coords.length - 1; i += 4) {
+        const [lat1, lng1] = p.coords[i];
+        const [lat2, lng2] = p.coords[i + 1];
+        const angle = computeBearing(lat1, lng1, lat2, lng2);
+        const midLat = (lat1 + lat2) / 2;
+        const midLng = (lng1 + lng2) / 2;
+        const arrowMarker = L.marker([midLat, midLng], {
+          interactive: false,
+          icon: L.divIcon({
+            className: 'arrow-icon',
+            html: `<span style="transform: rotate(${angle}deg); color: ${p.color};">▲</span>`,
+            iconSize: [16, 16],
+            iconAnchor: [8, 8]
+          })
+        }).addTo(map);
+        arrows.push(arrowMarker);
+      }
+
+      baseLine.on('click', () => selectPath(p.id));
+      pathLayers[p.id] = { baseLine, animLine, arrows, data: p };
+    });
+
+    // Render seluruh simpul (Source S1/S2, Sink T1/T2, dan persimpangan jalan)
+    Object.values(GRAPH_DATA.nodes).forEach((node) => {
+      const isSource = node.type === 'source';
+      const isSink = node.type === 'sink';
+      const radius = isSource || isSink ? 9 : 6;
+      const fillColor = isSource ? '#22c55e' : isSink ? '#ef4444' : '#f8fafc';
+      const borderColor = isSource ? '#14532d' : isSink ? '#7f1d1d' : '#0f172a';
+
+      const marker = L.circleMarker([node.lat, node.lng], {
+        radius,
+        fillColor,
+        color: borderColor,
+        weight: 2.5,
+        fillOpacity: 1
+      }).addTo(map);
+
+      marker.bindTooltip(`<strong>${node.label}</strong>`, {
+        direction: 'top',
+        offset: [0, -6]
+      });
+
+      if (isSource || isSink) {
+        L.marker([node.lat, node.lng], {
+          interactive: false,
+          icon: L.divIcon({
+            className: '',
+            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${node.id}</div>`,
+            iconSize: [34, 22],
+            iconAnchor: [17, 30]
+          })
+        }).addTo(map);
+      }
+
+      nodeMarkers[node.id] = marker;
+    });
+
+    function renderSidebar() {
+      const listEl = document.getElementById('path-list');
+      const detailEl = document.getElementById('path-detail');
+
+      listEl.innerHTML = GRAPH_DATA.paths
+        .map((p) => {
+          const isActive = activePathId === p.id;
+          return `
+            <div class="path-card ${isActive ? 'active' : ''}" data-path-id="${p.id}" style="--path-color: ${p.color}">
+              <div class="path-card-header">
+                <span class="path-id-pill" style="color: ${p.color}">
+                  <span class="color-dot" style="background: ${p.color}"></span>
+                  ${p.id}
+                </span>
+                <span class="path-meta">${p.distanceInfo}</span>
+              </div>
+              <div class="path-title">${p.name}</div>
+              <div class="path-preview">${p.streets.join(' → ')}</div>
+            </div>
+          `;
+        })
+        .join('');
+
+      document.querySelectorAll('.path-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          const id = card.getAttribute('data-path-id');
+          selectPath(activePathId === id ? null : id);
+        });
+      });
+
+      const selected = GRAPH_DATA.paths.find((p) => p.id === activePathId);
+      if (!selected) {
+        detailEl.innerHTML = `
+          <h3>Mode: Semua 4 Jalur Aktif</h3>
+          <p style="color: #94a3b8; line-height: 1.4;">
+            Keempat jalur ($S_1, S_2 \\to T_1, T_2$) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan jalan dan simpul yang dilalui.
+          </p>
+        `;
+      } else {
+        const stepsHtml = selected.streets
+          .map(
+            (s, idx) => `
+              <li class="street-step">
+                <span class="step-index" style="border-color: ${selected.color}">${idx + 1}</span>
+                <span>${s}</span>
+              </li>
+            `
+          )
+          .join('');
+
+        const nodesHtml = selected.nodeIds
+          .map((nid) => `<span class="node-chip">${GRAPH_DATA.nodes[nid].id}</span>`)
+          .join(' → ');
+
+        detailEl.innerHTML = `
+          <h3 style="color: ${selected.color}">${selected.name} (${selected.distanceInfo})</h3>
+          <div style="font-size: 11px; color: #94a3b8;">Urutan Arah Jalan:</div>
+          <ol class="street-step-list">${stepsHtml}</ol>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 10px;">Simpul Graf (${selected.nodeIds.length} Vertex):</div>
+          <div class="node-badges">${nodesHtml}</div>
+        `;
+      }
+    }
+
+    function selectPath(pathId) {
+      activePathId = pathId;
+
+      GRAPH_DATA.paths.forEach((p) => {
+        const layer = pathLayers[p.id];
+        const isSelected = !activePathId || activePathId === p.id;
+        const isHighlighted = activePathId === p.id;
+
+        layer.baseLine.setStyle({
+          weight: isHighlighted ? 10 : isSelected ? 7 : 4,
+          opacity: isHighlighted ? 0.95 : isSelected ? 0.75 : 0.18
+        });
+
+        layer.animLine.setStyle({
+          weight: isHighlighted ? 4 : 3,
+          opacity: isSelected ? 0.95 : 0.08
+        });
+
+        layer.arrows.forEach((a) => a.setOpacity(isSelected ? 1 : 0.15));
+
+        if (isHighlighted) {
+          layer.baseLine.bringToFront();
+          layer.animLine.bringToFront();
+        }
+      });
+
+      const activeNodeSet = new Set(
+        activePathId
+          ? GRAPH_DATA.paths.find((p) => p.id === activePathId)?.nodeIds || []
+          : Object.keys(GRAPH_DATA.nodes)
+      );
+
+      Object.entries(nodeMarkers).forEach(([nid, marker]) => {
+        const visible = activeNodeSet.has(nid);
+        marker.setStyle({
+          opacity: visible ? 1 : 0.2,
+          fillOpacity: visible ? 1 : 0.2
+        });
+        if (visible) {
+          marker.bringToFront();
+        }
+      });
+
+      renderSidebar();
+    }
+
+    document.getElementById('btn-show-all').addEventListener('click', () => selectPath(null));
+
+    window.selectPath = selectPath;
+    window.getActivePathId = () => activePathId;
+
+    renderSidebar();
+  </script>
+</body>
+</html>
