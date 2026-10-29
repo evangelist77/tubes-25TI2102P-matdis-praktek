@@ -10,49 +10,34 @@
 (function () {
   const PELINDUNG_MAXFLOW_TARGETS = [
     // 1. S1: Turun Pasupati / Jl. Tamansari Utara
-    { id: 'b1deaffc-fa23-41d6-a49f-e3405ffcf0de', name: 'CCTV ITB KEBUN BINATANG 01', node: 'S1', role: 'Inflow S1 (Tamansari Utara)', lat: -6.8939091, lng: 107.608446 },
-    { id: '8b16cbe4-6d28-49c4-b6e1-f89101e4da57', name: 'CCTV ITB KEBUN BINATANG 02', node: 'S1', role: 'Inflow S1 (Tamansari Utara)', lat: -6.8939091, lng: 107.609546 },
     { id: '2d057f0b-0112-4b43-bcdb-b505fec825f4', name: 'CCTV ITB KEBUN BINATANG 03', node: 'S1', role: 'Inflow S1 (Tamansari Utara)', lat: -6.893909, lng: 107.608646 },
 
     // 2. V_Cikapayang: Simpang Turun Flyover Pasupati - Tamansari - Cikapayang
     { id: '1c9d4ce8-8cde-42b9-8abb-60d265a12c66', name: 'TAMAN PASUPATI_01', node: 'V_Cikapayang', role: 'Percabangan S1 -> Cikapayang (P3) & Sulanjana (P4)', lat: -6.897761, lng: 107.609868 },
-    { id: '30231922-948b-4a12-a1ab-e1bcd4fe054e', name: 'TAMAN PASUPATI_02', node: 'V_Cikapayang', role: 'Percabangan S1 -> Cikapayang (P3) & Sulanjana (P4)', lat: -6.897761, lng: 107.609868 },
-    { id: '76cb84de-758c-44b7-a5c2-a680f7776e04', name: 'TAMAN SKETPARK_01', node: 'V_Cikapayang', role: 'Simpang Tamansari - Cikapayang', lat: -6.898114, lng: 107.609165 },
-    { id: '65bcb0ea-dfc9-469a-a33c-600131ab7dc3', name: 'TAMAN SKETPARK_03', node: 'V_Cikapayang', role: 'Simpang Tamansari - Cikapayang', lat: -6.898114, lng: 107.609165 },
 
     // 3. V_Sulanjana: Simpang Tamansari - Jl. Sulanjana
     { id: 'b0687763-001b-4087-b236-c4ac1ba71d92', name: 'CCTV TAMAN SARI - WS 01', node: 'V_Sulanjana', role: 'Aliran P4 masuk Jl. Sulanjana', lat: -6.900525, lng: 107.609357 },
-    { id: '0d36f0f7-7c08-4792-9279-baea8021b6d9', name: 'CCTV TAMAN SARI - WS 02', node: 'V_Sulanjana', role: 'Aliran P4 masuk Jl. Sulanjana', lat: -6.900525, lng: 107.608358 },
 
     // 4. S2: Jl. Dipatiukur (Unpad - Sekeloa)
-    { id: '8915bf0d-106e-48a6-bb3c-93919e2eef32', name: 'CCTV DIPATIUKUR SEKELOA 01', node: 'S2', role: 'Inflow Utama S2 (Jl. Dipatiukur)', lat: -6.892916163, lng: 107.6183134 },
-    { id: 'a45f328c-04d4-47ca-bdab-f7347d27ad93', name: 'CCTV DIPATIUKUR SEKELOA 02', node: 'S2', role: 'Inflow Utama S2 (Jl. Dipatiukur)', lat: -6.892916163, lng: 107.6183134 },
+    { id: '8915bf0d-106e-48a6-bb3c-93919e2eef32', name: 'CCTV DIPATIUKUR SEKELOA 01', node: 'S2', role: 'Inflow Utama S2 (Jl. Dipatiukur)', lat: -6.892916, lng: 107.618313 },
 
     // 5. V_Djuanda_Hasanuddin: Simpang Jl. Hasanuddin - Jl. Ir. H. Djuanda (Dago SMAN 1)
-    { id: '12ec8572-6954-4997-813a-9e39e9c265f9', name: 'CCTV DAGO 2-SMA 1 01', node: 'V_Djuanda_Hasanuddin', role: 'Aliran P2 keluar Hasanuddin -> Dago', lat: -6.894971581, lng: 107.6127949 },
-    { id: '12203183-2195-4007-a71b-59704c988d61', name: 'CCTV DAGO 2-SMA 1 02', node: 'V_Djuanda_Hasanuddin', role: 'Aliran P2 keluar Hasanuddin -> Dago', lat: -6.894971581, lng: 107.6127949 },
+    { id: '12ec8572-6954-4997-813a-9e39e9c265f9', name: 'CCTV DAGO 2-SMA 1 01', node: 'V_Djuanda_Hasanuddin', role: 'Aliran P2 keluar Hasanuddin -> Dago', lat: -6.894972, lng: 107.612795 },
 
     // 6. V_DU_Selatan: Simpang Dago - Cikapayang - Dipatiukur Selatan
-    { id: '52fe5caa-9b77-41fa-8248-fce66d5b71bc', name: 'CCTV DAGO 1-CIKAPAYANG 01', node: 'V_DU_Selatan', role: 'Aliran P3 masuk Dipatiukur & P2 lurus Dago', lat: -6.899000105, lng: 107.6126426 },
-    { id: '92cacc17-dad2-45c5-b35e-91e87a040399', name: 'TM CIKAPAYANG DAGO_04', node: 'V_DU_Selatan', role: 'Simpang Cikapayang - Dipatiukur', lat: -6.898777, lng: 107.612446 },
+    { id: '52fe5caa-9b77-41fa-8248-fce66d5b71bc', name: 'CCTV DAGO 1-CIKAPAYANG 01', node: 'V_DU_Selatan', role: 'Aliran P3 masuk Dipatiukur & P2 lurus Dago', lat: -6.899000, lng: 107.612643 },
 
     // 7. V_Djuanda_Diponegoro: Simpang Dago - Sulanjana - Jl. Diponegoro
     { id: '37528553-e8fc-4cdc-805a-140713f303d4', name: 'SP SULANJANA', node: 'V_Djuanda_Diponegoro', role: 'Titik Temu P2 (Dago) + P4 (Sulanjana) -> Diponegoro', lat: -6.900167, lng: 107.612457 },
 
     // 8. V_Surapati_Merak: Simpang Jl. Merak - Jl. Surapati (Gasibu / Telkom)
     { id: '501f4c5c-e894-4c58-9c38-8dbf88964a06', name: 'CCTV GASIBU_01', node: 'V_Surapati_Merak', role: 'Aliran P1 keluar Jl. Merak -> Jl. Surapati', lat: -6.899248, lng: 107.619846 },
-    { id: '31dd82a1-7061-4201-b8f7-eded43648451', name: 'CCTV GASIBU_02', node: 'V_Surapati_Merak', role: 'Aliran Jl. Surapati depan Gasibu', lat: -6.899248, lng: 107.619440 },
-    { id: '7fb5b08b-0349-4b03-89c2-2b5a3c976628', name: 'SP TELKOM - Gasibu', node: 'V_Surapati_Merak', role: 'Simpang Surapati - Telkom / Merak', lat: -6.899245, lng: 107.619040 },
 
-    // 9. V_Cisangkuy & V_Citarum: Koridor Taman Lansia & Pustaka Bunga (Cisangkuy / Citarum)
+    // 9. V_Cisangkuy: Koridor Belakang Gedung Sate (Taman Lansia / Cisangkuy)
     { id: '4d000111-f853-4b53-a72c-8d196cea25f2', name: 'TAMAN LANSIA', node: 'V_Cisangkuy', role: 'Aliran P4 melintasi Jl. Cisangkuy', lat: -6.902141, lng: 107.620938 },
-    { id: '9e56d7ca-5baa-4754-b024-d4288c5af69f', name: 'Taman Pustaka Bunga_03', node: 'V_Citarum', role: 'Pertemuan Jl. Cisangkuy & Jl. Citarum', lat: -6.9032133, lng: 107.6225588 },
 
-    // 10. T1 & T2: Sink PUSDAI (Jl. Surapati Timur & Jl. Diponegoro Timur)
-    { id: 'e46b2d97-e032-470c-96d3-97f68171bdda', name: 'CCTV PHH MUSTOFA-PUSDAI 01', node: 'T1', role: 'Outflow Sink T1 (PUSDAI / Surapati Timur)', lat: -6.8994392, lng: 107.6271074 },
-    { id: '01de6eea-5935-47a4-8e72-f28de08639ff', name: 'CCTV PHH MUSTOFA-PUSDAI 02', node: 'T1', role: 'Outflow Sink T1 (PUSDAI / Surapati Timur)', lat: -6.8994392, lng: 107.6271074 },
-    { id: '61818785-552f-48c1-8605-89ea9b25a514', name: 'CCTV PUSDAI 01', node: 'T2', role: 'Outflow Sink T2 (Jl. Diponegoro Timur)', lat: -6.901174, lng: 107.625363 },
-    { id: '57215230-6f3b-4a50-8f6d-c0f065d92844', name: 'CCTV PUSDAI 02', node: 'T2', role: 'Outflow Sink T2 (Jl. Diponegoro Timur)', lat: -6.901174, lng: 107.626364 }
+    // 10. T1: Sink PUSDAI (Jl. Surapati Timur)
+    { id: 'e46b2d97-e032-470c-96d3-97f68171bdda', name: 'CCTV PHH MUSTOFA-PUSDAI 01', node: 'T1', role: 'Outflow Sink T1 (PUSDAI / Surapati Timur)', lat: -6.899439, lng: 107.627107 }
   ];
 
   const MAROON_PIN_FILTER =
@@ -144,12 +129,14 @@
       });
     }
 
-    // Highlight dan pindahkan item CCTV target ke urutan teratas pada sidebar kiri web Pelindung
+    // Highlight dan pindahkan tepat 10 item CCTV target ke urutan teratas pada sidebar kiri web Pelindung
     const listItems = Array.from(doc.querySelectorAll('ul.list-group li.list-group-item'));
     let highlightedList = 0;
     listItems.reverse().forEach((li) => {
-      const rawText = (li.textContent || '').trim().toUpperCase();
-      const matchedTarget = PELINDUNG_MAXFLOW_TARGETS.find((t) => rawText === t.name.trim().toUpperCase() || rawText.includes(t.name.trim().toUpperCase()));
+      const rawText = (li.textContent || '').replace(/^🔴\s*\[[^\]]+\]\s*/, '').trim().toUpperCase();
+      const matchedTarget = PELINDUNG_MAXFLOW_TARGETS.find(
+        (t) => rawText === t.name.trim().toUpperCase()
+      );
       if (matchedTarget) {
         li.style.backgroundColor = '#660000';
         li.style.color = '#ffffff';
@@ -169,7 +156,7 @@
     });
 
     console.log(
-      `✅ [Max-Flow Pelindung Highlighter] Berhasil mewarnai ${highlightedPins} pinpoint peta & ${highlightedList} item daftar CCTV menjadi MAROON/MERAH TUA (tanpa glow)!`
+      `✅ [Max-Flow Pelindung Highlighter] Berhasil mewarnai tepat ${highlightedPins} pinpoint peta & ${highlightedList} item daftar CCTV menjadi MAROON (1-to-1 dengan 10 titik rute graf)!`
     );
     console.table(
       PELINDUNG_MAXFLOW_TARGETS.map((t) => ({

@@ -307,7 +307,7 @@ vm.createContext(pelindungSandbox);
 vm.runInContext(highlightCode, pelindungSandbox);
 
 assert.ok(Array.isArray(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS), 'window.PELINDUNG_MAXFLOW_TARGETS harus berupa array');
-assert.ok(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length >= 20, 'Harus mencakup minimal 20 kamera CCTV relevan');
+assert.equal(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length, 10, 'Script harus memuat tepat 10 titik CCTV utama agar konsisten 1-to-1 dengan peta rute graf');
 assert.match(mockMarkerIconTarget.style.filter || '', /invert|hue-rotate/, 'Pinpoint target harus diberi filter maroon');
 assert.ok(!((mockMarkerIconTarget.style.filter || '').includes('drop-shadow')), 'Pinpoint target tidak boleh memiliki filter drop-shadow');
 assert.equal(mockMarkerIconOther.style.opacity, '0.25', 'Pinpoint non-target harus diredupkan (opacity 0.25)');
