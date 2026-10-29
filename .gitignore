@@ -3,3 +3,5 @@
 docs/
 .superpowers/
 .playwright-mcp/
+.vercel
+.env*
