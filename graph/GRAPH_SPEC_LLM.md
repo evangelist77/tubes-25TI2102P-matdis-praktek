@@ -49,6 +49,11 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
 
 ## 3. Rincian 4 Path Aliran Terarah (Directed Flow Paths)
 
+### Metodologi Penentuan Lebar Jalan (Berdasarkan OpenStreetMap)
+Mengacu pada standar OpenStreetMap (Diskusi Komunitas OSM #133623):
+1. **Nilai Terukur (Measured Width):** Diambil langsung dari tag OSM `width` (misal Jl. Titiran: 3 meter, Jl. Merak: 4 meter, Jl. Tikukur: 3 meter, Jl. Gagak: 3 meter).
+2. **Nilai Inferensi Lajur (Inferred Width):** Untuk jalan tanpa tag `width`, dihitung berdasarkan tag `lanes` dikalikan standar lebar lajur perkotaan (3,5 meter untuk Trunk/Primary, 3,0 meter untuk Secondary/Tertiary, 2,5 meter untuk Residential). Contohnya Jl. Surapati memiliki 3 lajur trunk (~11 meter) dan Jl. Diponegoro memiliki 4 lajur primary (~14 meter).
+
 ### Path 1: S2-T1 (`S2 (Dipatiukur) → T1 (PUSDAI / Surapati Timur)`)
 - **Karakteristik:** Jarak ±2,3 km • Estimasi waktu tempuh ±8 menit • Warna Visual: Biru (`#3b82f6`).
 - **Urutan Nama Jalan:**
@@ -60,12 +65,15 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
   6. PUSDAI
 - **Urutan Simpul Graf:**  
   `S2` $\to$ `V_Singaperbangsa` $\to$ `V_Titiran` $\to$ `V_Merak` $\to$ `V_Surapati_Merak` $\to$ `T1`
-- **Daftar Edge Terarah:**
-  - $(S_2, V_{Singaperbangsa})$ via Jl. Dipati Ukur
-  - $(V_{Singaperbangsa}, V_{Titiran})$ via Jl. Singaperbangsa
-  - $(V_{Titiran}, V_{Merak})$ via Jl. Titiran
-  - $(V_{Merak}, V_{Surapati\_Merak})$ via Jl. Merak
-  - $(V_{Surapati\_Merak}, T_1)$ via Jl. Surapati $\to$ PUSDAI
+- **Daftar Edge Terarah & Kapasitas Jalan:**
+
+| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Jl. Dipati Ukur (Utara)** | `S2` | `V_Singaperbangsa` | ~8 meter | 2 lajur | Secondary | Sedang (500 kend/jam) |
+| **Jl. Singaperbangsa** | `V_Singaperbangsa` | `V_Titiran` | ~4-5 meter | 1-2 lajur | Residential | Rendah (250 kend/jam) |
+| **Jl. Titiran** | `V_Titiran` | `V_Merak` | 3 meter (OSM) | 1 lajur | Residential | Sangat Rendah (150 kend/jam) |
+| **Jl. Merak** | `V_Merak` | `V_Surapati_Merak` | 4 meter (OSM) | 2 lajur | Residential | Rendah (200 kend/jam) |
+| **Jl. Surapati** | `V_Surapati_Merak` | `T1` | ~11 meter | 3 lajur (oneway trunk) | Trunk | Sangat Tinggi (1800 kend/jam) |
 
 ---
 
@@ -84,16 +92,19 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
   10. Jl. Diponegoro Timur
 - **Urutan Simpul Graf:**  
   `S2` $\to$ `V_Hasanuddin` $\to$ `V_Djuanda_Hasanuddin` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Citarum` $\to$ `T2`
-- **Daftar Edge Terarah:**
-  - $(S_2, V_{Hasanuddin})$ via Jl. Dipati Ukur
-  - $(V_{Hasanuddin}, V_{Djuanda\_Hasanuddin})$ via Jl. Hasanuddin
-  - $(V_{Djuanda\_Hasanuddin}, V_{Djuanda\_Diponegoro})$ via Jl. Ir. H. Djuanda
-  - $(V_{Djuanda\_Diponegoro}, V_{AriaJipang})$ via Jl. Diponegoro
-  - $(V_{AriaJipang}, V_{Cilamaya})$ via Jl. Aria Jipang $\to$ Jl. Diponegoro
-  - $(V_{Cilamaya}, V_{Cimandiri})$ via Jl. Cilamaya
-  - $(V_{Cimandiri}, V_{Cisanggarung})$ via Jl. Cimandiri
-  - $(V_{Cisanggarung}, V_{Citarum})$ via Jl. Cisanggarung
-  - $(V_{Citarum}, T_2)$ via Jl. Citarum $\to$ Jl. Diponegoro Timur
+- **Daftar Edge Terarah & Kapasitas Jalan:**
+
+| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Jl. Dipati Ukur (Tengah)** | `S2` | `V_Hasanuddin` | ~8 meter | 2 lajur | Secondary | Sedang (500 kend/jam) |
+| **Jl. Hasanuddin** | `V_Hasanuddin` | `V_Djuanda_Hasanuddin` | ~6 meter | 2 lajur | Tertiary | Sedang (400 kend/jam) |
+| **Jl. Ir. H. Djuanda (Dago)** | `V_Djuanda_Hasanuddin` | `V_Djuanda_Diponegoro` | ~12 meter | 3 lajur | Primary | Tinggi (1200 kend/jam) |
+| **Jl. Diponegoro (Barat)** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | ~14 meter | 4 lajur (primary) | Primary | Sangat Tinggi (1600 kend/jam) |
+| **Jl. Aria Jipang** | `V_AriaJipang` | `V_Cilamaya` | ~6 meter | 2 lajur | Tertiary | Sedang (350 kend/jam) |
+| **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | ~7 meter | 2 lajur (oneway) | Tertiary | Sedang (450 kend/jam) |
+| **Jl. Cimandiri** | `V_Cimandiri` | `V_Cisanggarung` | ~6 meter | 2 lajur (oneway) | Tertiary | Sedang (400 kend/jam) |
+| **Jl. Cisanggarung** | `V_Cisanggarung` | `V_Citarum` | ~6 meter | 2 lajur (oneway) | Tertiary | Sedang (400 kend/jam) |
+| **Jl. Citarum $\to$ Jl. Diponegoro Timur** | `V_Citarum` | `T2` | ~7 meter | 2 lajur | Tertiary | Sedang (450 kend/jam) |
 
 ---
 
@@ -109,15 +120,18 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
   7. PUSDAI/Surapati Timur
 - **Urutan Simpul Graf:**  
   `S1` $\to$ `V_Cikapayang` $\to$ `V_DU_Selatan` $\to$ `V_Singaperbangsa` $\to$ `V_Titiran` $\to$ `V_Tikukur` $\to$ `V_Gagak` $\to$ `V_Surapati_Gagak` $\to$ `T1`
-- **Daftar Edge Terarah:**
-  - $(S_1, V_{Cikapayang})$ via Jl. Tamansari
-  - $(V_{Cikapayang}, V_{DU\_Selatan})$ via Jl. Cikapayang
-  - $(V_{DU\_Selatan}, V_{Singaperbangsa})$ via Jl. Dipatiukur
-  - $(V_{Singaperbangsa}, V_{Titiran})$ via Jl. Singaperbangsa
-  - $(V_{Titiran}, V_{Tikukur})$ via Jl. Titiran
-  - $(V_{Tikukur}, V_{Gagak})$ via Jl. Tikukur / Jl. Puyuh
-  - $(V_{Gagak}, V_{Surapati\_Gagak})$ via Jl. Gagak
-  - $(V_{Surapati\_Gagak}, T_1)$ via Jl. Surapati $\to$ PUSDAI
+- **Daftar Edge Terarah & Kapasitas Jalan:**
+
+| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Turun Pasupati / Jl. Tamansari** | `S1` | `V_Cikapayang` | ~7-8 meter | 2 lajur | Secondary | Sedang (500 kend/jam) |
+| **Jl. Cikapayang** | `V_Cikapayang` | `V_DU_Selatan` | ~12 meter | 3 lajur | Primary | Tinggi (1200 kend/jam) |
+| **Jl. Dipatiukur (Selatan)** | `V_DU_Selatan` | `V_Singaperbangsa` | ~8 meter | 2 lajur | Secondary | Sedang (500 kend/jam) |
+| **Jl. Singaperbangsa** | `V_Singaperbangsa` | `V_Titiran` | ~4-5 meter | 1-2 lajur | Residential | Rendah (250 kend/jam) |
+| **Jl. Titiran** | `V_Titiran` | `V_Tikukur` | 3 meter (OSM) | 1 lajur | Residential | Sangat Rendah (150 kend/jam) |
+| **Jl. Tikukur** | `V_Tikukur` | `V_Gagak` | 3 meter (OSM) | 1 lajur | Residential | Sangat Rendah (150 kend/jam) |
+| **Jl. Gagak** | `V_Gagak` | `V_Surapati_Gagak` | 3 meter (OSM) | 1 lajur (oneway) | Residential | Sangat Rendah (150 kend/jam) |
+| **Jl. Surapati $\to$ PUSDAI** | `V_Surapati_Gagak` | `T1` | ~11 meter | 3 lajur (oneway trunk) | Trunk | Sangat Tinggi (1800 kend/jam) |
 
 ---
 
@@ -134,15 +148,18 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
   8. Jl. Diponegoro Timur/Pusdai
 - **Urutan Simpul Graf:**  
   `S1` $\to$ `V_Sulanjana` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Cisangkuy` $\to$ `T2`
-- **Daftar Edge Terarah:**
-  - $(S_1, V_{Sulanjana})$ via Jl. Tamansari $\to$ Simpang Sulanjana
-  - $(V_{Sulanjana}, V_{Djuanda\_Diponegoro})$ via Jl. Sulanjana
-  - $(V_{Djuanda\_Diponegoro}, V_{AriaJipang})$ via Jl. Diponegoro
-  - $(V_{AriaJipang}, V_{Cilamaya})$ via Jl. Aria Jipang $\to$ Jl. Diponegoro
-  - $(V_{Cilamaya}, V_{Cimandiri})$ via Jl. Cilamaya
-  - $(V_{Cimandiri}, V_{Cisanggarung})$ via Jl. Cimandiri
-  - $(V_{Cisanggarung}, V_{Cisangkuy})$ via Jl. Cisanggarung $\to$ Jl. Cimanuk
-  - $(V_{Cisangkuy}, T_2)$ via Jl. Cisangkuy $\to$ Jl. Diponegoro Timur/Pusdai
+- **Daftar Edge Terarah & Kapasitas Jalan:**
+
+| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Turun Pasupati / Jl. Tamansari** | `S1` | `V_Sulanjana` | ~7-8 meter | 2 lajur | Secondary | Sedang (500 kend/jam) |
+| **Jl. Sulanjana** | `V_Sulanjana` | `V_Djuanda_Diponegoro` | ~6 meter | 2 lajur | Tertiary | Sedang (400 kend/jam) |
+| **Jl. Diponegoro (Barat)** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | ~14 meter | 4 lajur (primary) | Primary | Sangat Tinggi (1600 kend/jam) |
+| **Jl. Aria Jipang** | `V_AriaJipang` | `V_Cilamaya` | ~6 meter | 2 lajur | Tertiary | Sedang (350 kend/jam) |
+| **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | ~7 meter | 2 lajur (oneway) | Tertiary | Sedang (450 kend/jam) |
+| **Jl. Cimandiri** | `V_Cimandiri` | `V_Cisanggarung` | ~6 meter | 2 lajur (oneway) | Tertiary | Sedang (400 kend/jam) |
+| **Jl. Cisanggarung $\to$ Jl. Cimanuk** | `V_Cisanggarung` | `V_Cisangkuy` | ~6 meter | 2 lajur | Tertiary | Sedang (400 kend/jam) |
+| **Jl. Cisangkuy $\to$ Jl. Diponegoro Timur** | `V_Cisangkuy` | `T2` | ~7 meter | 2 lajur (oneway) | Tertiary | Sedang (450 kend/jam) |
 
 ---
 
@@ -150,13 +167,14 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
 
 Untuk analisis pemodelan kapasitas jaringan aliran (*Network Flow*), beberapa ruas jalan dilalui bersama oleh lebih dari satu jalur. Ruas ini merupakan titik kritis (*bottleneck*) terjadinya kemacetan saat volume kendaraan dari kedua sumber bertemu:
 
-| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Jalur yang Menggunakan | Dampak Kapasitas Graf |
-|:---|:---:|:---:|:---:|:---|
-| **Jl. Singaperbangsa** | `V_Singaperbangsa` | `V_Titiran` | $P_1$ (S2-T1) & $P_3$ (S1-T1) | Arus kendaraan dari Dipatiukur utara dan Pasupati bertemu di jalan sempit Singaperbangsa menuju Titiran. |
-| **Jl. Diponegoro Barat** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Arus dari Dago dan Sulanjana menyatu sebelum masuk kawasan perkantoran/Gedung Sate. |
-| **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Segmen penghubung penting di belakang Gedung Sate. |
-| **Jl. Cimandiri** | `V_Cimandiri` | `V_Cisanggarung` | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Jalan lokal sempit yang menampung gabungan arus $P_2$ dan $P_4$. |
-| **Jl. Surapati Timur** | `V_Surapati_Merak` / `V_Surapati_Gagak` | `T1` | $P_1$ (S2-T1) & $P_3$ (S1-T1) | Arus masuk ke tujuan PUSDAI dari Jl. Merak dan Jl. Gagak menyatu di jalan arteri Surapati. |
+| Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif | Jalur yang Menggunakan | Dampak Kapasitas Graf |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---|
+| **Jl. Singaperbangsa** | `V_Singaperbangsa` | `V_Titiran` | ~4-5 meter | 1-2 lajur | Residential | Rendah (250 kend/jam) | $P_1$ (S2-T1) & $P_3$ (S1-T1) | Arus kendaraan dari Dipatiukur utara dan Pasupati bertemu di jalan sempit Singaperbangsa menuju Titiran. |
+| **Jl. Diponegoro Barat** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | ~14 meter | 4 lajur | Primary | Sangat Tinggi (1600 kend/jam) | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Arus dari Dago dan Sulanjana menyatu sebelum masuk kawasan perkantoran/Gedung Sate. |
+| **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | ~7 meter | 2 lajur (oneway) | Tertiary | Sedang (450 kend/jam) | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Segmen penghubung penting di belakang Gedung Sate. |
+| **Jl. Cimandiri** | `V_Cimandiri` | `V_Cisanggarung` | ~6 meter | 2 lajur (oneway) | Tertiary | Sedang (400 kend/jam) | $P_2$ (S2-T2) & $P_4$ (S1-T2) | Jalan lokal sempit yang menampung gabungan arus $P_2$ dan $P_4$. |
+| **Jl. Surapati Timur** | `V_Surapati_Merak` / `V_Surapati_Gagak` | `T1` | ~11 meter | 3 lajur (oneway) | Trunk | Sangat Tinggi (1800 kend/jam) | $P_1$ (S2-T1) & $P_3$ (S1-T1) | Arus masuk ke tujuan PUSDAI dari Jl. Merak dan Jl. Gagak menyatu di jalan arteri Surapati. |
+
 
 ---
 

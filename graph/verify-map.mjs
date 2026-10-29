@@ -203,6 +203,15 @@ assert.match(specContent, /```mermaid[\s\S]*?flowchart/i, 'Harus memiliki diagra
 assert.match(specContent, /Shared Edges|Ruas Bersama|Bottleneck/i, 'Harus memiliki analisis shared edges untuk Max-Flow');
 assert.match(specContent, /Prompt Template/i, 'Harus menyediakan template prompt siap pakai untuk LLM');
 
+// 8. Cek kelengkapan data lebar jalan OSM pada GRAPH_SPEC_LLM.md
+assert.match(specContent, /Lebar Jalan/i, 'Dokumen LLM harus memuat kolom data Lebar Jalan');
+assert.match(specContent, /Jumlah Lajur|Lajur/i, 'Dokumen LLM harus memuat informasi jumlah lajur');
+assert.match(specContent, /Tipe Jalan OSM|Klasifikasi OSM/i, 'Dokumen LLM harus memuat klasifikasi highway OSM');
+assert.match(specContent, /Jl\. Titiran[\s\S]*?3\s*meter/i, 'Dokumen LLM harus mencatat lebar Jl. Titiran sebesar 3 meter sesuai OSM');
+assert.match(specContent, /Jl\. Merak[\s\S]*?4\s*meter/i, 'Dokumen LLM harus mencatat lebar Jl. Merak sebesar 4 meter sesuai OSM');
+assert.match(specContent, /Jl\. Surapati[\s\S]*?3\s*lajur/i, 'Dokumen LLM harus mencatat Jl. Surapati memiliki 3 lajur trunk');
+assert.match(specContent, /Jl\. Diponegoro[\s\S]*?4\s*lajur/i, 'Dokumen LLM harus mencatat Jl. Diponegoro memiliki 4 lajur primary');
+
 // 7. Cek fungsi pengatur transparansi peta (setMapOpacity & getMapOpacity)
 assert.equal(typeof sandbox.window.setMapOpacity, 'function', 'window.setMapOpacity harus tersedia');
 assert.equal(typeof sandbox.window.getMapOpacity, 'function', 'window.getMapOpacity harus tersedia');
