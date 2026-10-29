@@ -18,6 +18,8 @@ assert.match(html, /@keyframes\s+flowDash/, 'Harus memiliki animasi @keyframes f
 assert.match(html, /id="map"/, 'Harus memiliki elemen #map');
 assert.match(html, /id="path-list"/, 'Harus memiliki daftar jalur #path-list');
 assert.match(html, /id="path-detail"/, 'Harus memiliki panel detail #path-detail');
+assert.match(html, /id="slider-map-opacity"/, 'Harus memiliki input #slider-map-opacity');
+assert.match(html, /id="label-map-opacity"/, 'Harus memiliki label persentase #label-map-opacity');
 
 let capturedTileUrl = '';
 let capturedTileOpts = null;
@@ -41,7 +43,19 @@ const sandbox = {
     tileLayer: (url, opts) => {
       capturedTileUrl = url;
       capturedTileOpts = opts;
-      return { addTo: () => ({}) };
+      let opacity = opts?.opacity ?? 1;
+      const layer = {
+        addTo: () => layer,
+        setOpacity: (val) => {
+          opacity = val;
+        },
+        options: {
+          get opacity() {
+            return opacity;
+          }
+        }
+      };
+      return layer;
     },
     polyline: () => {
       const p = {
@@ -189,4 +203,14 @@ assert.match(specContent, /```mermaid[\s\S]*?flowchart/i, 'Harus memiliki diagra
 assert.match(specContent, /Shared Edges|Ruas Bersama|Bottleneck/i, 'Harus memiliki analisis shared edges untuk Max-Flow');
 assert.match(specContent, /Prompt Template/i, 'Harus menyediakan template prompt siap pakai untuk LLM');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, interaksi, server HTTP lokal, dan dokumen LLM berhasil.');
+// 7. Cek fungsi pengatur transparansi peta (setMapOpacity & getMapOpacity)
+assert.equal(typeof sandbox.window.setMapOpacity, 'function', 'window.setMapOpacity harus tersedia');
+assert.equal(typeof sandbox.window.getMapOpacity, 'function', 'window.getMapOpacity harus tersedia');
+
+sandbox.window.setMapOpacity(0.5);
+assert.equal(sandbox.window.getMapOpacity(), 0.5, 'setMapOpacity(0.5) harus mengubah opacity tileLayer ke 0.5');
+
+sandbox.window.setMapOpacity(1.0);
+assert.equal(sandbox.window.getMapOpacity(), 1.0, 'setMapOpacity(1.0) harus mengembalikan opacity tileLayer ke 1.0');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, interaksi, server HTTP lokal, dokumen LLM, dan slider transparansi peta berhasil.');

@@ -82,9 +82,8 @@
       padding: 12px 18px;
       border-bottom: 1px solid var(--border);
       display: flex;
+      flex-direction: column;
       gap: 8px;
-      align-items: center;
-      justify-content: space-between;
     }
 
     .btn-reset {
@@ -102,6 +101,46 @@
 
     .btn-reset:hover {
       background: #1d4ed8;
+    }
+
+    .opacity-control {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .opacity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .opacity-header strong {
+      color: var(--text-main);
+    }
+
+    .opacity-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #334155;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .opacity-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
     }
 
     .section-title {
@@ -317,6 +356,22 @@
       <button id="btn-show-all" class="btn-reset" type="button">
         Tampilkan Semua 4 Jalur Sekaligus
       </button>
+
+      <div class="opacity-control">
+        <div class="opacity-header">
+          <span>Transparansi Peta Dasar</span>
+          <strong id="label-map-opacity">100%</strong>
+        </div>
+        <input
+          id="slider-map-opacity"
+          class="opacity-slider"
+          type="range"
+          min="0"
+          max="100"
+          value="100"
+          step="5"
+        />
+      </div>
     </div>
 
     <div class="section-title">Daftar 4 Path (Sumber S → Tujuan T)</div>
@@ -600,7 +655,7 @@
     window.GRAPH_DATA = GRAPH_DATA;
 
     const map = L.map('map').setView([-6.8982, 107.6180], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       referrerPolicy: 'origin-when-cross-origin',
       attribution: '&copy; OpenStreetMap contributors'
@@ -803,6 +858,35 @@
     }
 
     document.getElementById('btn-show-all').addEventListener('click', () => selectPath(null));
+
+    /**
+     * Mengatur tingkat transparansi tile layer peta dasar OpenStreetMap.
+     * @param {number|string} val - Nilai opacity antara 0 (transparan) hingga 1 (tampak penuh).
+     */
+    function setMapOpacity(val) {
+      const clamped = Math.max(0, Math.min(1, Number(val)));
+      tileLayer.setOpacity(clamped);
+
+      const label = document.getElementById('label-map-opacity');
+      if (label) {
+        label.textContent = `${Math.round(clamped * 100)}%`;
+      }
+
+      const slider = document.getElementById('slider-map-opacity');
+      if (slider && slider.value !== String(Math.round(clamped * 100))) {
+        slider.value = String(Math.round(clamped * 100));
+      }
+    }
+
+    const sliderMapOpacity = document.getElementById('slider-map-opacity');
+    if (sliderMapOpacity) {
+      sliderMapOpacity.addEventListener('input', (e) => {
+        setMapOpacity(Number(e.target.value) / 100);
+      });
+    }
+
+    window.setMapOpacity = setMapOpacity;
+    window.getMapOpacity = () => tileLayer.options.opacity ?? 1;
 
     window.selectPath = selectPath;
     window.getActivePathId = () => activePathId;
