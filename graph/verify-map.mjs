@@ -240,4 +240,74 @@ for (const seg of segments) {
 assert.match(html, /segment-tooltip/, 'Harus memiliki kelas CSS .segment-tooltip');
 assert.match(html, /segment-patch/, 'Harus memiliki kelas CSS .segment-patch');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, dan slider transparansi peta berhasil.');
+// 10. Cek script Console pelindung-highlight.js untuk web pelindung.bandung.go.id
+const highlightScriptPath = new URL('./pelindung-highlight.js', import.meta.url);
+assert.ok(fs.existsSync(highlightScriptPath), 'File pelindung-highlight.js harus ada');
+
+const highlightCode = fs.readFileSync(highlightScriptPath, 'utf8');
+assert.match(highlightCode, /drop-shadow/, 'Script harus memberikan efek bayangan merah (drop-shadow)');
+assert.match(highlightCode, /CCTV DIPATIUKUR SEKELOA 01/, 'Script harus memuat target CCTV DIPATIUKUR SEKELOA 01');
+assert.match(highlightCode, /SP SULANJANA/, 'Script harus memuat target SP SULANJANA');
+
+// Jalankan pelindung-highlight.js pada mock DOM pelindung.bandung.go.id
+const mockMarkerIconTarget = { style: {}, classList: { add: () => {} }, setAttribute: () => {}, parentElement: { appendChild: () => {} } };
+const mockMarkerIconOther = { style: {}, classList: { add: () => {} }, setAttribute: () => {} };
+const mockListItemTarget = {
+  textContent: ' CCTV DIPATIUKUR SEKELOA 01',
+  style: {},
+  classList: { add: () => {} },
+  parentElement: { prepend: () => {} }
+};
+const mockListItemOther = {
+  textContent: ' CCTV BATAS KOTA 01',
+  style: {},
+  classList: { add: () => {} }
+};
+
+const pelindungSandbox = {
+  window: {},
+  console: { log: () => {}, table: () => {}, warn: () => {} },
+  document: {
+    head: { appendChild: () => {} },
+    createElement: () => ({ id: '', textContent: '', style: {}, className: '' }),
+    getElementById: () => null,
+    querySelector: (sel) => {
+      if (sel === '.maps') {
+        return {
+          __reactFiber$mock: {
+            return: {
+              stateNode: {
+                state: {
+                  items: [
+                    { id: '8915bf0d-106e-48a6-bb3c-93919e2eef32', cctv_name: 'CCTV DIPATIUKUR SEKELOA 01', lat: '-6.892916163', lng: '107.6183134' },
+                    { id: '48a4d270-9db2-4111-b94e-d026129b2802', cctv_name: 'CCTV BATAS KOTA 01', lat: '-6.910573', lng: '107.569273' }
+                  ]
+                },
+                markerRefs: {
+                  '8915bf0d-106e-48a6-bb3c-93919e2eef32': { _icon: mockMarkerIconTarget, bindTooltip: () => ({ openTooltip: () => {} }), setZIndexOffset: () => {} },
+                  '48a4d270-9db2-4111-b94e-d026129b2802': { _icon: mockMarkerIconOther, setZIndexOffset: () => {} }
+                }
+              }
+            }
+          }
+        };
+      }
+      return null;
+    },
+    querySelectorAll: (sel) => {
+      if (sel.includes('list-group-item')) return [mockListItemTarget, mockListItemOther];
+      if (sel.includes('leaflet-marker-icon')) return [mockMarkerIconTarget, mockMarkerIconOther];
+      return [];
+    }
+  }
+};
+
+vm.createContext(pelindungSandbox);
+vm.runInContext(highlightCode, pelindungSandbox);
+
+assert.ok(Array.isArray(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS), 'window.PELINDUNG_MAXFLOW_TARGETS harus berupa array');
+assert.ok(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length >= 20, 'Harus mencakup minimal 20 kamera CCTV relevan');
+assert.match(mockMarkerIconTarget.style.filter || '', /drop-shadow/, 'Pinpoint target harus diberi filter drop-shadow merah');
+assert.equal(mockMarkerIconOther.style.opacity, '0.25', 'Pinpoint non-target harus diredupkan (opacity 0.25)');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, dan script pelindung-highlight.js berhasil.');
