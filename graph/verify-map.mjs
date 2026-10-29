@@ -325,4 +325,30 @@ assert.equal(typeof sandbox.window.toggleSurveyLayer, 'function', 'window.toggle
 assert.match(specContent, /pelindung\.bandung\.go\.id/i, 'GRAPH_SPEC_LLM.md harus memuat referensi CCTV pelindung.bandung.go.id');
 assert.match(specContent, /Survei Manual|Rekam Manual/i, 'GRAPH_SPEC_LLM.md harus memuat daftar titik survei manual');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, dan layer CCTV/Survei Manual berhasil.');
+// 12. Cek konfigurasi deployment Vercel
+const vercelConfigPath = new URL('../vercel.json', import.meta.url);
+assert.ok(fs.existsSync(vercelConfigPath), 'File vercel.json harus ada di root repositori');
+
+const vercelConfig = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf8'));
+assert.ok(Array.isArray(vercelConfig.headers), 'vercel.json harus memiliki konfigurasi headers');
+const osmHeader = vercelConfig.headers.find((h) =>
+  h.headers && h.headers.some((kv) => kv.key.toLowerCase() === 'referrer-policy' && kv.value === 'origin-when-cross-origin')
+);
+assert.ok(osmHeader, 'vercel.json harus menyuntikkan header Referrer-Policy: origin-when-cross-origin');
+
+assert.ok(Array.isArray(vercelConfig.redirects), 'vercel.json harus memiliki konfigurasi redirects');
+const rootRedirect = vercelConfig.redirects.find((r) => r.source === '/' && r.destination === '/graph/');
+assert.ok(rootRedirect, 'vercel.json harus mengarahkan root / ke /graph/');
+
+const rootHtmlPath = new URL('../index.html', import.meta.url);
+assert.ok(fs.existsSync(rootHtmlPath), 'File fallback index.html harus ada di root repositori');
+const rootHtmlContent = fs.readFileSync(rootHtmlPath, 'utf8');
+assert.match(rootHtmlContent, /url=\/graph\//, 'Root index.html harus memuat meta redirect ke /graph/');
+
+const gitignorePath = new URL('../.gitignore', import.meta.url);
+assert.ok(fs.existsSync(gitignorePath), 'File .gitignore harus ada di root repositori');
+const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+assert.ok(gitignoreContent.includes('docs/'), '.gitignore harus mengabaikan folder docs/ superpower');
+assert.ok(gitignoreContent.includes('.superpowers/'), '.gitignore harus mengabaikan folder .superpowers/');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, layer CCTV/Survei Manual, dan konfigurasi Vercel berhasil.');
