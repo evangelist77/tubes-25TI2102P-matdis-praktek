@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin-when-cross-origin" />
   <title>Visualisasi Graf Aliran Jalan (Maximum Flow) — Gasibu &amp; Monju Bandung</title>
   <link
     rel="stylesheet"
@@ -601,6 +602,7 @@
     const map = L.map('map').setView([-6.8982, 107.6180], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      referrerPolicy: 'origin-when-cross-origin',
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 

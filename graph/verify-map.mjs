@@ -7,12 +7,20 @@ assert.ok(fs.existsSync(htmlPath), 'index.html harus ada');
 
 const html = fs.readFileSync(htmlPath, 'utf8');
 
-// Pastikan Leaflet, animasi CSS flowDash, dan kontainer utama tersedia
+// Pastikan Leaflet, animasi CSS flowDash, meta referrer, dan kontainer utama tersedia
 assert.match(html, /leaflet\.css/, 'Harus memuat stylesheet Leaflet');
+assert.match(
+  html,
+  /<meta\s+name="referrer"\s+content="origin-when-cross-origin"\s*\/?>/,
+  'Harus memiliki <meta name="referrer" content="origin-when-cross-origin">'
+);
 assert.match(html, /@keyframes\s+flowDash/, 'Harus memiliki animasi @keyframes flowDash');
 assert.match(html, /id="map"/, 'Harus memiliki elemen #map');
 assert.match(html, /id="path-list"/, 'Harus memiliki daftar jalur #path-list');
 assert.match(html, /id="path-detail"/, 'Harus memiliki panel detail #path-detail');
+
+let capturedTileUrl = '';
+let capturedTileOpts = null;
 
 // Ekstrak script utama dan jalankan dalam sandbox dengan stub Leaflet untuk menguji GRAPH_DATA dan interaksi
 const match = html.match(/<script id="app-script">([\s\S]*?)<\/script>/);
@@ -30,7 +38,11 @@ const sandbox = {
       fitBounds: () => ({}),
       on: () => ({})
     }),
-    tileLayer: () => ({ addTo: () => ({}) }),
+    tileLayer: (url, opts) => {
+      capturedTileUrl = url;
+      capturedTileOpts = opts;
+      return { addTo: () => ({}) };
+    },
     polyline: () => {
       const p = {
         addTo: () => p,
@@ -112,5 +124,41 @@ sandbox.window.selectPath('S2-T1');
 assert.equal(sandbox.window.getActivePathId(), 'S2-T1', 'selectPath("S2-T1") harus mengubah activePathId menjadi S2-T1');
 sandbox.window.selectPath(null);
 assert.equal(sandbox.window.getActivePathId(), null, 'selectPath(null) harus mereset tampilan ke semua jalur');
+// 4. Cek konfigurasi tileLayer OSM & referrerPolicy
+assert.equal(
+  capturedTileUrl,
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  'Harus menggunakan URL tile resmi OpenStreetMap'
+);
+assert.equal(
+  capturedTileOpts?.referrerPolicy,
+  'origin-when-cross-origin',
+  'L.tileLayer harus menyertakan referrerPolicy: "origin-when-cross-origin"'
+);
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, dan interaksi berhasil.');
+// 5. Cek server HTTP lokal (serve.mjs) mengirimkan header Referrer-Policy dan menyajikan index.html
+const { createGraphServer } = await import('./serve.mjs');
+const server = createGraphServer();
+await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+const { port } = server.address();
+
+try {
+  const res = await fetch(`http://127.0.0.1:${port}/`);
+  assert.equal(res.status, 200, 'GET / pada serve.mjs harus mengembalikan HTTP 200');
+  assert.equal(
+    res.headers.get('referrer-policy'),
+    'origin-when-cross-origin',
+    'Response header harus menyertakan Referrer-Policy: origin-when-cross-origin'
+  );
+  assert.match(
+    res.headers.get('content-type') || '',
+    /text\/html/,
+    'Response Content-Type harus text/html'
+  );
+  const body = await res.text();
+  assert.ok(body.includes('window.GRAPH_DATA'), 'Body HTTP harus memuat isi index.html');
+} finally {
+  await new Promise((resolve) => server.close(resolve));
+}
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, simpul, interaksi, dan server HTTP lokal berhasil.');
