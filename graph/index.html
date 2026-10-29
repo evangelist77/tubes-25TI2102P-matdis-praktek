@@ -326,6 +326,71 @@
       border: 1px solid #334155;
     }
 
+    .node-chip sub,
+    .terminal-label sub,
+    .segment-tooltip sub,
+    .concept-card sub {
+      font-size: 0.8em;
+      font-weight: 600;
+      vertical-align: -0.2em;
+    }
+
+    .filter-tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 18px 4px;
+    }
+
+    .filter-tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-tab:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+    }
+
+    .filter-tab.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+    }
+
+    .concept-card {
+      margin: 12px 18px 18px;
+      padding: 10px 12px;
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-left: 3px solid #38bdf8;
+      border-radius: 6px;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .concept-card summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: #38bdf8;
+      user-select: none;
+      outline: none;
+    }
+
+    .concept-card p {
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
     #map {
       flex: 1;
       height: 100vh;
@@ -468,11 +533,33 @@
       </div>
     </div>
 
+    <div class="filter-tab-bar" id="path-filters">
+      <button class="filter-tab active" data-filter="all" type="button">Semua (4)</button>
+      <button class="filter-tab" data-filter="S1" type="button">Dari S₁</button>
+      <button class="filter-tab" data-filter="S2" type="button">Dari S₂</button>
+      <button class="filter-tab" data-filter="T1" type="button">Ke T₁</button>
+      <button class="filter-tab" data-filter="T2" type="button">Ke T₂</button>
+    </div>
+
     <div class="section-title">Daftar 4 Path (Sumber S → Tujuan T)</div>
     <div id="path-list"></div>
 
     <div class="section-title">Detail Urutan Jalan &amp; Simpul</div>
     <div id="path-detail"></div>
+
+    <details class="concept-card">
+      <summary>📐 Teori Graf: Supersource (S*) &amp; Supersink (T*)</summary>
+      <p>
+        Jaringan multi-source multi-sink (S₁, S₂ → T₁, T₂) ditransformasikan ke bentuk <em>Single-Source Single-Sink</em> standar dengan simpul semu:
+      </p>
+      <p style="margin-top: 4px;">
+        • <strong>Supersource (S*)</strong>: Terhubung ke S₁ dan S₂ dengan kapasitas busur tak hingga (c(S*, S) = ∞).<br/>
+        • <strong>Supersink (T*)</strong>: Menerima busur dari T₁ dan T₂ dengan kapasitas busur tak hingga (c(T, T*) = ∞).
+      </p>
+      <p style="margin-top: 4px; font-size: 10.5px; color: #64748b;">
+        Standar reduksi algoritma Ford-Fulkerson / Edmonds-Karp untuk optimasi aliran maksimum.
+      </p>
+    </details>
   </aside>
 
   <main id="map"></main>
@@ -513,8 +600,128 @@
 
       paths: [
         {
+          id: 'S1-T1',
+          name: 'S₁ (Pasupati / Tamansari) → T₁ (PUSDAI / Surapati Timur)',
+          source: 'S1',
+          sink: 'T1',
+          color: '#10b981',
+          distanceInfo: '3,4 km • ±11 mnt',
+          streets: [
+            'Turun Pasupati/Jl. Tamansari',
+            'Jl. Dipatiukur',
+            'Jl. Singaperbangsa',
+            'Jl. Titiran',
+            'Jl. Tikukur',
+            'Jl. Gagak',
+            'PUSDAI/Surapati Timur'
+          ],
+          nodeIds: [
+            'S1',
+            'V_Cikapayang',
+            'V_DU_Selatan',
+            'V_Singaperbangsa',
+            'V_Titiran',
+            'V_Tikukur',
+            'V_Gagak',
+            'V_Surapati_Gagak',
+            'T1'
+          ],
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89806, 107.60967],
+            [-6.89842, 107.61063],
+            [-6.89875, 107.61157],
+            [-6.89905, 107.61214],
+            [-6.89885, 107.61283],
+            [-6.89795, 107.61398],
+            [-6.89731, 107.61503],
+            [-6.89559, 107.61688],
+            [-6.89597, 107.61746],
+            [-6.89596, 107.61834],
+            [-6.89595, 107.61891],
+            [-6.89543, 107.61898],
+            [-6.89551, 107.61962],
+            [-6.89563, 107.61981],
+            [-6.89641, 107.61983],
+            [-6.89722, 107.61986],
+            [-6.89718, 107.62153],
+            [-6.89731, 107.62205],
+            [-6.89742, 107.62244],
+            [-6.89784, 107.62318],
+            [-6.89810, 107.62387],
+            [-6.89852, 107.62378],
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'S1-T2',
+          name: 'S₁ (Pasupati / Tamansari) → T₂ (Diponegoro)',
+          source: 'S1',
+          sink: 'T2',
+          color: '#ec4899',
+          distanceInfo: '3,1 km • ±9 mnt',
+          streets: [
+            'Turun Pasupati/Jl. Tamansari',
+            'Jl. Sulanjana',
+            'Jl. Aria Jipang',
+            'Jl. Cilamaya',
+            'Jl. Cimandiri',
+            'Jl. Cisanggarung',
+            'Jl. Cisangkuy',
+            'Jl. Diponegoro Timur/Pusdai'
+          ],
+          nodeIds: [
+            'S1',
+            'V_Sulanjana',
+            'V_Djuanda_Diponegoro',
+            'V_AriaJipang',
+            'V_Cilamaya',
+            'V_Cimandiri',
+            'V_Cisanggarung',
+            'V_Cisangkuy',
+            'T2'
+          ],
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89828, 107.60954],
+            [-6.89950, 107.60997],
+            [-6.89967, 107.60997],
+            [-6.89967, 107.61061],
+            [-6.89994, 107.61192],
+            [-6.90025, 107.61262],
+            [-6.90039, 107.61304],
+            [-6.90046, 107.61347],
+            [-6.90063, 107.61507],
+            [-6.89991, 107.61569],
+            [-6.90063, 107.61507],
+            [-6.90115, 107.61595],
+            [-6.90134, 107.61697],
+            [-6.90202, 107.61699],
+            [-6.90254, 107.61701],
+            [-6.90351, 107.61725],
+            [-6.90374, 107.61757],
+            [-6.90379, 107.61792],
+            [-6.90368, 107.61868],
+            [-6.90366, 107.61970],
+            [-6.90334, 107.62020],
+            [-6.90392, 107.62075],
+            [-6.90309, 107.62158],
+            [-6.90276, 107.62191],
+            [-6.90203, 107.62123],
+            [-6.90123, 107.62084],
+            [-6.90118, 107.62250],
+            [-6.90115, 107.62485]
+          ]
+        },
+        {
           id: 'S2-T1',
-          name: 'S2 (Dipatiukur) → T1 (PUSDAI / Surapati Timur)',
+          name: 'S₂ (Dipatiukur) → T₁ (PUSDAI / Surapati Timur)',
           source: 'S2',
           sink: 'T1',
           color: '#3b82f6',
@@ -558,7 +765,7 @@
         },
         {
           id: 'S2-T2',
-          name: 'S2 (Dipatiukur) → T2 (Diponegoro)',
+          name: 'S₂ (Dipatiukur) → T₂ (Diponegoro)',
           source: 'S2',
           sink: 'T2',
           color: '#f59e0b',
@@ -621,125 +828,6 @@
             [-6.90257, 107.62408],
             [-6.90156, 107.62493],
             [-6.90111, 107.62530],
-            [-6.90115, 107.62485]
-          ]
-        },
-        {
-          id: 'S1-T1',
-          name: 'S1 (Pasupati / Tamansari) → T1 (PUSDAI / Surapati Timur)',
-          source: 'S1',
-          sink: 'T1',
-          color: '#10b981',
-          distanceInfo: '3,4 km • ±11 mnt',
-          streets: [
-            'Turun Pasupati/Jl. Tamansari',
-            'Jl. Dipatiukur',
-            'Jl. Singaperbangsa',
-            'Jl. Titiran',
-            'Jl. Tikukur',
-            'Jl. Gagak',
-            'PUSDAI/Surapati Timur'
-          ],
-          nodeIds: [
-            'S1',
-            'V_Cikapayang',
-            'V_DU_Selatan',
-            'V_Singaperbangsa',
-            'V_Titiran',
-            'V_Tikukur',
-            'V_Gagak',
-            'V_Surapati_Gagak',
-            'T1'
-          ],
-          coords: [
-            [-6.89550, 107.60870],
-            [-6.89660, 107.60915],
-            [-6.89806, 107.60967],
-            [-6.89842, 107.61063],
-            [-6.89875, 107.61157],
-            [-6.89905, 107.61214],
-            [-6.89885, 107.61283],
-            [-6.89795, 107.61398],
-            [-6.89731, 107.61503],
-            [-6.89559, 107.61688],
-            [-6.89597, 107.61746],
-            [-6.89596, 107.61834],
-            [-6.89595, 107.61891],
-            [-6.89543, 107.61898],
-            [-6.89551, 107.61962],
-            [-6.89563, 107.61981],
-            [-6.89641, 107.61983],
-            [-6.89722, 107.61986],
-            [-6.89718, 107.62153],
-            [-6.89731, 107.62205],
-            [-6.89742, 107.62244],
-            [-6.89784, 107.62318],
-            [-6.89810, 107.62387],
-            [-6.89852, 107.62378],
-            [-6.89923, 107.62373],
-            [-6.89924, 107.62491],
-            [-6.89926, 107.62614],
-            [-6.89946, 107.62702],
-            [-6.89955, 107.62709]
-          ]
-        },
-        {
-          id: 'S1-T2',
-          name: 'S1 (Pasupati / Tamansari) → T2 (Diponegoro)',
-          source: 'S1',
-          sink: 'T2',
-          color: '#ec4899',
-          distanceInfo: '3,1 km • ±9 mnt',
-          streets: [
-            'Turun Pasupati/Jl. Tamansari',
-            'Jl. Sulanjana',
-            'Jl. Aria Jipang',
-            'Jl. Cilamaya',
-            'Jl. Cimandiri',
-            'Jl. Cisanggarung',
-            'Jl. Cisangkuy',
-            'Jl. Diponegoro Timur/Pusdai'
-          ],
-          nodeIds: [
-            'S1',
-            'V_Sulanjana',
-            'V_Djuanda_Diponegoro',
-            'V_AriaJipang',
-            'V_Cilamaya',
-            'V_Cimandiri',
-            'V_Cisanggarung',
-            'V_Cisangkuy',
-            'T2'
-          ],
-          coords: [
-            [-6.89550, 107.60870],
-            [-6.89660, 107.60915],
-            [-6.89828, 107.60954],
-            [-6.89950, 107.60997],
-            [-6.89967, 107.61061],
-            [-6.89994, 107.61192],
-            [-6.90025, 107.61262],
-            [-6.90039, 107.61304],
-            [-6.90046, 107.61347],
-            [-6.90063, 107.61507],
-            [-6.89991, 107.61569],
-            [-6.90063, 107.61507],
-            [-6.90115, 107.61595],
-            [-6.90134, 107.61697],
-            [-6.90202, 107.61699],
-            [-6.90254, 107.61701],
-            [-6.90351, 107.61725],
-            [-6.90374, 107.61757],
-            [-6.90379, 107.61792],
-            [-6.90368, 107.61868],
-            [-6.90366, 107.61970],
-            [-6.90334, 107.62020],
-            [-6.90392, 107.62075],
-            [-6.90309, 107.62158],
-            [-6.90276, 107.62191],
-            [-6.90203, 107.62123],
-            [-6.90123, 107.62084],
-            [-6.90118, 107.62250],
             [-6.90115, 107.62485]
           ]
         }
@@ -1358,7 +1446,7 @@
         <div class="segment-tooltip">
           <div class="seg-name">${seg.name}</div>
           <div class="seg-detail">📐 Lebar: <strong>${seg.widthInfo}</strong></div>
-          <div class="seg-nodes">Ruas: ${seg.fromNode} → ${seg.toNode}</div>
+          <div class="seg-nodes">Ruas: ${formatNodeHtml(seg.fromNode)} → ${formatNodeHtml(seg.toNode)}</div>
         </div>
         `,
         {
@@ -1387,6 +1475,25 @@
       segmentLayers[seg.id] = patch;
     });
 
+    /**
+     * Memformat ID simpul graf menjadi notasi matematika subskrip HTML yang proper.
+     * Mengubah 'V_Singaperbangsa' -> 'V<sub>Singaperbangsa</sub>', 'S1' -> 'S<sub>1</sub>'.
+     * @param {string} nodeId - ID simpul graf (misal: S1, V_Singaperbangsa).
+     * @returns {string} String HTML dengan subskrip rapi.
+     */
+    function formatNodeHtml(nodeId) {
+      if (!nodeId) return '';
+      if (/^[ST][12]$/.test(nodeId)) {
+        return `${nodeId[0]}<sub>${nodeId.slice(1)}</sub>`;
+      }
+      if (nodeId.startsWith('V_')) {
+        const cleanSub = nodeId.slice(2).replace(/_/g, ' ');
+        return `V<sub>${cleanSub}</sub>`;
+      }
+      return nodeId;
+    }
+    window.formatNodeHtml = formatNodeHtml;
+
     // Render seluruh simpul (Source S1/S2, Sink T1/T2, dan persimpangan jalan)
     Object.values(GRAPH_DATA.nodes).forEach((node) => {
       const isSource = node.type === 'source';
@@ -1413,7 +1520,7 @@
           interactive: false,
           icon: L.divIcon({
             className: '',
-            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${node.id}</div>`,
+            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${formatNodeHtml(node.id)}</div>`,
             iconSize: [34, 22],
             iconAnchor: [17, 30]
           })
@@ -1421,6 +1528,56 @@
       }
 
       nodeMarkers[node.id] = marker;
+    });
+
+    let currentFilter = 'all';
+
+    function setPathFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('#path-filters .filter-tab').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+      });
+
+      GRAPH_DATA.paths.forEach((p) => {
+        const matches =
+          filter === 'all' ||
+          (filter === 'S1' && p.source === 'S1') ||
+          (filter === 'S2' && p.source === 'S2') ||
+          (filter === 'T1' && p.sink === 'T1') ||
+          (filter === 'T2' && p.sink === 'T2');
+
+        const card = document.querySelector(`.path-card[data-path-id="${p.id}"]`);
+        if (card) {
+          card.style.display = matches ? 'block' : 'none';
+        }
+
+        const layer = pathLayers[p.id];
+        if (layer) {
+          if (!matches) {
+            layer.baseLine.setStyle({ opacity: 0.04 });
+            layer.animLine.setStyle({ opacity: 0 });
+            layer.arrows.forEach((a) => a.setOpacity(0.04));
+          } else {
+            const isSelected = !activePathId || activePathId === p.id;
+            layer.baseLine.setStyle({
+              weight: activePathId === p.id ? 10 : isSelected ? 7 : 4,
+              opacity: activePathId === p.id ? 0.95 : isSelected ? 0.75 : 0.18
+            });
+            layer.animLine.setStyle({
+              weight: activePathId === p.id ? 4 : 3,
+              opacity: isSelected ? 0.95 : 0.08
+            });
+            layer.arrows.forEach((a) => a.setOpacity(isSelected ? 1 : 0.15));
+          }
+        }
+      });
+    }
+    window.setPathFilter = setPathFilter;
+
+    document.querySelectorAll('#path-filters .filter-tab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setPathFilter(btn.getAttribute('data-filter'));
+      });
     });
 
     function renderSidebar() {
@@ -1458,7 +1615,7 @@
         detailEl.innerHTML = `
           <h3>Mode: Semua 4 Jalur Aktif</h3>
           <p style="color: #94a3b8; line-height: 1.4;">
-            Keempat jalur ($S_1, S_2 \\to T_1, T_2$) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan jalan dan simpul yang dilalui.
+            Keempat jalur (S<sub>1</sub>, S<sub>2</sub> → T<sub>1</sub>, T<sub>2</sub>) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan jalan dan simpul yang dilalui.
           </p>
         `;
       } else {
@@ -1474,7 +1631,7 @@
           .join('');
 
         const nodesHtml = selected.nodeIds
-          .map((nid) => `<span class="node-chip">${GRAPH_DATA.nodes[nid].id}</span>`)
+          .map((nid) => `<span class="node-chip" title="${GRAPH_DATA.nodes[nid]?.label || nid}">${formatNodeHtml(nid)}</span>`)
           .join(' → ');
 
         detailEl.innerHTML = `
@@ -1533,7 +1690,10 @@
       renderSidebar();
     }
 
-    document.getElementById('btn-show-all').addEventListener('click', () => selectPath(null));
+    document.getElementById('btn-show-all').addEventListener('click', () => {
+      setPathFilter('all');
+      selectPath(null);
+    });
 
     /**
      * Mengatur tingkat transparansi tile layer peta dasar OpenStreetMap.
@@ -1579,7 +1739,7 @@
         `
         <div class="segment-tooltip">
           <div class="seg-name" style="color: #f87171;">📹 ${pt.name}</div>
-          <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas} • <strong>Simpul:</strong> ${pt.nodeId}</div>
+          <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas} • <strong>Simpul:</strong> ${formatNodeHtml(pt.nodeId)}</div>
           <div class="seg-detail">${pt.role}</div>
           <div class="seg-nodes">Stream: ${pt.streamUrl}</div>
         </div>
@@ -1603,7 +1763,7 @@
         `
         <div class="segment-tooltip">
           <div class="seg-name" style="color: #facc15;">📝 ${pt.name}</div>
-          <div class="seg-detail">${pt.reason}</div>
+          <div class="seg-detail"><strong>Simpul:</strong> ${formatNodeHtml(pt.nodeId)} • ${pt.reason}</div>
         </div>
         `,
         { direction: 'top', className: 'segment-tooltip-container' }

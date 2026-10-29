@@ -110,7 +110,7 @@ for (const key of ['S1', 'S2', 'T1', 'T2']) {
 // 2. Cek ke-4 jalur sesuai 4 file .txt
 assert.equal(GRAPH_DATA.paths.length, 4, 'Harus terdapat tepat 4 path');
 
-const expectedIds = ['S2-T1', 'S2-T2', 'S1-T1', 'S1-T2'];
+const expectedIds = ['S1-T1', 'S1-T2', 'S2-T1', 'S2-T2'];
 assert.deepEqual(GRAPH_DATA.paths.map((p) => p.id), expectedIds);
 
 const expectedStreets = {
@@ -350,5 +350,20 @@ assert.ok(fs.existsSync(gitignorePath), 'File .gitignore harus ada di root repos
 const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
 assert.ok(gitignoreContent.includes('docs/'), '.gitignore harus mengabaikan folder docs/ superpower');
 assert.ok(gitignoreContent.includes('.superpowers/'), '.gitignore harus mengabaikan folder .superpowers/');
+
+// 13. Cek formulasi proper S1, S2 -> T1, T2, notasi subskrip simpul graf, filter tabs, & Supersource/Supersink
+assert.equal(rawGraphData.paths[0].source, 'S1', 'Jalur 1 harus bermula dari S1');
+assert.equal(rawGraphData.paths[1].source, 'S1', 'Jalur 2 harus bermula dari S1');
+assert.equal(rawGraphData.paths[2].source, 'S2', 'Jalur 3 harus bermula dari S2');
+assert.equal(rawGraphData.paths[3].source, 'S2', 'Jalur 4 harus bermula dari S2');
+
+assert.match(html, /formatNodeHtml|formatNodeMath/, 'Harus memiliki fungsi formatter subskrip simpul graf');
+assert.match(html, /data-filter/, 'Harus menyediakan filter tab berdasarkan sumber/tujuan');
+assert.match(html, /Supersource|Super Source/i, 'Harus memuat penjelasan Supersource (S*)');
+assert.match(html, /Supersink|Super Sink/i, 'Harus memuat penjelasan Supersink (T*)');
+assert.ok(!html.includes('($S_1, S_2 \\to T_1, T_2$)'), 'Tidak boleh membiarkan penulisan raw LaTeX ($S_1, S_2 \\to T_1, T_2$) di teks DOM');
+
+assert.match(specContent, /Supersource|Super Source/i, 'GRAPH_SPEC_LLM.md harus memuat transformasi Supersource');
+assert.match(specContent, /Supersink|Super Sink/i, 'GRAPH_SPEC_LLM.md harus memuat transformasi Supersink');
 
 console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, layer CCTV/Survei Manual, dan konfigurasi Vercel berhasil.');
