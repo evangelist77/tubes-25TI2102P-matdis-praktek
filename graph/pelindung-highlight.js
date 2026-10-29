@@ -33,8 +33,8 @@
     // 8. V_Surapati_Merak: Simpang Jl. Merak - Jl. Surapati (Gasibu / Telkom)
     { id: '501f4c5c-e894-4c58-9c38-8dbf88964a06', name: 'CCTV GASIBU_01', node: 'V_Surapati_Merak', role: 'Aliran P1 keluar Jl. Merak -> Jl. Surapati', lat: -6.899248, lng: 107.619846 },
 
-    // 9. V_Cisangkuy: Koridor Belakang Gedung Sate (Taman Lansia / Cisangkuy)
-    { id: '4d000111-f853-4b53-a72c-8d196cea25f2', name: 'TAMAN LANSIA', node: 'V_Cisangkuy', role: 'Aliran P4 melintasi Jl. Cisangkuy', lat: -6.902141, lng: 107.620938 },
+    // 9. V_Cisangkuy: Koridor Belakang Gedung Sate (Taman Lansia / Cisangkuy - Simpang Diponegoro)
+    { id: '4d000111-f853-4b53-a72c-8d196cea25f2', name: 'TAMAN LANSIA', node: 'V_Cisangkuy', role: 'Aliran P4 di Jl. Cisangkuy simpang Jl. Diponegoro (utara/atas Taman Lansia)', lat: -6.90123, lng: 107.62084 },
 
     // 10. T1: Sink PUSDAI (Jl. Surapati Timur)
     { id: 'e46b2d97-e032-470c-96d3-97f68171bdda', name: 'CCTV PHH MUSTOFA-PUSDAI 01', node: 'T1', role: 'Outflow Sink T1 (PUSDAI / Surapati Timur)', lat: -6.899439, lng: 107.627107 }

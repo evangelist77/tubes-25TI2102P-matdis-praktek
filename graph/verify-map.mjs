@@ -313,6 +313,9 @@ assert.ok(!((mockMarkerIconTarget.style.filter || '').includes('drop-shadow')), 
 assert.equal(mockMarkerIconOther.style.opacity, '0.25', 'Pinpoint non-target harus diredupkan (opacity 0.25)');
 assert.ok(Array.isArray(GRAPH_DATA.cctvPoints), 'GRAPH_DATA.cctvPoints harus berupa array');
 assert.equal(GRAPH_DATA.cctvPoints.length, 10, 'Harus terdapat 10 titik lokasi CCTV Pelindung pada graf');
+const cctvCisangkuy = GRAPH_DATA.cctvPoints.find((c) => c.id === 'cctv_lansia_pustaka' || c.nodeId === 'V_Cisangkuy');
+assert.ok(cctvCisangkuy, 'CCTV Cisangkuy harus ada');
+assert.ok(cctvCisangkuy.lat >= -6.9015, 'CCTV Cisangkuy harus berada di atas Taman Lansia (simpang Cisangkuy - Diponegoro, lat >= -6.9015)');
 assert.ok(Array.isArray(GRAPH_DATA.manualSurveyPoints), 'GRAPH_DATA.manualSurveyPoints harus berupa array');
 assert.equal(GRAPH_DATA.manualSurveyPoints.length, 6, 'Harus terdapat 6 titik lokasi survei manual di lapangan');
 

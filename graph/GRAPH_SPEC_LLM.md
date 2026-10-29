@@ -250,16 +250,16 @@ Daftar kamera berikut telah dipetakan langsung dengan koordinat dan ID streaming
 
 | No | ID Simpul | Lokasi & Nama Kamera CCTV Pelindung | Instansi | Koordinat (Lat, Lng) | Peran Pengukuran Aliran (Network Flow) |
 |:---:|:---:|:---|:---:|:---:|:---|
-| 1 | **S1** | `CCTV ITB KEBUN BINATANG 01 / 02 / 03` | DISKOMINFO | -6.893909, 107.608646 | Menghitung inflow utama $S_1$ dari arah Jl. Tamansari Utara / Flyover Pasupati |
-| 2 | **V_Cikapayang** | `TAMAN PASUPATI_01 / 02` & `TAMAN SKETPARK_01 / 03` | DPKP3 | -6.897761, 107.609868 | Memantau turun Pasupati & percabangan aliran $S_1 \to$ Cikapayang (P3) vs Sulanjana (P4) |
-| 3 | **V_Sulanjana** | `CCTV TAMAN SARI - WS 01 / 02` | DISKOMINFO | -6.900525, 107.609357 | Memantau volume belok kiri masuk Jl. Sulanjana (P4) |
-| 4 | **S2** | `CCTV DIPATIUKUR SEKELOA 01 / 02` | DISKOMINFO | -6.892916, 107.618313 | Menghitung inflow utama $S_2$ di koridor Jl. Dipatiukur utara |
-| 5 | **V_Djuanda_Hasanuddin** | `CCTV DAGO 2-SMA 1 01 / 02` | DISKOMINFO | -6.894972, 107.612795 | Menghitung arus P2 yang keluar dari Jl. Hasanuddin menuju Jl. Ir. H. Djuanda (Dago) |
-| 6 | **V_DU_Selatan** | `CCTV DAGO 1-CIKAPAYANG 01` & `TM CIKAPAYANG DAGO_04` | DISKOMINFO | -6.899000, 107.612643 | Menghitung arus P3 masuk Dipatiukur Selatan dan arus P2 lurus di Dago |
-| 7 | **V_Djuanda_Diponegoro** | `SP SULANJANA` | DISHUB | -6.900167, 107.612457 | Titik temu aliran P2 (Dago) dan P4 (Sulanjana) masuk ke Jl. Diponegoro Barat |
-| 8 | **V_Surapati_Merak** | `CCTV GASIBU_01 / 02` & `SP TELKOM - Gasibu` | DISKOMINFO / DISHUB | -6.899248, 107.619846 | Memantau arus keluar Jl. Merak (P1) yang bergabung ke Jl. Surapati depan Gasibu |
-| 9 | **V_Cisangkuy** | `TAMAN LANSIA` & `Taman Pustaka Bunga_03` | DPKP3 | -6.902141, 107.620938 | Memantau arus P4 di koridor belakang Gedung Sate (Cisangkuy & Citarum) |
-| 10 | **T1 & T2** | `CCTV PHH MUSTOFA-PUSDAI 01 / 02` & `CCTV PUSDAI 01 / 02` | DISKOMINFO | -6.899439, 107.627107 | Menghitung total outflow akhir pada Sink $T_1$ (Surapati Timur) dan $T_2$ (Diponegoro Timur) |
+| 1 | **S1** | `CCTV ITB KEBUN BINATANG 01 / 02 / 03` | DISKOMINFO | -6.895500, 107.608700 | Menghitung inflow utama $S_1$ dari arah Jl. Tamansari Utara / turunan Pasupati |
+| 2 | **V_Cikapayang** | `TAMAN PASUPATI_01 / 02` & `TAMAN SKETPARK_01 / 03` | DPKP3 | -6.898060, 107.609670 | Memantau turun Pasupati & percabangan aliran $S_1 \to$ Cikapayang (P3) vs Sulanjana (P4) |
+| 3 | **V_Sulanjana** | `CCTV TAMAN SARI - WS 01 / 02` | DISKOMINFO | -6.899500, 107.609970 | Memantau volume belok kiri masuk Jl. Sulanjana (P4) |
+| 4 | **S2** | `CCTV DIPATIUKUR SEKELOA 01 / 02` | DISKOMINFO | -6.891900, 107.617580 | Menghitung inflow utama $S_2$ di koridor Jl. Dipatiukur utara |
+| 5 | **V_Djuanda_Hasanuddin** | `CCTV DAGO 2-SMA 1 01 / 02` | DISKOMINFO | -6.894920, 107.613210 | Menghitung arus P2 yang keluar dari Jl. Hasanuddin menuju Jl. Ir. H. Djuanda (Dago) |
+| 6 | **V_DU_Selatan** | `CCTV DAGO 1-CIKAPAYANG 01` & `TM CIKAPAYANG DAGO_04` | DISKOMINFO | -6.898850, 107.612830 | Menghitung arus P3 masuk Dipatiukur Selatan dan arus P2 lurus di Dago |
+| 7 | **V_Djuanda_Diponegoro** | `SP SULANJANA` | DISHUB | -6.900250, 107.612620 | Titik temu aliran P2 (Dago) dan P4 (Sulanjana) masuk ke Jl. Diponegoro Barat |
+| 8 | **V_Surapati_Merak** | `CCTV GASIBU_01 / 02` & `SP TELKOM - Gasibu` | DISKOMINFO / DISHUB | -6.899280, 107.620320 | Memantau arus keluar Jl. Merak (P1) yang bergabung ke Jl. Surapati depan Gasibu |
+| 9 | **V_Cisangkuy** | `TAMAN LANSIA` & `Taman Pustaka Bunga_03` | DPKP3 | -6.901230, 107.620840 | Memantau arus P4 di Jl. Cisangkuy simpang Jl. Diponegoro (utara/atas Taman Lansia) |
+| 10 | **T1 & T2** | `CCTV PHH MUSTOFA-PUSDAI 01 / 02` & `CCTV PUSDAI 01 / 02` | DISKOMINFO | -6.899550, 107.627090 | Menghitung total outflow akhir pada Sink $T_1$ (Surapati Timur) dan $T_2$ (Diponegoro Timur) |
 
 ### 7.2 Matriks 6 Titik Wajib Survei Manual / Rekam Lapangan (Blind Spots)
 
