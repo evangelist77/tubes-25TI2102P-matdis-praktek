@@ -213,6 +213,33 @@ assert.match(specContent, /Jl\. Merak[\s\S]*?4\s*meter/i, 'Dokumen LLM harus men
 assert.match(specContent, /Jl\. Surapati[\s\S]*?3\s*lajur/i, 'Dokumen LLM harus mencatat Jl. Surapati memiliki 3 lajur trunk');
 assert.match(specContent, /Jl\. Diponegoro[\s\S]*?4\s*lajur/i, 'Dokumen LLM harus mencatat Jl. Diponegoro memiliki 4 lajur primary');
 
+// 8b. Cek koreksi pembagian jalur independen (Dual Carriageway) dan catatan ruas bersama (Shared Lanes)
+assert.match(
+  specContent,
+  /Dual Carriageway/i,
+  'Dokumen LLM harus memuat klasifikasi "Dual Carriageway"'
+);
+assert.match(
+  specContent,
+  /Shared Lanes/i,
+  'Dokumen LLM harus memuat klasifikasi "Shared Lanes"'
+);
+assert.match(
+  specContent,
+  /Jl\. Cikapayang[\s\S]*?~6\s*meter[\s\S]*?(?:dibagi 2|jalur independen|lajur independen)/i,
+  'Dokumen LLM harus mencatat koreksi Jl. Cikapayang ~6 meter (dibagi 2 / jalur independen)'
+);
+assert.match(
+  specContent,
+  /Jl\. Ir\.? H\.? Djuanda[\s\S]*?~6\s*meter[\s\S]*?(?:dibagi 2|jalur independen|lajur independen)/i,
+  'Dokumen LLM harus mencatat koreksi Jl. Ir. H. Djuanda ~6 meter (dibagi 2 / jalur independen)'
+);
+assert.match(
+  specContent,
+  /Nilai C \(Effective Lane Width\)[\s\S]*?belum ditentukan[\s\S]*?open-ended question/i,
+  'Dokumen LLM harus mencatat bahwa pada ruas shared lanes, nilai C (Effective Lane Width) belum ditentukan (masih open-ended question)'
+);
+
 // 7. Cek fungsi pengatur transparansi peta (setMapOpacity & getMapOpacity)
 assert.equal(typeof sandbox.window.setMapOpacity, 'function', 'window.setMapOpacity harus tersedia');
 assert.equal(typeof sandbox.window.getMapOpacity, 'function', 'window.getMapOpacity harus tersedia');
