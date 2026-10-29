@@ -103,6 +103,54 @@
       background: #1d4ed8;
     }
 
+    .btn-toggle-cctv {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #dc2626;
+      color: #ffffff;
+      border: 1px solid #f87171;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-toggle-cctv:hover {
+      background: #b91c1c;
+    }
+
+    .btn-toggle-cctv.inactive {
+      background: #1e293b;
+      color: #94a3b8;
+      border-color: #475569;
+    }
+
+    .cctv-pin-badge {
+      background: #dc2626;
+      color: #ffffff;
+      border: 2px solid #fecaca;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.9), 0 0 18px rgba(220, 38, 38, 0.7);
+    }
+
+    .manual-pin-badge {
+      background: #eab308;
+      color: #0f172a;
+      border: 2px solid #fef08a;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.85);
+    }
+
     .opacity-control {
       margin-top: 10px;
       display: flex;
@@ -397,6 +445,10 @@
     <div class="controls">
       <button id="btn-show-all" class="btn-reset" type="button">
         Tampilkan Semua 4 Jalur Sekaligus
+      </button>
+
+      <button id="btn-toggle-cctv" class="btn-toggle-cctv" type="button">
+        📹 Tampilkan Titik CCTV Pelindung (10) &amp; Survei Manual (6)
       </button>
 
       <div class="opacity-control">
@@ -1063,6 +1115,170 @@
             [-6.90115, 107.62485]
           ]
         }
+      ],
+
+      cctvPoints: [
+        {
+          id: 'cctv_itb_bonbin',
+          nodeId: 'S1',
+          name: 'CCTV ITB KEBUN BINATANG 01 / 02 / 03',
+          dinas: 'DISKOMINFO',
+          lat: -6.893909,
+          lng: 107.608646,
+          cameras: ['CCTV ITB KEBUN BINATANG 01', 'CCTV ITB KEBUN BINATANG 02', 'CCTV ITB KEBUN BINATANG 03'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/DAHUA/ITBKeb.m3u8',
+          role: 'Menghitung inflow utama S1 dari Jl. Tamansari Utara'
+        },
+        {
+          id: 'cctv_taman_pasupati',
+          nodeId: 'V_Cikapayang',
+          name: 'TAMAN PASUPATI_01 / 02 & TAMAN SKETPARK_01 / 03',
+          dinas: 'DPKP3',
+          lat: -6.897761,
+          lng: 107.609868,
+          cameras: ['TAMAN PASUPATI_01', 'TAMAN PASUPATI_02', 'TAMAN SKETPARK_01', 'TAMAN SKETPARK_03'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/DPKP3/tamanpasupatisatu.m3u8',
+          role: 'Memantau turun Flyover Pasupati & simpang Tamansari–Cikapayang (percabangan P3 vs P4)'
+        },
+        {
+          id: 'cctv_tamansari_ws',
+          nodeId: 'V_Sulanjana',
+          name: 'CCTV TAMAN SARI - WS 01 & 02',
+          dinas: 'DISKOMINFO',
+          lat: -6.900525,
+          lng: 107.609357,
+          cameras: ['CCTV TAMAN SARI - WS 01', 'CCTV TAMAN SARI - WS 02'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/Tamsar1.m3u8',
+          role: 'Memantau arus sekitar simpang Tamansari – Jl. Sulanjana (P4)'
+        },
+        {
+          id: 'cctv_du_sekeloa',
+          nodeId: 'S2',
+          name: 'CCTV DIPATIUKUR SEKELOA 01 & 02',
+          dinas: 'DISKOMINFO',
+          lat: -6.892916,
+          lng: 107.618313,
+          cameras: ['CCTV DIPATIUKUR SEKELOA 01', 'CCTV DIPATIUKUR SEKELOA 02'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/Dipaunpad.m3u8',
+          role: 'Menghitung inflow utama S2 di Jl. Dipatiukur sebelum simpang Hasanuddin & Singaperbangsa'
+        },
+        {
+          id: 'cctv_dago_sma1',
+          nodeId: 'V_Djuanda_Hasanuddin',
+          name: 'CCTV DAGO 2-SMA 1 01 & 02',
+          dinas: 'DISKOMINFO',
+          lat: -6.894972,
+          lng: 107.612795,
+          cameras: ['CCTV DAGO 2-SMA 1 01', 'CCTV DAGO 2-SMA 1 02'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/Dagsm.m3u8',
+          role: 'Menghitung arus P2 yang keluar dari Jl. Hasanuddin belok kiri ke Jl. Ir. H. Djuanda (Dago)'
+        },
+        {
+          id: 'cctv_dago_cikapayang',
+          nodeId: 'V_DU_Selatan',
+          name: 'CCTV DAGO 1-CIKAPAYANG 01 & TM CIKAPAYANG DAGO_04',
+          dinas: 'DISKOMINFO',
+          lat: -6.899000,
+          lng: 107.612643,
+          cameras: ['CCTV DAGO 1-CIKAPAYANG 01', 'TM CIKAPAYANG DAGO_04'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/Dagcik.m3u8',
+          role: 'Menghitung arus P3 masuk ke Jl. Dipatiukur Selatan & arus P2 lurus di Dago'
+        },
+        {
+          id: 'cctv_sp_sulanjana',
+          nodeId: 'V_Djuanda_Diponegoro',
+          name: 'SP SULANJANA',
+          dinas: 'DISHUB',
+          lat: -6.900167,
+          lng: 107.612457,
+          cameras: ['SP SULANJANA'],
+          streamUrl: 'https://pelindung.bandung.go.id',
+          role: 'Titik temu P2 (dari Dago) dan P4 (dari Sulanjana) masuk ke Jl. Diponegoro Barat'
+        },
+        {
+          id: 'cctv_gasibu_merak',
+          nodeId: 'V_Surapati_Merak',
+          name: 'CCTV GASIBU_01 / 02 & SP TELKOM - Gasibu',
+          dinas: 'DISKOMINFO / DISHUB',
+          lat: -6.899248,
+          lng: 107.619846,
+          cameras: ['CCTV GASIBU_01', 'CCTV GASIBU_02', 'SP TELKOM - Gasibu'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/DAHUA/GASIBU.m3u8',
+          role: 'Memantau arus keluar Jl. Merak (P1) yang masuk ke Jl. Surapati depan Gasibu'
+        },
+        {
+          id: 'cctv_lansia_pustaka',
+          nodeId: 'V_Cisangkuy',
+          name: 'TAMAN LANSIA & Taman Pustaka Bunga_03',
+          dinas: 'DPKP3',
+          lat: -6.902141,
+          lng: 107.620938,
+          cameras: ['TAMAN LANSIA', 'Taman Pustaka Bunga_03'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/DPKP3/tamanlansiasatu.m3u8',
+          role: 'Memantau arus P4 di koridor Jl. Cisangkuy & pertemuan Jl. Citarum'
+        },
+        {
+          id: 'cctv_pusdai_sink',
+          nodeId: 'T1',
+          name: 'CCTV PHH MUSTOFA-PUSDAI 01/02 (T1) & CCTV PUSDAI 01/02 (T2)',
+          dinas: 'DISKOMINFO',
+          lat: -6.899439,
+          lng: 107.627107,
+          cameras: ['CCTV PHH MUSTOFA-PUSDAI 01', 'CCTV PHH MUSTOFA-PUSDAI 02', 'CCTV PUSDAI 01', 'CCTV PUSDAI 02'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/Muspus.m3u8',
+          role: 'Menghitung total outflow akhir di Sink T1 (Surapati Timur) & T2 (Diponegoro Timur)'
+        }
+      ],
+
+      manualSurveyPoints: [
+        {
+          id: 'manual_singaperbangsa',
+          nodeId: 'V_Singaperbangsa',
+          name: 'Survei Manual 1: Simpang Dipatiukur – Singaperbangsa',
+          lat: -6.89559,
+          lng: 107.61688,
+          reason: 'Tidak ada CCTV (jarak 337m dari Sekeloa). Titik wajib rekam untuk menghitung gabungan arus P1 (dari utara) + P3 (dari selatan) yang masuk ke bottleneck Jl. Singaperbangsa.'
+        },
+        {
+          id: 'manual_titiran',
+          nodeId: 'V_Titiran',
+          name: 'Survei Manual 2: Simpang Singaperbangsa – Titiran (Percabangan Merak vs Tikukur)',
+          lat: -6.89543,
+          lng: 107.61898,
+          reason: 'Tidak ada CCTV (jalan perumahan lebar 3m). Wajib direkam manual untuk mengetahui proporsi pecahnya arus ke Jl. Merak (P1) vs Jl. Tikukur (P3).'
+        },
+        {
+          id: 'manual_gagak',
+          nodeId: 'V_Surapati_Gagak',
+          name: 'Survei Manual 3: Simpang Keluar Jl. Gagak → Jl. Surapati',
+          lat: -6.89923,
+          lng: 107.62373,
+          reason: 'Tidak ada CCTV di mulut Jl. Gagak (jarak 281m ke Pusdai). Wajib direkam untuk memvalidasi outflow P3 yang bergabung ke Jl. Surapati Timur.'
+        },
+        {
+          id: 'manual_hasanuddin',
+          nodeId: 'V_Hasanuddin',
+          name: 'Survei Manual 4: Simpang Jl. Dipatiukur – Jl. Hasanuddin',
+          lat: -6.89474,
+          lng: 107.61743,
+          reason: 'Tidak ada CCTV tepat di belokan masuk Jl. Hasanuddin. Memastikan proporsi kendaraan dari S2 yang belok ke Hasanuddin (P2) vs lurus ke Singaperbangsa (P1).'
+        },
+        {
+          id: 'manual_cilamaya',
+          nodeId: 'V_Cilamaya',
+          name: 'Survei Manual 5: Simpang Jl. Diponegoro – Jl. Cilamaya (Samping Gedung Sate)',
+          lat: -6.90134,
+          lng: 107.61697,
+          reason: 'CCTV Gasibu berada di sisi utara lapangan (terhalang Gedung Sate). Titik ini wajib direkam untuk menghitung arus gabungan P2 + P4 yang masuk ke koridor belakang Gedung Sate.'
+        },
+        {
+          id: 'manual_cisanggarung',
+          nodeId: 'V_Cisanggarung',
+          name: 'Survei Manual 6: Simpang Jl. Cimandiri – Jl. Cisanggarung (Percabangan Citarum vs Cisangkuy)',
+          lat: -6.90334,
+          lng: 107.62020,
+          reason: 'Tidak ada CCTV jalan raya di belakang Gedung Sate. Wajib direkam untuk menghitung pembagian arus akhir menuju Jl. Citarum (P2) vs Jl. Cisangkuy (P4).'
+        }
       ]
     };
 
@@ -1344,6 +1560,80 @@
         setMapOpacity(Number(e.target.value) / 100);
       });
     }
+
+    // Render titik CCTV Pelindung Bandung dan Titik Survei Manual Lapangan
+    const surveyMarkers = [];
+    let surveyLayerVisible = true;
+
+    GRAPH_DATA.cctvPoints.forEach((pt) => {
+      const m = L.marker([pt.lat, pt.lng], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div class="cctv-pin-badge">📹 CCTV [${pt.nodeId}]</div>`,
+          iconSize: [110, 24],
+          iconAnchor: [55, -8]
+        })
+      }).addTo(map);
+
+      m.bindTooltip(
+        `
+        <div class="segment-tooltip">
+          <div class="seg-name" style="color: #f87171;">📹 ${pt.name}</div>
+          <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas} • <strong>Simpul:</strong> ${pt.nodeId}</div>
+          <div class="seg-detail">${pt.role}</div>
+          <div class="seg-nodes">Stream: ${pt.streamUrl}</div>
+        </div>
+        `,
+        { direction: 'top', className: 'segment-tooltip-container' }
+      );
+      surveyMarkers.push(m);
+    });
+
+    GRAPH_DATA.manualSurveyPoints.forEach((pt) => {
+      const m = L.marker([pt.lat, pt.lng], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div class="manual-pin-badge">📝 MANUAL [${pt.nodeId}]</div>`,
+          iconSize: [120, 24],
+          iconAnchor: [60, -8]
+        })
+      }).addTo(map);
+
+      m.bindTooltip(
+        `
+        <div class="segment-tooltip">
+          <div class="seg-name" style="color: #facc15;">📝 ${pt.name}</div>
+          <div class="seg-detail">${pt.reason}</div>
+        </div>
+        `,
+        { direction: 'top', className: 'segment-tooltip-container' }
+      );
+      surveyMarkers.push(m);
+    });
+
+    /**
+     * Menampilkan atau menyembunyikan layer titik CCTV & survei manual di peta.
+     * @param {boolean} [forceState] - Paksa visibilitas layer jika dispesifikasikan.
+     * @returns {boolean} Status visibilitas saat ini.
+     */
+    function toggleSurveyLayer(forceState) {
+      surveyLayerVisible = typeof forceState === 'boolean' ? forceState : !surveyLayerVisible;
+      surveyMarkers.forEach((m) => {
+        m.setOpacity(surveyLayerVisible ? 1 : 0);
+      });
+      const btn = document.getElementById('btn-toggle-cctv');
+      if (btn) {
+        btn.classList.toggle('inactive', !surveyLayerVisible);
+      }
+      return surveyLayerVisible;
+    }
+
+    const btnToggleCctv = document.getElementById('btn-toggle-cctv');
+    if (btnToggleCctv) {
+      btnToggleCctv.addEventListener('click', () => toggleSurveyLayer());
+    }
+
+    window.toggleSurveyLayer = toggleSurveyLayer;
 
     window.setMapOpacity = setMapOpacity;
     window.getMapOpacity = () => tileLayer.options.opacity ?? 1;

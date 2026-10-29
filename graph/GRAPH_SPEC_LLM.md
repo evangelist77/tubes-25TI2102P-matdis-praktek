@@ -237,3 +237,45 @@ flowchart TD
 Salin teks berikut bersama isi dokumen ini ketika Anda ingin meminta LLM melakukan analisis pemodelan Matematika Diskrit:
 
 > *"Berikut adalah spesifikasi jaringan aliran jalan (Directed Network Flow Graph) dari Kasus 4 Pasar Tumpah Kawasan Gasibu–Monju Bandung, mencakup 2 Source ($S_1, S_2$), 2 Sink ($T_1, T_2$), 19 Simpul Persimpangan, dan 4 Path aliran. Berdasarkan dokumen ini, mohon lakukan [PILIH: hitung Maximum Flow dengan menentukan kapasitas realistis tiap ruas / cari Minimum Cut bottleneck pemotongan arus / buat matriks ketetanggaan graf / rancang rute alternatif pengalihan arus]."*
+
+---
+
+## 7. Strategi Pengukuran Flow Kendaraan: CCTV Pelindung Bandung vs Survei Manual Lapangan
+
+Untuk menghitung arus aktual (real traffic flow) kendaraan per jam pada model Maximum Flow, tim dapat memanfaatkan data streaming video daring dari sistem **Pelindung Bandung** (`https://pelindung.bandung.go.id/`) yang dikelola Diskominfo, Dishub, dan DPKP3 Kota Bandung, dikombinasikan dengan titik **Survei Manual (Rekam Lapangan)** pada ruas jalan perumahan/lingkungan yang tidak terjangkau CCTV publik.
+
+### 7.1 Matriks 10 Titik Lokasi Pantau CCTV Pelindung Bandung (24 Kamera)
+
+Daftar kamera berikut telah dipetakan langsung dengan koordinat dan ID streaming resmi dari portal `pelindung.bandung.go.id:8443/api/cek`:
+
+| No | ID Simpul | Lokasi & Nama Kamera CCTV Pelindung | Instansi | Koordinat (Lat, Lng) | Peran Pengukuran Aliran (Network Flow) |
+|:---:|:---:|:---|:---:|:---:|:---|
+| 1 | **S1** | `CCTV ITB KEBUN BINATANG 01 / 02 / 03` | DISKOMINFO | -6.893909, 107.608646 | Menghitung inflow utama $S_1$ dari arah Jl. Tamansari Utara / Flyover Pasupati |
+| 2 | **V_Cikapayang** | `TAMAN PASUPATI_01 / 02` & `TAMAN SKETPARK_01 / 03` | DPKP3 | -6.897761, 107.609868 | Memantau turun Pasupati & percabangan aliran $S_1 \to$ Cikapayang (P3) vs Sulanjana (P4) |
+| 3 | **V_Sulanjana** | `CCTV TAMAN SARI - WS 01 / 02` | DISKOMINFO | -6.900525, 107.609357 | Memantau volume belok kiri masuk Jl. Sulanjana (P4) |
+| 4 | **S2** | `CCTV DIPATIUKUR SEKELOA 01 / 02` | DISKOMINFO | -6.892916, 107.618313 | Menghitung inflow utama $S_2$ di koridor Jl. Dipatiukur utara |
+| 5 | **V_Djuanda_Hasanuddin** | `CCTV DAGO 2-SMA 1 01 / 02` | DISKOMINFO | -6.894972, 107.612795 | Menghitung arus P2 yang keluar dari Jl. Hasanuddin menuju Jl. Ir. H. Djuanda (Dago) |
+| 6 | **V_DU_Selatan** | `CCTV DAGO 1-CIKAPAYANG 01` & `TM CIKAPAYANG DAGO_04` | DISKOMINFO | -6.899000, 107.612643 | Menghitung arus P3 masuk Dipatiukur Selatan dan arus P2 lurus di Dago |
+| 7 | **V_Djuanda_Diponegoro** | `SP SULANJANA` | DISHUB | -6.900167, 107.612457 | Titik temu aliran P2 (Dago) dan P4 (Sulanjana) masuk ke Jl. Diponegoro Barat |
+| 8 | **V_Surapati_Merak** | `CCTV GASIBU_01 / 02` & `SP TELKOM - Gasibu` | DISKOMINFO / DISHUB | -6.899248, 107.619846 | Memantau arus keluar Jl. Merak (P1) yang bergabung ke Jl. Surapati depan Gasibu |
+| 9 | **V_Cisangkuy** | `TAMAN LANSIA` & `Taman Pustaka Bunga_03` | DPKP3 | -6.902141, 107.620938 | Memantau arus P4 di koridor belakang Gedung Sate (Cisangkuy & Citarum) |
+| 10 | **T1 & T2** | `CCTV PHH MUSTOFA-PUSDAI 01 / 02` & `CCTV PUSDAI 01 / 02` | DISKOMINFO | -6.899439, 107.627107 | Menghitung total outflow akhir pada Sink $T_1$ (Surapati Timur) dan $T_2$ (Diponegoro Timur) |
+
+### 7.2 Matriks 6 Titik Wajib Survei Manual / Rekam Lapangan (Blind Spots)
+
+Enam persimpangan berikut berada di kawasan perumahan/lingkungan sempit yang tidak memiliki fasilitas CCTV pemerintah, sehingga wajib disurvei atau direkam secara manual (misal 15 menit menggunakan kamera ponsel/tally counter):
+
+| No | ID Simpul | Nama Titik Survei Manual Lapangan | Koordinat (Lat, Lng) | Alasan Teknis & Peran Validasi Aliran |
+|:---:|:---:|:---|:---:|:---|
+| 1 | **V_Singaperbangsa** | Simpang Dipatiukur – Singaperbangsa | -6.89559, 107.61688 | **Bottleneck Utama:** Tidak ada CCTV (337m dari Sekeloa). Wajib mengukur gabungan arus P1 (dari utara) + P3 (dari selatan) yang masuk ke Jl. Singaperbangsa selebar 4-5m. |
+| 2 | **V_Titiran** | Simpang Singaperbangsa – Titiran | -6.89543, 107.61898 | **Percabangan Aliran:** Jalan perumahan lebar 3m. Wajib merekam proporsi pecahnya aliran ke Jl. Merak (P1) vs Jl. Tikukur (P3). |
+| 3 | **V_Surapati_Gagak** | Simpang Keluar Jl. Gagak $\to$ Jl. Surapati | -6.89923, 107.62373 | **Outflow P3:** Tidak ada CCTV di mulut Jl. Gagak. Wajib merekam volume kendaraan yang keluar dari Jl. Gagak sebelum bergabung ke jalan arteri Surapati. |
+| 4 | **V_Hasanuddin** | Simpang Jl. Dipatiukur – Jl. Hasanuddin | -6.89474, 107.61743 | **Percabangan S2:** Belokan masuk Jl. Hasanuddin tidak ter-cover CCTV Dipatiukur Sekeloa. Mengukur proporsi kendaraan S2 yang belok ke Hasanuddin (P2) vs lurus ke Singaperbangsa (P1). |
+| 5 | **V_Cilamaya** | Simpang Jl. Diponegoro – Jl. Cilamaya | -6.90134, 107.61697 | **Samping Gedung Sate:** CCTV Gasibu terhalang gedung. Wajib merekam volume arus gabungan P2 + P4 yang beralih dari Diponegoro ke Jl. Cilamaya. |
+| 6 | **V_Cisanggarung** | Simpang Jl. Cimandiri – Jl. Cisanggarung | -6.90334, 107.62020 | **Percabangan Koridor Belakang:** Mengukur pembagian kendaraan yang diarahkan ke Jl. Citarum (P2) vs Jl. Cisangkuy (P4). |
+
+### 7.3 Optimasi Survei Menggunakan Hukum Kekekalan Aliran Kirchhoff
+
+Dengan menerapkan Hukum Kekekalan Aliran (*Kirchhoff's Flow Law* / Node Conservation) $\sum f_{\text{in}}(v) = \sum f_{\text{out}}(v)$ pada simpul perantara, tim survei dapat meminimalkan titik rekam manual:
+1. **Simpul $V_{\text{Singaperbangsa}}$:** $f(\text{Singaperbangsa}) = f(\text{S2} \to \text{SPB}) + f(\text{DU Selatan} \to \text{SPB})$. Karena $f(\text{DU Selatan})$ dapat divalidasi dari CCTV Dago Cikapayang, tim cukup menghitung flow pada simpang Singaperbangsa untuk memverifikasi akurasi konservasi aliran.
+2. **Simpul $V_{\text{Titiran}}$:** $f(\text{Titiran}) = f(\text{Merak}) + f(\text{Tikukur})$. Karena arus keluar Jl. Merak terpantau jelas di CCTV Gasibu Telkom, volume arus yang masuk ke Jl. Tikukur dapat dihitung secara analitik: $f(\text{Tikukur}) = f(\text{Titiran}) - f(\text{Merak})$, sehingga survei pada Jl. Tikukur tidak perlu dilakukan di semua titik.

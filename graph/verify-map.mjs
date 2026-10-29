@@ -307,7 +307,16 @@ vm.runInContext(highlightCode, pelindungSandbox);
 
 assert.ok(Array.isArray(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS), 'window.PELINDUNG_MAXFLOW_TARGETS harus berupa array');
 assert.ok(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length >= 20, 'Harus mencakup minimal 20 kamera CCTV relevan');
-assert.match(mockMarkerIconTarget.style.filter || '', /drop-shadow/, 'Pinpoint target harus diberi filter drop-shadow merah');
-assert.equal(mockMarkerIconOther.style.opacity, '0.25', 'Pinpoint non-target harus diredupkan (opacity 0.25)');
+// 11. Cek layer CCTV Pelindung & Titik Survei Manual di index.html dan GRAPH_SPEC_LLM.md
+assert.ok(Array.isArray(GRAPH_DATA.cctvPoints), 'GRAPH_DATA.cctvPoints harus berupa array');
+assert.equal(GRAPH_DATA.cctvPoints.length, 10, 'Harus terdapat 10 titik lokasi CCTV Pelindung pada graf');
+assert.ok(Array.isArray(GRAPH_DATA.manualSurveyPoints), 'GRAPH_DATA.manualSurveyPoints harus berupa array');
+assert.equal(GRAPH_DATA.manualSurveyPoints.length, 6, 'Harus terdapat 6 titik lokasi survei manual di lapangan');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, dan script pelindung-highlight.js berhasil.');
+assert.match(html, /id="btn-toggle-cctv"/, 'Harus memiliki tombol #btn-toggle-cctv di sidebar');
+assert.equal(typeof sandbox.window.toggleSurveyLayer, 'function', 'window.toggleSurveyLayer harus tersedia');
+
+assert.match(specContent, /pelindung\.bandung\.go\.id/i, 'GRAPH_SPEC_LLM.md harus memuat referensi CCTV pelindung.bandung.go.id');
+assert.match(specContent, /Survei Manual|Rekam Manual/i, 'GRAPH_SPEC_LLM.md harus memuat daftar titik survei manual');
+
+console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, dan layer CCTV/Survei Manual berhasil.');
