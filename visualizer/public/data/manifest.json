@@ -1,0 +1,164 @@
+{
+  "runs": [
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0,
+      "scenario": "C",
+      "filename": "trace_S1_T1_a0.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) [Normal (Tanpa Pasar, alpha=0)]"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.25,
+      "scenario": "B",
+      "filename": "trace_S1_T1_a25.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) [Pasar Mulai Bubar (Penyempitan 25%, alpha=0.25)]"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.5,
+      "scenario": "A",
+      "filename": "trace_S1_T1_a50.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) [Pasar Penuh Pagi (Penyempitan 50%, alpha=0.5)]"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.75,
+      "scenario": "A",
+      "filename": "trace_S1_T1_a75.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) [Pasar Sangat Padat (Penyempitan 75%, alpha=0.75)]"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0,
+      "scenario": "C",
+      "filename": "trace_S1_T2_a0.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) [Normal (Tanpa Pasar, alpha=0)]"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.25,
+      "scenario": "B",
+      "filename": "trace_S1_T2_a25.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) [Pasar Mulai Bubar (Penyempitan 25%, alpha=0.25)]"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.5,
+      "scenario": "A",
+      "filename": "trace_S1_T2_a50.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) [Pasar Penuh Pagi (Penyempitan 50%, alpha=0.5)]"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.75,
+      "scenario": "A",
+      "filename": "trace_S1_T2_a75.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) [Pasar Sangat Padat (Penyempitan 75%, alpha=0.75)]"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0,
+      "scenario": "C",
+      "filename": "trace_S2_T1_a0.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) [Normal (Tanpa Pasar, alpha=0)]"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.25,
+      "scenario": "B",
+      "filename": "trace_S2_T1_a25.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) [Pasar Mulai Bubar (Penyempitan 25%, alpha=0.25)]"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.5,
+      "scenario": "A",
+      "filename": "trace_S2_T1_a50.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) [Pasar Penuh Pagi (Penyempitan 50%, alpha=0.5)]"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.75,
+      "scenario": "A",
+      "filename": "trace_S2_T1_a75.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) [Pasar Sangat Padat (Penyempitan 75%, alpha=0.75)]"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0,
+      "scenario": "C",
+      "filename": "trace_S2_T2_a0.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) [Normal (Tanpa Pasar, alpha=0)]"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.25,
+      "scenario": "B",
+      "filename": "trace_S2_T2_a25.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) [Pasar Mulai Bubar (Penyempitan 25%, alpha=0.25)]"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.5,
+      "scenario": "A",
+      "filename": "trace_S2_T2_a50.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) [Pasar Penuh Pagi (Penyempitan 50%, alpha=0.5)]"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.75,
+      "scenario": "A",
+      "filename": "trace_S2_T2_a75.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) [Pasar Sangat Padat (Penyempitan 75%, alpha=0.75)]"
+    }
+  ]
+}
