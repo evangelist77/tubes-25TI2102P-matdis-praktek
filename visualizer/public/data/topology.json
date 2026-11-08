@@ -1,0 +1,737 @@
+{
+  "case_id": "case_04_pasar_tumpah",
+  "title": "Kasus 4 - Pasar Tumpah Gasibu-Monju Bandung: Bottleneck Aliran Kendaraan (Maximum Flow)",
+  "description": "Jaringan aliran jalan di kawasan Gasibu-Monju-PUSDAI, Bandung (27 simpul asli + supersource S* dan supersink T*). Dua titik masuk (S1 Tamansari/Pasupati, S2 Dipatiukur) dan dua titik keluar (T1 Surapati Timur/PUSDAI, T2 Diponegoro Timur). Pasar tumpah di sepanjang Jl. Japati sampai Monju menyempitkan kapasitas ruas Japati, dan Jl. Singaperbangsa ditutup pada pagi hari pasar sampai sekitar pukul 11.00-12.00. Analisis dibatasi Minggu pagi sampai pukul 12.00. Kapasitas dalam kendaraan/jam (angka relatif dari GRAPH_SPEC_LLM.md, belum hasil survei).",
+  "nodes": [
+    {
+      "id": 0,
+      "code": "S*",
+      "label": "Supersource S* (gabungan seluruh titik masuk)",
+      "pos": [
+        107.6047,
+        -6.8935
+      ],
+      "type": "supersource"
+    },
+    {
+      "id": 1,
+      "code": "S1",
+      "label": "S1 - Turun Pasupati / Jl. Tamansari (Titik Masuk / Source)",
+      "pos": [
+        107.6087,
+        -6.8955
+      ],
+      "type": "source"
+    },
+    {
+      "id": 2,
+      "code": "S2",
+      "label": "S2 - Jl. Dipatiukur (Depan Kampus Unpad) (Titik Masuk / Source)",
+      "pos": [
+        107.61758,
+        -6.8919
+      ],
+      "type": "source"
+    },
+    {
+      "id": 3,
+      "code": "T1",
+      "label": "T1 - PUSDAI / Jl. Surapati Timur (Titik Keluar / Sink)",
+      "pos": [
+        107.62709,
+        -6.89955
+      ],
+      "type": "sink"
+    },
+    {
+      "id": 4,
+      "code": "T2",
+      "label": "T2 - Jl. Diponegoro Timur (No. 61 / Dekat PUSDAI) (Titik Keluar / Sink)",
+      "pos": [
+        107.62485,
+        -6.90115
+      ],
+      "type": "sink"
+    },
+    {
+      "id": 5,
+      "code": "V_Cikapayang",
+      "label": "Simpang Jl. Tamansari – Jl. Cikapayang",
+      "pos": [
+        107.60967,
+        -6.89806
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 6,
+      "code": "V_Sulanjana",
+      "label": "Simpang Jl. Tamansari – Jl. Sulanjana",
+      "pos": [
+        107.60997,
+        -6.8995
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 7,
+      "code": "V_DU_Selatan",
+      "label": "Simpang Jl. Cikapayang – Jl. Dipatiukur Selatan",
+      "pos": [
+        107.61283,
+        -6.89885
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 8,
+      "code": "V_Hasanuddin",
+      "label": "Simpang Jl. Dipatiukur – Jl. Hasanuddin",
+      "pos": [
+        107.61743,
+        -6.89474
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 9,
+      "code": "V_Djuanda_Hasanuddin",
+      "label": "Simpang Jl. Hasanuddin – Jl. Ir. H. Djuanda (Dago)",
+      "pos": [
+        107.61321,
+        -6.89492
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 10,
+      "code": "V_Djuanda_Diponegoro",
+      "label": "Simpang Dago / Sulanjana – Jl. Diponegoro Barat",
+      "pos": [
+        107.61262,
+        -6.90025
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 11,
+      "code": "V_Singaperbangsa",
+      "label": "Simpang Jl. Dipatiukur – Jl. Singaperbangsa",
+      "pos": [
+        107.61688,
+        -6.89559
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 12,
+      "code": "V_Titiran",
+      "label": "Simpang Jl. Singaperbangsa – Jl. Titiran",
+      "pos": [
+        107.61898,
+        -6.89543
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 13,
+      "code": "V_Merak",
+      "label": "Simpang Jl. Titiran – Jl. Merak",
+      "pos": [
+        107.62025,
+        -6.89761
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 14,
+      "code": "V_Surapati_Merak",
+      "label": "Simpang Jl. Merak – Jl. Surapati",
+      "pos": [
+        107.62032,
+        -6.89928
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 15,
+      "code": "V_Tikukur",
+      "label": "Simpang Jl. Titiran – Jl. Tikukur",
+      "pos": [
+        107.62153,
+        -6.89718
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 16,
+      "code": "V_Gagak",
+      "label": "Simpang Jl. Tikukur / Puyuh – Jl. Gagak",
+      "pos": [
+        107.62387,
+        -6.8981
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 17,
+      "code": "V_Surapati_Gagak",
+      "label": "Simpang Jl. Gagak – Jl. Surapati",
+      "pos": [
+        107.62373,
+        -6.89923
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 18,
+      "code": "V_AriaJipang",
+      "label": "Simpang Jl. Diponegoro – Jl. Aria Jipang",
+      "pos": [
+        107.61507,
+        -6.90063
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 19,
+      "code": "V_Cilamaya",
+      "label": "Simpang Jl. Diponegoro – Jl. Cilamaya",
+      "pos": [
+        107.61697,
+        -6.90134
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 20,
+      "code": "V_Cimandiri",
+      "label": "Simpang Jl. Cilamaya – Jl. Cimandiri",
+      "pos": [
+        107.61725,
+        -6.90351
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 21,
+      "code": "V_Cisanggarung",
+      "label": "Simpang Jl. Cimandiri – Jl. Cisanggarung",
+      "pos": [
+        107.6202,
+        -6.90334
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 22,
+      "code": "V_Citarum",
+      "label": "Simpang Jl. Cisanggarung – Jl. Citarum",
+      "pos": [
+        107.6225,
+        -6.90449
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 23,
+      "code": "V_Cisangkuy",
+      "label": "Simpang Jl. Cisanggarung / Cimanuk – Jl. Cisangkuy",
+      "pos": [
+        107.62191,
+        -6.90276
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 24,
+      "code": "V_Monju_Utara",
+      "label": "Simpang Jl. Dipatiukur – Jl. Japati (Monju Utara)",
+      "pos": [
+        107.61802,
+        -6.8939
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 25,
+      "code": "V_Gasibu_Barat",
+      "label": "Simpang Jl. Surapati – Jl. Japati (Gasibu Atas Barat)",
+      "pos": [
+        107.61843,
+        -6.89926
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 26,
+      "code": "V_Gasibu_Timur",
+      "label": "Simpang Jl. Surapati – Jl. Sentot Alibasyah (Gasibu Atas Timur)",
+      "pos": [
+        107.61927,
+        -6.89932
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 27,
+      "code": "V_Diponegoro_Sentot",
+      "label": "Simpang Jl. Sentot Alibasyah – Jl. Diponegoro (Museum Geologi)",
+      "pos": [
+        107.61942,
+        -6.90119
+      ],
+      "type": "junction"
+    },
+    {
+      "id": 28,
+      "code": "T*",
+      "label": "Supersink T* (gabungan seluruh titik keluar)",
+      "pos": [
+        107.6311,
+        -6.9004
+      ],
+      "type": "supersink"
+    }
+  ],
+  "edges": [
+    {
+      "id": 0,
+      "from": 1,
+      "to": 5,
+      "capacity": 500.0,
+      "weight": 1.0,
+      "code": "S1 -> V_Cikapayang",
+      "road": "Turun Pasupati / Jl. Tamansari",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 1,
+      "from": 5,
+      "to": 6,
+      "capacity": 500.0,
+      "weight": 1.0,
+      "code": "V_Cikapayang -> V_Sulanjana",
+      "road": "Jl. Tamansari lanjut ke Sulanjana",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 2,
+      "from": 5,
+      "to": 7,
+      "capacity": 1200.0,
+      "weight": 1.0,
+      "code": "V_Cikapayang -> V_DU_Selatan",
+      "road": "Jl. Cikapayang (dual carriageway)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 3,
+      "from": 7,
+      "to": 11,
+      "capacity": 500.0,
+      "weight": 1.0,
+      "code": "V_DU_Selatan -> V_Singaperbangsa",
+      "road": "Jl. Dipatiukur (Selatan)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 4,
+      "from": 7,
+      "to": 25,
+      "capacity": 1400.0,
+      "weight": 1.0,
+      "code": "V_DU_Selatan -> V_Gasibu_Barat",
+      "road": "Jl. Surapati (Barat)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 5,
+      "from": 2,
+      "to": 24,
+      "capacity": 500.0,
+      "weight": 1.0,
+      "code": "S2 -> V_Monju_Utara",
+      "road": "Jl. Dipati Ukur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 6,
+      "from": 24,
+      "to": 8,
+      "capacity": 500.0,
+      "weight": 1.0,
+      "code": "V_Monju_Utara -> V_Hasanuddin",
+      "road": "Jl. Dipati Ukur lanjut ke Hasanuddin",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 7,
+      "from": 8,
+      "to": 11,
+      "capacity": 500.0,
+      "weight": 1.0,
+      "code": "V_Hasanuddin -> V_Singaperbangsa",
+      "road": "Jl. Dipati Ukur lanjut ke Singaperbangsa",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 8,
+      "from": 24,
+      "to": 25,
+      "capacity": 750.0,
+      "weight": 1.0,
+      "code": "V_Monju_Utara -> V_Gasibu_Barat",
+      "road": "Jl. Japati (Monju Barat) - Pasar Tumpah",
+      "isMarket": true,
+      "isVirtual": false
+    },
+    {
+      "id": 9,
+      "from": 8,
+      "to": 9,
+      "capacity": 400.0,
+      "weight": 1.0,
+      "code": "V_Hasanuddin -> V_Djuanda_Hasanuddin",
+      "road": "Jl. Hasanuddin",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 10,
+      "from": 9,
+      "to": 10,
+      "capacity": 1200.0,
+      "weight": 1.0,
+      "code": "V_Djuanda_Hasanuddin -> V_Djuanda_Diponegoro",
+      "road": "Jl. Ir. H. Djuanda (Dago)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 11,
+      "from": 6,
+      "to": 10,
+      "capacity": 400.0,
+      "weight": 1.0,
+      "code": "V_Sulanjana -> V_Djuanda_Diponegoro",
+      "road": "Jl. Sulanjana",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 12,
+      "from": 10,
+      "to": 18,
+      "capacity": 1600.0,
+      "weight": 1.0,
+      "code": "V_Djuanda_Diponegoro -> V_AriaJipang",
+      "road": "Jl. Diponegoro (Barat)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 13,
+      "from": 18,
+      "to": 19,
+      "capacity": 350.0,
+      "weight": 1.0,
+      "code": "V_AriaJipang -> V_Cilamaya",
+      "road": "Jl. Aria Jipang",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 14,
+      "from": 19,
+      "to": 20,
+      "capacity": 450.0,
+      "weight": 1.0,
+      "code": "V_Cilamaya -> V_Cimandiri",
+      "road": "Jl. Cilamaya",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 15,
+      "from": 20,
+      "to": 21,
+      "capacity": 400.0,
+      "weight": 1.0,
+      "code": "V_Cimandiri -> V_Cisanggarung",
+      "road": "Jl. Cimandiri",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 16,
+      "from": 21,
+      "to": 23,
+      "capacity": 400.0,
+      "weight": 1.0,
+      "code": "V_Cisanggarung -> V_Cisangkuy",
+      "road": "Jl. Cisanggarung / Cimanuk",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 17,
+      "from": 23,
+      "to": 4,
+      "capacity": 450.0,
+      "weight": 1.0,
+      "code": "V_Cisangkuy -> T2",
+      "road": "Jl. Cisangkuy ke Diponegoro Timur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 18,
+      "from": 21,
+      "to": 22,
+      "capacity": 400.0,
+      "weight": 1.0,
+      "code": "V_Cisanggarung -> V_Citarum",
+      "road": "Jl. Cisanggarung",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 19,
+      "from": 22,
+      "to": 4,
+      "capacity": 450.0,
+      "weight": 1.0,
+      "code": "V_Citarum -> T2",
+      "road": "Jl. Citarum ke Diponegoro Timur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 20,
+      "from": 11,
+      "to": 12,
+      "capacity": 250.0,
+      "weight": 1.0,
+      "code": "V_Singaperbangsa -> V_Titiran",
+      "road": "Jl. Singaperbangsa (Tutup Pagi Pasar)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 21,
+      "from": 12,
+      "to": 13,
+      "capacity": 150.0,
+      "weight": 1.0,
+      "code": "V_Titiran -> V_Merak",
+      "road": "Jl. Titiran",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 22,
+      "from": 13,
+      "to": 14,
+      "capacity": 200.0,
+      "weight": 1.0,
+      "code": "V_Merak -> V_Surapati_Merak",
+      "road": "Jl. Merak",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 23,
+      "from": 12,
+      "to": 15,
+      "capacity": 150.0,
+      "weight": 1.0,
+      "code": "V_Titiran -> V_Tikukur",
+      "road": "Jl. Titiran / Tikukur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 24,
+      "from": 15,
+      "to": 16,
+      "capacity": 150.0,
+      "weight": 1.0,
+      "code": "V_Tikukur -> V_Gagak",
+      "road": "Jl. Tikukur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 25,
+      "from": 16,
+      "to": 17,
+      "capacity": 150.0,
+      "weight": 1.0,
+      "code": "V_Gagak -> V_Surapati_Gagak",
+      "road": "Jl. Gagak",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 26,
+      "from": 25,
+      "to": 26,
+      "capacity": 1800.0,
+      "weight": 1.0,
+      "code": "V_Gasibu_Barat -> V_Gasibu_Timur",
+      "road": "Jl. Gasibu Atas (Surapati)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 27,
+      "from": 26,
+      "to": 14,
+      "capacity": 1800.0,
+      "weight": 1.0,
+      "code": "V_Gasibu_Timur -> V_Surapati_Merak",
+      "road": "Jl. Surapati (depan Telkom)",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 28,
+      "from": 14,
+      "to": 17,
+      "capacity": 1800.0,
+      "weight": 1.0,
+      "code": "V_Surapati_Merak -> V_Surapati_Gagak",
+      "road": "Jl. Surapati Timur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 29,
+      "from": 17,
+      "to": 3,
+      "capacity": 1800.0,
+      "weight": 1.0,
+      "code": "V_Surapati_Gagak -> T1",
+      "road": "Jl. Surapati ke PUSDAI",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 30,
+      "from": 26,
+      "to": 27,
+      "capacity": 900.0,
+      "weight": 1.0,
+      "code": "V_Gasibu_Timur -> V_Diponegoro_Sentot",
+      "road": "Jl. Sentot Alibasyah",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 31,
+      "from": 27,
+      "to": 4,
+      "capacity": 1200.0,
+      "weight": 1.0,
+      "code": "V_Diponegoro_Sentot -> T2",
+      "road": "Jl. Diponegoro Timur",
+      "isMarket": false,
+      "isVirtual": false
+    },
+    {
+      "id": 32,
+      "from": 0,
+      "to": 1,
+      "capacity": 100000.0,
+      "weight": 1.0,
+      "code": "S* -> S1",
+      "road": "Penghubung Supersource S* -> S1",
+      "isMarket": false,
+      "isVirtual": true
+    },
+    {
+      "id": 33,
+      "from": 0,
+      "to": 2,
+      "capacity": 100000.0,
+      "weight": 1.0,
+      "code": "S* -> S2",
+      "road": "Penghubung Supersource S* -> S2",
+      "isMarket": false,
+      "isVirtual": true
+    },
+    {
+      "id": 34,
+      "from": 3,
+      "to": 28,
+      "capacity": 100000.0,
+      "weight": 1.0,
+      "code": "T1 -> T*",
+      "road": "Penghubung T1 -> Supersink T*",
+      "isMarket": false,
+      "isVirtual": true
+    },
+    {
+      "id": 35,
+      "from": 4,
+      "to": 28,
+      "capacity": 100000.0,
+      "weight": 1.0,
+      "code": "T2 -> T*",
+      "road": "Penghubung T2 -> Supersink T*",
+      "isMarket": false,
+      "isVirtual": true
+    }
+  ],
+  "events": [
+    {
+      "step": 1,
+      "type": "DYNAMIC_EDGE_CAPACITY",
+      "target_edge": [
+        24,
+        25
+      ],
+      "new_capacity": 375.0,
+      "description": "Pasar tumpah meluap di Jl. Japati (Monju sampai Gasibu Atas), kapasitas efektif ruas anjlok dari 750 menjadi 375 kendaraan/jam (penyempitan 50%) [ASUMSI]."
+    },
+    {
+      "step": 2,
+      "type": "DYNAMIC_EDGE_CAPACITY",
+      "target_edge": [
+        11,
+        12
+      ],
+      "new_capacity": 0.0,
+      "description": "Pagi hari pasar: Jl. Singaperbangsa ditutup, kapasitas turun dari 250 menjadi 0 kendaraan/jam sehingga jalur utara menuju PUSDAI terputus (skenario A)."
+    },
+    {
+      "step": 3,
+      "type": "DYNAMIC_EDGE_CAPACITY",
+      "target_edge": [
+        11,
+        12
+      ],
+      "new_capacity": 250.0,
+      "description": "Sekitar pukul 11.00-12.00 Jl. Singaperbangsa dibuka kembali, kapasitas pulih dari 0 menjadi 250 kendaraan/jam (skenario B)."
+    },
+    {
+      "step": 4,
+      "type": "DYNAMIC_EDGE_CAPACITY",
+      "target_edge": [
+        24,
+        25
+      ],
+      "new_capacity": 562.5,
+      "description": "Pedagang mulai beres-beres, kapasitas Jl. Japati pulih sebagian dari 375 menjadi 562.5 kendaraan/jam (penyempitan 25%) [ASUMSI]."
+    }
+  ]
+}
