@@ -208,13 +208,20 @@ for (const term of ['S1', 'S2', 'T1', 'T2']) {
   assert.ok(specContent.includes(term), `Dokumen LLM harus mendefinisikan simpul ${term}`);
 }
 
-// Memastikan memuat ke-4 rute beserta urutan jalannya
+// Memastikan memuat ke-8 rute beserta urutan jalannya
 for (const path of GRAPH_DATA.paths) {
   assert.ok(specContent.includes(path.id), `Dokumen LLM harus memuat rute ${path.id}`);
   for (const st of path.streets) {
     assert.ok(specContent.includes(st), `Dokumen LLM harus mencantumkan jalan '${st}' pada ${path.id}`);
   }
 }
+
+// Memastikan memuat 4 simpul baru koridor Gasibu Atas dan ruas Jl. Sentot Alibasyah
+assert.match(specContent, /V_Monju_Utara/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Monju_Utara');
+assert.match(specContent, /V_Gasibu_Barat/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Gasibu_Barat');
+assert.match(specContent, /V_Gasibu_Timur/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Gasibu_Timur');
+assert.match(specContent, /V_Diponegoro_Sentot/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Diponegoro_Sentot');
+assert.match(specContent, /Jl\. Sentot Alibasyah/i, 'GRAPH_SPEC_LLM.md harus memuat ruas Jl. Sentot Alibasyah');
 
 // Memastikan memuat diagram Mermaid dan bagian Shared Edges / Bottleneck
 assert.match(specContent, /```mermaid[\s\S]*?flowchart/i, 'Harus memiliki diagram Mermaid flowchart');
@@ -420,4 +427,4 @@ assert.match(html, /id="map-legend"/, 'Harus memiliki elemen #map-legend untuk l
 assert.match(html, /SOURCE|Sumber/i, 'Harus memuat identitas Sumber (Source) pada terminal');
 assert.match(html, /SINK|Muara/i, 'Harus memuat identitas Muara (Sink) pada terminal');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, layer CCTV/Survei Manual, dan konfigurasi Vercel berhasil.');
+console.log('PASS: Semua pemeriksaan data graf, 8 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, layer CCTV/Survei Manual, dan konfigurasi Vercel berhasil.');
