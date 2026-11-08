@@ -44,8 +44,7 @@ Berikut daftar lengkap seluruh simpul (titik terminal dan persimpangan peralihan
 | **V_Cisanggarung** | Junction | Simpang Jl. Cimandiri – Jl. Cisanggarung | -6.90334 | 107.62020 |
 | **V_Citarum** | Junction | Simpang Jl. Cisanggarung – Jl. Citarum | -6.90449 | 107.62250 |
 | **V_Cisangkuy** | Junction | Simpang Jl. Cisanggarung / Cimanuk – Jl. Cisangkuy | -6.90276 | 107.62191 |
-| **V_Monju_Utara** | Junction | Simpang Jl. Dipatiukur – Jl. Japati (Monju Utara) | -6.89390 | 107.61802 |
-| **V_Gasibu_Barat** | Junction | Simpang Jl. Surapati – Jl. Japati (Gasibu Atas Barat) | -6.89926 | 107.61843 |
+| **V_Gasibu_Barat** | Junction | Simpang Jl. Surapati – Gasibu Atas Barat | -6.89926 | 107.61843 |
 | **V_Gasibu_Timur** | Junction | Simpang Jl. Surapati – Jl. Sentot Alibasyah (Gasibu Atas Timur) | -6.89932 | 107.61927 |
 | **V_Diponegoro_Sentot** | Junction | Simpang Jl. Sentot Alibasyah – Jl. Diponegoro (Museum Geologi) | -6.90119 | 107.61942 |
 
@@ -100,7 +99,6 @@ Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komuni
      - Jl. Cisangkuy
      - Jl. Citarum
      - Jl. Gagak
-     - Jl. Japati (Monju Barat)
      - Jl. Sentot Alibasyah
    - **2 Arah Independen (Dual Carriageway):**
      Terdiri atas dua jalur fisik independen yang dipisahkan median permanen/flyover:
@@ -281,22 +279,26 @@ Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komuni
 ---
 
 ### Path 7: S2-T1-Gasibu (`S2 (Dipatiukur) → T1 (PUSDAI / Surapati Timur) via Gasibu Atas`)
-- **Karakteristik:** Jarak ±2,1 km • Estimasi waktu tempuh ±6 menit • Warna Visual: Hijau Muda / Lime (`#84cc16`).
+- **Karakteristik:** Jarak ±3,5 km • Estimasi waktu tempuh ±9 menit • Warna Visual: Hijau Muda / Lime (`#84cc16`).
 - **Urutan Nama Jalan:**
   1. Jalan Dipati Ukur
-  2. Jl. Japati (Monju Barat)
-  3. Jl. Gasibu Atas (Jl. Surapati)
-  4. Jl. Surapati (Depan Telkom)
-  5. Jl. Surapati Timur
-  6. PUSDAI
+  2. Jl. Hasanuddin
+  3. Jl. Ir. H. Djuanda
+  4. Jl. Surapati (Barat)
+  5. Jl. Gasibu Atas (Jl. Surapati)
+  6. Jl. Surapati (Depan Telkom)
+  7. Jl. Surapati Timur
+  8. PUSDAI
 - **Urutan Simpul Graf:**  
-  `S2` $\to$ `V_Monju_Utara` $\to$ `V_Gasibu_Barat` $\to$ `V_Gasibu_Timur` $\to$ `V_Surapati_Merak` $\to$ `V_Surapati_Gagak` $\to$ `T1`
+  `S2` $\to$ `V_Hasanuddin` $\to$ `V_Djuanda_Hasanuddin` $\to$ `V_DU_Selatan` $\to$ `V_Gasibu_Barat` $\to$ `V_Gasibu_Timur` $\to$ `V_Surapati_Merak` $\to$ `V_Surapati_Gagak` $\to$ `T1`
 - **Daftar Edge Terarah & Kapasitas Jalan:**
 
 | Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif & Catatan Arah |
 |:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **Jalan Dipati Ukur** | `S2` | `V_Monju_Utara` | ~8 meter | 2 lajur (oneway) | Secondary (1 Arah Murni, `oneway=yes`) | Sedang (500 kend/jam) |
-| **Jl. Japati (Monju Barat)** | `V_Monju_Utara` | `V_Gasibu_Barat` | ~7 meter | 2 lajur (oneway) | Unclassified / Secondary (1 Arah Murni, `oneway=yes`) | Sedang-Tinggi (750 kend/jam) — Jalur searah ke selatan di sisi barat Monumen Perjuangan |
+| **Jalan Dipati Ukur** | `S2` | `V_Hasanuddin` | ~8 meter | 2 lajur (oneway) | Secondary (1 Arah Murni, `oneway=yes`) | Sedang (500 kend/jam) |
+| **Jl. Hasanuddin** | `V_Hasanuddin` | `V_Djuanda_Hasanuddin` | ~6 meter | 2 lajur (oneway) | Tertiary (1 Arah Murni, `oneway=yes`) | Sedang (400 kend/jam) |
+| **Jl. Ir. H. Djuanda** | `V_Djuanda_Hasanuddin` | `V_DU_Selatan` | ~6 meter (total ~12m dibagi 2) | 1-2 lajur independen | Primary (2 Arah Independen / Dual Carriageway) | Tinggi (1200 kend/jam) — Jalur barat mandiri ke arah selatan menuju Simpang Cikapayang/Surapati |
+| **Jl. Surapati (Barat)** | `V_DU_Selatan` | `V_Gasibu_Barat` | ~7-10 meter | 2-3 lajur (oneway) | Primary / Trunk (1 Arah Murni, `oneway=yes`) | Tinggi (1400 kend/jam) — Belok kiri dari Dago ke Jl. Surapati menuju Gasibu Atas |
 | **Jl. Gasibu Atas (Jl. Surapati)** | `V_Gasibu_Barat` | `V_Gasibu_Timur` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Sangat Tinggi (1800 kend/jam) |
 | **Jl. Surapati (Depan Telkom)** | `V_Gasibu_Timur` | `V_Surapati_Merak` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Sangat Tinggi (1800 kend/jam) |
 | **Jl. Surapati Timur** | `V_Surapati_Merak` | `V_Surapati_Gagak` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Sangat Tinggi (1800 kend/jam) |
@@ -305,21 +307,25 @@ Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komuni
 ---
 
 ### Path 8: S2-T2-Gasibu (`S2 (Dipatiukur) → T2 (Diponegoro) via Gasibu Atas`)
-- **Karakteristik:** Jarak ±2,0 km • Estimasi waktu tempuh ±6 menit • Warna Visual: Rose (`#f43f5e`).
+- **Karakteristik:** Jarak ±3,4 km • Estimasi waktu tempuh ±9 menit • Warna Visual: Rose (`#f43f5e`).
 - **Urutan Nama Jalan:**
   1. Jalan Dipati Ukur
-  2. Jl. Japati (Monju Barat)
-  3. Jl. Gasibu Atas (Jl. Surapati)
-  4. Jl. Sentot Alibasyah
-  5. Jl. Diponegoro Timur
+  2. Jl. Hasanuddin
+  3. Jl. Ir. H. Djuanda
+  4. Jl. Surapati (Barat)
+  5. Jl. Gasibu Atas (Jl. Surapati)
+  6. Jl. Sentot Alibasyah
+  7. Jl. Diponegoro Timur
 - **Urutan Simpul Graf:**  
-  `S2` $\to$ `V_Monju_Utara` $\to$ `V_Gasibu_Barat` $\to$ `V_Gasibu_Timur` $\to$ `V_Diponegoro_Sentot` $\to$ `T2`
+  `S2` $\to$ `V_Hasanuddin` $\to$ `V_Djuanda_Hasanuddin` $\to$ `V_DU_Selatan` $\to$ `V_Gasibu_Barat` $\to$ `V_Gasibu_Timur` $\to$ `V_Diponegoro_Sentot` $\to$ `T2`
 - **Daftar Edge Terarah & Kapasitas Jalan:**
 
 | Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif & Catatan Arah |
 |:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **Jalan Dipati Ukur** | `S2` | `V_Monju_Utara` | ~8 meter | 2 lajur (oneway) | Secondary (1 Arah Murni, `oneway=yes`) | Sedang (500 kend/jam) |
-| **Jl. Japati (Monju Barat)** | `V_Monju_Utara` | `V_Gasibu_Barat` | ~7 meter | 2 lajur (oneway) | Unclassified / Secondary (1 Arah Murni, `oneway=yes`) | Sedang-Tinggi (750 kend/jam) |
+| **Jalan Dipati Ukur** | `S2` | `V_Hasanuddin` | ~8 meter | 2 lajur (oneway) | Secondary (1 Arah Murni, `oneway=yes`) | Sedang (500 kend/jam) |
+| **Jl. Hasanuddin** | `V_Hasanuddin` | `V_Djuanda_Hasanuddin` | ~6 meter | 2 lajur (oneway) | Tertiary (1 Arah Murni, `oneway=yes`) | Sedang (400 kend/jam) |
+| **Jl. Ir. H. Djuanda** | `V_Djuanda_Hasanuddin` | `V_DU_Selatan` | ~6 meter (total ~12m dibagi 2) | 1-2 lajur independen | Primary (2 Arah Independen / Dual Carriageway) | Tinggi (1200 kend/jam) — Jalur barat mandiri ke arah selatan menuju Simpang Cikapayang/Surapati |
+| **Jl. Surapati (Barat)** | `V_DU_Selatan` | `V_Gasibu_Barat` | ~7-10 meter | 2-3 lajur (oneway) | Primary / Trunk (1 Arah Murni, `oneway=yes`) | Tinggi (1400 kend/jam) — Belok kiri dari Dago ke Jl. Surapati menuju Gasibu Atas |
 | **Jl. Gasibu Atas (Jl. Surapati)** | `V_Gasibu_Barat` | `V_Gasibu_Timur` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Sangat Tinggi (1800 kend/jam) |
 | **Jl. Sentot Alibasyah** | `V_Gasibu_Timur` | `V_Diponegoro_Sentot` | ~7 meter | 2 lajur (oneway) | Primary (1 Arah Murni, `oneway=yes`) | Tinggi (900 kend/jam) |
 | **Jl. Diponegoro Timur** | `V_Diponegoro_Sentot` | `T2` | ~7 meter | 2 lajur (oneway) | Primary (1 Arah Murni, `oneway=yes`) | Tinggi (1200 kend/jam) |
@@ -337,7 +343,8 @@ Untuk analisis pemodelan kapasitas jaringan aliran (*Network Flow*), beberapa ru
 | **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | ~7 meter | 2 lajur (oneway) | Tertiary (1 Arah Murni, `oneway=yes`) | Sedang (450 kend/jam) | $P_2$ (S1-T2) & $P_4$ (S2-T2) | Segmen penghubung 1 arah penting di belakang Gedung Sate untuk menyalurkan gabungan arus $P_2$ dan $P_4$. |
 | **Jl. Cimandiri** | `V_Cimandiri` | `V_Cisanggarung` | ~6 meter | 2 lajur | Tertiary (2 Arah Bersama / Shared Lanes, `oneway=no`) | Sedang (400 kend/jam) — **Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)** | $P_2$ (S1-T2) & $P_4$ (S2-T2) | Jalan lokal yang menampung gabungan arus $P_2$ dan $P_4$. Sebagai *shared lanes*, jalan berisiko macet parah saat berpapasan dengan kendaraan lokal arah sebaliknya. |
 | **Jl. Gasibu Atas (Jl. Surapati)** | `V_Gasibu_Barat` | `V_Gasibu_Timur` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Sangat Tinggi (1800 kend/jam) | $P_5$ (S1-T1-Gasibu), $P_6$ (S1-T2-Gasibu), $P_7$ (S2-T1-Gasibu), & $P_8$ (S2-T2-Gasibu) | Segmen bottleneck utama koridor Gasibu Atas (sisi utara Lapangan Gasibu) yang dilalui bersama oleh ke-4 rute Gasibu Atas baik dari $S_1$ maupun $S_2$. Rawan hambatan samping akibat penyeberang jalan dan aktivitas pasar tumpah di bahu jalan. |
-| **Jl. Japati (Monju Barat)** | `V_Monju_Utara` | `V_Gasibu_Barat` | ~7 meter | 2 lajur (oneway) | Secondary (1 Arah Murni, `oneway=yes`) | Sedang-Tinggi (750 kend/jam) | $P_7$ (S2-T1-Gasibu) & $P_8$ (S2-T2-Gasibu) | Jalur pengumpan satu arah di sisi barat Monumen Perjuangan (Monju) dari arah Dipatiukur menuju Jalan Gasibu Atas yang menampung gabungan aliran $P_7$ dan $P_8$. |
+| **Jl. Hasanuddin & Jl. Ir. H. Djuanda** | V_Hasanuddin → V_Djuanda_Hasanuddin → V_DU_Selatan | ~6 meter | 2 lajur | Tertiary (Oneway) & Primary (Dual Carriageway) | Sedang (400 kend/jam) & Tinggi (1200 kend/jam) | P4 (S2-T2), P7 (S2-T1-Gasibu), & P8 (S2-T2-Gasibu) | Menyalurkan 3 jalur sekaligus dari S2 menuju koridor Dago sebelum bercabang di V_DU_Selatan (belok kiri ke Jl. Surapati untuk P7 & P8, atau lurus ke Diponegoro untuk P4). |
+| **Jl. Surapati (Barat)** | V_DU_Selatan | V_Gasibu_Barat | ~7-10 meter | 2-3 lajur (oneway) | Primary / Trunk (1 Arah Murni, oneway=yes) | Tinggi (1400 kend/jam) | P5, P6, P7, & P8 | Titik penyatuan seluruh 4 rute Gasibu Atas (dari S1 via Cikapayang dan dari S2 via Hasanuddin–Djuanda) menuju koridor Jalan Gasibu Atas. |
 | **Jl. Sentot Alibasyah** | `V_Gasibu_Timur` | `V_Diponegoro_Sentot` | ~7 meter | 2 lajur (oneway) | Primary (1 Arah Murni, `oneway=yes`) | Tinggi (900 kend/jam) | $P_6$ (S1-T2-Gasibu) & $P_8$ (S2-T2-Gasibu) | Ruas penghubung sisi timur Lapangan Gasibu untuk membelokkan arus dari Jalan Gasibu Atas ke Jl. Diponegoro Timur menuju $T_2$, menampung aliran bersama $P_6$ dan $P_8$. |
 | **Jl. Diponegoro Timur** | `V_Diponegoro_Sentot` | `T2` | ~7 meter | 2 lajur (oneway) | Primary (1 Arah Murni, `oneway=yes`) | Tinggi (1200 kend/jam) | $P_6$ (S1-T2-Gasibu) & $P_8$ (S2-T2-Gasibu) | Ruas jalan arteri satu arah melewati depan Museum Geologi menuju muara $T_2$, menampung aliran kendaraan dari koridor Gasibu Atas ($P_6$ dan $P_8$). |
 | **Jl. Surapati Timur** | `V_Surapati_Merak` / `V_Surapati_Gagak` | `T1` | ~11 meter | 3 lajur (oneway) | Trunk (1 Arah Murni, `oneway=yes`) | Sangat Tinggi (1800 kend/jam) | $P_1$ (S1-T1), $P_3$ (S2-T1), $P_5$ (S1-T1-Gasibu), & $P_7$ (S2-T1-Gasibu) | Arus masuk ke tujuan akhir PUSDAI ($T_1$) dari rute alternatif luar ($P_1, P_3$) dan rute Gasibu Atas ($P_5, P_7$) menyatu di jalan arteri raya Surapati 3 lajur trunk searah. |
@@ -354,7 +361,7 @@ Untuk analisis pemodelan kapasitas jaringan aliran (*Network Flow*), beberapa ru
    - Jalur yang dilalui graf diisolasi penuh dari lalu lintas arah berlawanan, sehingga pemodelan kapasitas realistis dilakukan dengan **membagi 2 lebar total badan jalan** (~6 meter untuk Cikapayang dan Djuanda; ~7 meter untuk Diponegoro Barat). Kapasitas terarah pada jalur ini stabil dan tidak terganggu arus balik.
 
 3. **Ruas 1 Arah Murni (Oneway) — Efisiensi Maksimal Aliran:**
-   - Ruas seperti **Jl. Dipati Ukur (Utara/Tengah)**, **Jl. Sulanjana**, **Jl. Hasanuddin**, **Jl. Aria Jipang**, **Jl. Cilamaya**, **Jl. Cisanggarung**, **Jl. Cisangkuy**, **Jl. Citarum**, **Jl. Gagak**, **Jl. Surapati**, **Jl. Japati (Monju Barat)**, **Jl. Sentot Alibasyah**, dan **Jl. Diponegoro Timur** telah memiliki regulasi satu arah (*oneway=yes*).
+   - Ruas seperti **Jl. Dipati Ukur (Utara/Tengah)**, **Jl. Sulanjana**, **Jl. Hasanuddin**, **Jl. Aria Jipang**, **Jl. Cilamaya**, **Jl. Cisanggarung**, **Jl. Cisangkuy**, **Jl. Citarum**, **Jl. Gagak**, **Jl. Surapati**, **Jl. Sentot Alibasyah**, dan **Jl. Diponegoro Timur** telah memiliki regulasi satu arah (*oneway=yes*).
    - Seluruh lebar geometrik jalan didedikasikan penuh searah vektor graf tanpa risiko konflik berpapasan (*head-on conflict*), sehingga batas kapasitas (*upper bound*) murni ditentukan oleh lebar lajur dan kelancaran persimpangan keluar.
 
 4. **Koridor Jalan Gasibu Atas & Sentot Alibasyah — Shared Bottleneck Rute Gasibu:**
@@ -410,10 +417,8 @@ flowchart TD
     end
 
     subgraph GasibuAtasCorridor ["Koridor Gasibu Atas (Rute P5, P6, P7, P8)"]
-        V_DU_S -->|Jl. Surapati Barat| V_GB["V_Gasibu_Barat"]
-        S2 -->|Jl. Dipati Ukur| V_MU["V_Monju_Utara"]
-        V_MU -->|Jl. Japati (Monju Barat)| V_GB
-
+        V_Hsn -->|Jl. Ir. H. Djuanda (P7, P8)| V_DU_S
+        V_DU_S -->|Jl. Surapati Barat (Shared 4 Rute)| V_GB["V_Gasibu_Barat"]
         V_GB -->|Jl. Gasibu Atas (Shared 4 Rute)| V_GT["V_Gasibu_Timur"]
 
         V_GT -->|Jl. Surapati (P5, P7)| V_Sur_M
@@ -433,7 +438,7 @@ flowchart TD
 
 Salin teks berikut bersama isi dokumen ini ketika Anda ingin meminta LLM melakukan analisis pemodelan Matematika Diskrit:
 
-> *"Berikut adalah spesifikasi jaringan aliran jalan (Directed Network Flow Graph) dari Kasus 4 Pasar Tumpah Kawasan Gasibu–Monju Bandung, mencakup 2 Source ($S_1, S_2$), 2 Sink ($T_1, T_2$), 23 Simpul Persimpangan (total 27 simpul), dan 8 Path aliran. Berdasarkan dokumen ini, mohon lakukan [PILIH: hitung Maximum Flow dengan menentukan kapasitas realistis tiap ruas / cari Minimum Cut bottleneck pemotongan arus / buat matriks ketetanggaan graf / rancang rute alternatif pengalihan arus]."*
+> *"Berikut adalah spesifikasi jaringan aliran jalan (Directed Network Flow Graph) dari Kasus 4 Pasar Tumpah Kawasan Gasibu–Monju Bandung, mencakup 2 Source ($S_1, S_2$), 2 Sink ($T_1, T_2$), 22 Simpul Persimpangan (total 26 simpul), dan 8 Path aliran. Berdasarkan dokumen ini, mohon lakukan [PILIH: hitung Maximum Flow dengan menentukan kapasitas realistis tiap ruas / cari Minimum Cut bottleneck pemotongan arus / buat matriks ketetanggaan graf / rancang rute alternatif pengalihan arus]."*
 
 ---
 
