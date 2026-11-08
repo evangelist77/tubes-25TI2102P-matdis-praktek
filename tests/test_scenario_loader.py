@@ -35,10 +35,10 @@ def test_build_graph_model_integrity():
     
     # Audit Node & Edge Count dari N=5 Prototype
     G = model.nx_graph
-    assert len(G.nodes) == 5, f"Diharapkan 5 nodes, tetapi didapat {len(G.nodes)}"
-    assert len(G.edges) == 6, f"Diharapkan 6 edges, tetapi didapat {len(G.edges)}"
+    assert len(G.nodes) == 29, f"Diharapkan 29 nodes, tetapi didapat {len(G.nodes)}"
+    assert len(G.edges) == 36, f"Diharapkan 36 edges, tetapi didapat {len(G.edges)}"
 
     # Audit Atribut Spasial & Label Node
-    assert G.nodes[0]["label"] == "Stasiun Kereta Api (Source / Start)"
+    assert G.nodes[0]["label"] == "Supersource S* (gabungan seluruh titik masuk)"
     assert "pos" in G.nodes[0]
     assert G[0][1]["weight"] == 1.0
