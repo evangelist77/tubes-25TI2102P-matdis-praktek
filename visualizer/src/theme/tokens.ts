@@ -85,3 +85,4 @@ export function getNodeColor(type?: string): string {
       return themeTokens.colors.nodes.junction
   }
 }
+

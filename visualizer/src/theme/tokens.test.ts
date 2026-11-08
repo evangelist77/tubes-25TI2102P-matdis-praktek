@@ -25,3 +25,4 @@ describe('Theme Tokens & Color Scale', () => {
     expect(getFlowRatioColor(0, 0)).toBe(themeTokens.colors.edges.closed)
   })
 })
+

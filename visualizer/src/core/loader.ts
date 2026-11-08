@@ -8,3 +8,4 @@ export async function loadTopology(url = '/data/topology.json'): Promise<Topolog
   const data = (await response.json()) as Topology
   return data
 }
+
