@@ -107,24 +107,41 @@ for (const key of ['S1', 'S2', 'T1', 'T2']) {
   assert.equal(typeof GRAPH_DATA.nodes[key].lng, 'number');
 }
 
-// 2. Cek ke-4 jalur sesuai 4 file .txt
-assert.equal(GRAPH_DATA.paths.length, 4, 'Harus terdapat tepat 4 path');
+// 2. Cek ke-8 jalur (4 jalur eksisting + 4 jalur baru via Jalan Gasibu Atas)
+assert.equal(GRAPH_DATA.paths.length, 8, 'Harus terdapat tepat 8 path (4 eksisting + 4 via Gasibu Atas)');
 
-const expectedIds = ['S1-T1', 'S1-T2', 'S2-T1', 'S2-T2'];
+const expectedIds = [
+  'S1-T1',
+  'S1-T2',
+  'S2-T1',
+  'S2-T2',
+  'S1-T1-Gasibu',
+  'S1-T2-Gasibu',
+  'S2-T1-Gasibu',
+  'S2-T2-Gasibu'
+];
 assert.deepEqual(GRAPH_DATA.paths.map((p) => p.id), expectedIds);
+
+for (const gasibuNode of ['V_Monju_Utara', 'V_Gasibu_Barat', 'V_Gasibu_Timur', 'V_Diponegoro_Sentot']) {
+  assert.ok(GRAPH_DATA.nodes[gasibuNode], `Simpul baru ${gasibuNode} harus terdaftar di GRAPH_DATA.nodes`);
+}
 
 const expectedStreets = {
   'S2-T1': ['Jalan Dipati Ukur', 'Belok Kanan Jl. Singaperbangsa', 'Jl. Titiran', 'Jl. Merak', 'Jl. Surapati', 'PUSDAI'],
   'S2-T2': ['Jalan Dipati Ukur', 'Jl. Hasanuddin', 'Jl. Ir H Djuanda', 'Jl. Diponegoro', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Citarum', 'Jl. Diponegoro Timur'],
   'S1-T1': ['Turun Pasupati/Jl. Tamansari', 'Jl. Dipatiukur', 'Jl. Singaperbangsa', 'Jl. Titiran', 'Jl. Tikukur', 'Jl. Gagak', 'PUSDAI/Surapati Timur'],
-  'S1-T2': ['Turun Pasupati/Jl. Tamansari', 'Jl. Sulanjana', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Cisangkuy', 'Jl. Diponegoro Timur/Pusdai']
+  'S1-T2': ['Turun Pasupati/Jl. Tamansari', 'Jl. Sulanjana', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Cisangkuy', 'Jl. Diponegoro Timur/Pusdai'],
+  'S1-T1-Gasibu': ['Turun Pasupati/Jl. Tamansari', 'Jl. Cikapayang', 'Jl. Surapati (Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Surapati (Depan Telkom)', 'Jl. Surapati Timur', 'PUSDAI/Surapati Timur'],
+  'S1-T2-Gasibu': ['Turun Pasupati/Jl. Tamansari', 'Jl. Cikapayang', 'Jl. Surapati (Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Sentot Alibasyah', 'Jl. Diponegoro Timur/Pusdai'],
+  'S2-T1-Gasibu': ['Jalan Dipati Ukur', 'Jl. Japati (Monju Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Surapati (Depan Telkom)', 'Jl. Surapati Timur', 'PUSDAI'],
+  'S2-T2-Gasibu': ['Jalan Dipati Ukur', 'Jl. Japati (Monju Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Sentot Alibasyah', 'Jl. Diponegoro Timur']
 };
 
 for (const path of GRAPH_DATA.paths) {
   assert.deepEqual(
     path.streets,
     expectedStreets[path.id],
-    `Urutan jalan pada ${path.id} harus sama persis dengan file .txt`
+    `Urutan jalan pada ${path.id} harus sesuai spesifikasi`
   );
   assert.ok(path.nodeIds.length >= 5, `Path ${path.id} harus melewati simpul-simpul persimpangan`);
   for (const nodeId of path.nodeIds) {
@@ -253,7 +270,7 @@ assert.equal(sandbox.window.getMapOpacity(), 1.0, 'setMapOpacity(1.0) harus meng
 // 9. Cek struktur data ruas jalan satuan (GRAPH_DATA.segments) dan interaktivitasnya
 const { segments } = GRAPH_DATA;
 assert.ok(Array.isArray(segments), 'GRAPH_DATA.segments harus berupa array');
-assert.ok(segments.length >= 18, 'Harus terdapat minimal 18 ruas jalan satuan');
+assert.ok(segments.length >= 25, 'Harus terdapat minimal 25 ruas jalan satuan (termasuk koridor Gasibu Atas)');
 
 for (const seg of segments) {
   assert.ok(seg.id, 'Setiap segmen harus memiliki id');
