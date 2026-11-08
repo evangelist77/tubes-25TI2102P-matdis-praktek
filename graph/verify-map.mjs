@@ -107,24 +107,54 @@ for (const key of ['S1', 'S2', 'T1', 'T2']) {
   assert.equal(typeof GRAPH_DATA.nodes[key].lng, 'number');
 }
 
-// 2. Cek ke-4 jalur sesuai 4 file .txt
-assert.equal(GRAPH_DATA.paths.length, 4, 'Harus terdapat tepat 4 path');
+// 2. Cek ke-8 jalur (4 jalur eksisting + 4 jalur baru via Jalan Gasibu Atas)
+assert.equal(GRAPH_DATA.paths.length, 8, 'Harus terdapat tepat 8 path (4 eksisting + 4 via Gasibu Atas)');
 
-const expectedIds = ['S1-T1', 'S1-T2', 'S2-T1', 'S2-T2'];
+const expectedIds = [
+  'S1-T1',
+  'S1-T2',
+  'S2-T1',
+  'S2-T2',
+  'S1-T1-Gasibu',
+  'S1-T2-Gasibu',
+  'S2-T1-Gasibu',
+  'S2-T2-Gasibu'
+];
 assert.deepEqual(GRAPH_DATA.paths.map((p) => p.id), expectedIds);
+
+for (const gasibuNode of ['V_Gasibu_Barat', 'V_Gasibu_Timur', 'V_Diponegoro_Sentot']) {
+  assert.ok(GRAPH_DATA.nodes[gasibuNode], `Simpul baru ${gasibuNode} harus terdaftar di GRAPH_DATA.nodes`);
+}
+assert.equal(GRAPH_DATA.nodes.V_Monju_Utara, undefined, 'Simpul V_Monju_Utara harus dihapus karena S2 Gasibu lewat Hasanuddin - Djuanda');
 
 const expectedStreets = {
   'S2-T1': ['Jalan Dipati Ukur', 'Belok Kanan Jl. Singaperbangsa', 'Jl. Titiran', 'Jl. Merak', 'Jl. Surapati', 'PUSDAI'],
   'S2-T2': ['Jalan Dipati Ukur', 'Jl. Hasanuddin', 'Jl. Ir H Djuanda', 'Jl. Diponegoro', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Citarum', 'Jl. Diponegoro Timur'],
   'S1-T1': ['Turun Pasupati/Jl. Tamansari', 'Jl. Dipatiukur', 'Jl. Singaperbangsa', 'Jl. Titiran', 'Jl. Tikukur', 'Jl. Gagak', 'PUSDAI/Surapati Timur'],
-  'S1-T2': ['Turun Pasupati/Jl. Tamansari', 'Jl. Sulanjana', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Cisangkuy', 'Jl. Diponegoro Timur/Pusdai']
+  'S1-T2': ['Turun Pasupati/Jl. Tamansari', 'Jl. Sulanjana', 'Jl. Aria Jipang', 'Jl. Cilamaya', 'Jl. Cimandiri', 'Jl. Cisanggarung', 'Jl. Cisangkuy', 'Jl. Diponegoro Timur/Pusdai'],
+  'S1-T1-Gasibu': ['Turun Pasupati/Jl. Tamansari', 'Jl. Cikapayang', 'Jl. Surapati (Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Surapati (Depan Telkom)', 'Jl. Surapati Timur', 'PUSDAI/Surapati Timur'],
+  'S1-T2-Gasibu': ['Turun Pasupati/Jl. Tamansari', 'Jl. Cikapayang', 'Jl. Surapati (Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Sentot Alibasyah', 'Jl. Diponegoro Timur/Pusdai'],
+  'S2-T1-Gasibu': ['Jalan Dipati Ukur', 'Jl. Hasanuddin', 'Jl. Ir. H. Djuanda', 'Jl. Surapati (Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Surapati (Depan Telkom)', 'Jl. Surapati Timur', 'PUSDAI'],
+  'S2-T2-Gasibu': ['Jalan Dipati Ukur', 'Jl. Hasanuddin', 'Jl. Ir. H. Djuanda', 'Jl. Surapati (Barat)', 'Jl. Gasibu Atas (Jl. Surapati)', 'Jl. Sentot Alibasyah', 'Jl. Diponegoro Timur']
 };
+
+for (const s2GasibuId of ['S2-T1-Gasibu', 'S2-T2-Gasibu']) {
+  const p = GRAPH_DATA.paths.find((item) => item.id === s2GasibuId);
+  assert.ok(p, `Path ${s2GasibuId} harus ada`);
+  assert.ok(
+    p.nodeIds.includes('V_Hasanuddin') &&
+      p.nodeIds.includes('V_Djuanda_Hasanuddin') &&
+      p.nodeIds.includes('V_DU_Selatan') &&
+      p.nodeIds.includes('V_Gasibu_Barat'),
+    `Path ${s2GasibuId} wajib melewati V_Hasanuddin -> V_Djuanda_Hasanuddin -> V_DU_Selatan -> V_Gasibu_Barat`
+  );
+}
 
 for (const path of GRAPH_DATA.paths) {
   assert.deepEqual(
     path.streets,
     expectedStreets[path.id],
-    `Urutan jalan pada ${path.id} harus sama persis dengan file .txt`
+    `Urutan jalan pada ${path.id} harus sesuai spesifikasi`
   );
   assert.ok(path.nodeIds.length >= 5, `Path ${path.id} harus melewati simpul-simpul persimpangan`);
   for (const nodeId of path.nodeIds) {
@@ -191,13 +221,20 @@ for (const term of ['S1', 'S2', 'T1', 'T2']) {
   assert.ok(specContent.includes(term), `Dokumen LLM harus mendefinisikan simpul ${term}`);
 }
 
-// Memastikan memuat ke-4 rute beserta urutan jalannya
+// Memastikan memuat ke-8 rute beserta urutan jalannya
 for (const path of GRAPH_DATA.paths) {
   assert.ok(specContent.includes(path.id), `Dokumen LLM harus memuat rute ${path.id}`);
   for (const st of path.streets) {
     assert.ok(specContent.includes(st), `Dokumen LLM harus mencantumkan jalan '${st}' pada ${path.id}`);
   }
 }
+
+// Memastikan memuat 3 simpul baru koridor Gasibu Atas dan ruas Jl. Sentot Alibasyah (tanpa V_Monju_Utara)
+assert.ok(!specContent.includes('V_Monju_Utara'), 'GRAPH_SPEC_LLM.md tidak boleh lagi memuat V_Monju_Utara');
+assert.match(specContent, /V_Gasibu_Barat/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Gasibu_Barat');
+assert.match(specContent, /V_Gasibu_Timur/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Gasibu_Timur');
+assert.match(specContent, /V_Diponegoro_Sentot/, 'GRAPH_SPEC_LLM.md harus mendefinisikan simpul V_Diponegoro_Sentot');
+assert.match(specContent, /Jl\. Sentot Alibasyah/i, 'GRAPH_SPEC_LLM.md harus memuat ruas Jl. Sentot Alibasyah');
 
 // Memastikan memuat diagram Mermaid dan bagian Shared Edges / Bottleneck
 assert.match(specContent, /```mermaid[\s\S]*?flowchart/i, 'Harus memiliki diagram Mermaid flowchart');
@@ -213,6 +250,33 @@ assert.match(specContent, /Jl\. Merak[\s\S]*?4\s*meter/i, 'Dokumen LLM harus men
 assert.match(specContent, /Jl\. Surapati[\s\S]*?3\s*lajur/i, 'Dokumen LLM harus mencatat Jl. Surapati memiliki 3 lajur trunk');
 assert.match(specContent, /Jl\. Diponegoro[\s\S]*?4\s*lajur/i, 'Dokumen LLM harus mencatat Jl. Diponegoro memiliki 4 lajur primary');
 
+// 8b. Cek koreksi pembagian jalur independen (Dual Carriageway) dan catatan ruas bersama (Shared Lanes)
+assert.match(
+  specContent,
+  /Dual Carriageway/i,
+  'Dokumen LLM harus memuat klasifikasi "Dual Carriageway"'
+);
+assert.match(
+  specContent,
+  /Shared Lanes/i,
+  'Dokumen LLM harus memuat klasifikasi "Shared Lanes"'
+);
+assert.match(
+  specContent,
+  /Jl\. Cikapayang[\s\S]*?~6\s*meter[\s\S]*?(?:dibagi 2|jalur independen|lajur independen)/i,
+  'Dokumen LLM harus mencatat koreksi Jl. Cikapayang ~6 meter (dibagi 2 / jalur independen)'
+);
+assert.match(
+  specContent,
+  /Jl\. Ir\.? H\.? Djuanda[\s\S]*?~6\s*meter[\s\S]*?(?:dibagi 2|jalur independen|lajur independen)/i,
+  'Dokumen LLM harus mencatat koreksi Jl. Ir. H. Djuanda ~6 meter (dibagi 2 / jalur independen)'
+);
+assert.match(
+  specContent,
+  /Nilai C \(Effective Lane Width\)[\s\S]*?belum ditentukan[\s\S]*?open-ended question/i,
+  'Dokumen LLM harus mencatat bahwa pada ruas shared lanes, nilai C (Effective Lane Width) belum ditentukan (masih open-ended question)'
+);
+
 // 7. Cek fungsi pengatur transparansi peta (setMapOpacity & getMapOpacity)
 assert.equal(typeof sandbox.window.setMapOpacity, 'function', 'window.setMapOpacity harus tersedia');
 assert.equal(typeof sandbox.window.getMapOpacity, 'function', 'window.getMapOpacity harus tersedia');
@@ -226,7 +290,7 @@ assert.equal(sandbox.window.getMapOpacity(), 1.0, 'setMapOpacity(1.0) harus meng
 // 9. Cek struktur data ruas jalan satuan (GRAPH_DATA.segments) dan interaktivitasnya
 const { segments } = GRAPH_DATA;
 assert.ok(Array.isArray(segments), 'GRAPH_DATA.segments harus berupa array');
-assert.ok(segments.length >= 18, 'Harus terdapat minimal 18 ruas jalan satuan');
+assert.ok(segments.length >= 24, 'Harus terdapat minimal 24 ruas jalan satuan (termasuk koridor Djuanda-Surapati & Gasibu Atas)');
 
 for (const seg of segments) {
   assert.ok(seg.id, 'Setiap segmen harus memiliki id');
@@ -376,4 +440,4 @@ assert.match(html, /id="map-legend"/, 'Harus memiliki elemen #map-legend untuk l
 assert.match(html, /SOURCE|Sumber/i, 'Harus memuat identitas Sumber (Source) pada terminal');
 assert.match(html, /SINK|Muara/i, 'Harus memuat identitas Muara (Sink) pada terminal');
 
-console.log('PASS: Semua pemeriksaan data graf, 4 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, layer CCTV/Survei Manual, dan konfigurasi Vercel berhasil.');
+console.log('PASS: Semua pemeriksaan data graf, 8 jalur OSM, ruas segmen satuan dengan lebar jalan, simpul, interaksi, server HTTP lokal, dokumen LLM, slider transparansi peta, script pelindung-highlight.js, layer CCTV/Survei Manual, dan konfigurasi Vercel berhasil.');

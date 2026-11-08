@@ -733,7 +733,7 @@
 
     <div class="controls">
       <button id="btn-show-all" class="btn-reset" type="button">
-        Tampilkan Semua 4 Jalur Sekaligus
+        Tampilkan Semua 8 Jalur Sekaligus
       </button>
 
       <button id="btn-toggle-cctv" class="btn-toggle-cctv" type="button">
@@ -758,14 +758,15 @@
     </div>
 
     <div class="filter-tab-bar" id="path-filters">
-      <button class="filter-tab active" data-filter="all" type="button">Semua (4)</button>
+      <button class="filter-tab active" data-filter="all" type="button">Semua (8)</button>
+      <button class="filter-tab" data-filter="gasibu" type="button">Via Gasibu Atas (4)</button>
       <button class="filter-tab" data-filter="S1" type="button">Dari S₁</button>
       <button class="filter-tab" data-filter="S2" type="button">Dari S₂</button>
       <button class="filter-tab" data-filter="T1" type="button">Ke T₁</button>
       <button class="filter-tab" data-filter="T2" type="button">Ke T₂</button>
     </div>
 
-    <div class="section-title">Daftar 4 Path (Sumber S → Tujuan T)</div>
+    <div class="section-title">Daftar 8 Path (Sumber S → Tujuan T)</div>
     <div id="path-list"></div>
 
     <div class="section-title">Detail Urutan Jalan &amp; Simpul</div>
@@ -830,7 +831,10 @@
         V_Cimandiri: { id: 'V_Cimandiri', type: 'junction', label: 'Simpang Cilamaya – Jl. Cimandiri', lat: -6.90351, lng: 107.61725 },
         V_Cisanggarung: { id: 'V_Cisanggarung', type: 'junction', label: 'Simpang Cimandiri – Jl. Cisanggarung', lat: -6.90334, lng: 107.62020 },
         V_Citarum: { id: 'V_Citarum', type: 'junction', label: 'Simpang Cisanggarung – Jl. Citarum', lat: -6.90449, lng: 107.62250 },
-        V_Cisangkuy: { id: 'V_Cisangkuy', type: 'junction', label: 'Simpang Cisanggarung – Jl. Cisangkuy', lat: -6.90276, lng: 107.62191 }
+        V_Cisangkuy: { id: 'V_Cisangkuy', type: 'junction', label: 'Simpang Cisanggarung – Jl. Cisangkuy', lat: -6.90276, lng: 107.62191 },
+        V_Gasibu_Barat: { id: 'V_Gasibu_Barat', type: 'junction', label: 'Simpang Jl. Surapati – Gasibu Atas Barat', lat: -6.89926, lng: 107.61843 },
+        V_Gasibu_Timur: { id: 'V_Gasibu_Timur', type: 'junction', label: 'Simpang Jl. Surapati – Jl. Sentot Alibasyah (Gasibu Atas Timur)', lat: -6.89932, lng: 107.61927 },
+        V_Diponegoro_Sentot: { id: 'V_Diponegoro_Sentot', type: 'junction', label: 'Simpang Jl. Sentot Alibasyah – Jl. Diponegoro (Museum Geologi)', lat: -6.90119, lng: 107.61942 }
       },
 
       paths: [
@@ -1079,6 +1083,258 @@
             [-6.90257, 107.62408],
             [-6.90156, 107.62493],
             [-6.90111, 107.62530],
+            [-6.90115, 107.62485]
+          ]
+        },
+        {
+          id: 'S1-T1-Gasibu',
+          name: 'S₁ (Pasupati / Tamansari) → T₁ (PUSDAI) via Gasibu Atas',
+          fromName: 'Pasupati (Tamansari)',
+          toName: 'PUSDAI (Surapati Timur)',
+          corridor: 'Koridor Gasibu Atas – Surapati',
+          via: 'Jl. Cikapayang • Jl. Gasibu Atas (Surapati) • PUSDAI',
+          source: 'S1',
+          sink: 'T1',
+          color: '#06b6d4',
+          distanceInfo: '2,9 km • ±7 mnt',
+          streets: [
+            'Turun Pasupati/Jl. Tamansari',
+            'Jl. Cikapayang',
+            'Jl. Surapati (Barat)',
+            'Jl. Gasibu Atas (Jl. Surapati)',
+            'Jl. Surapati (Depan Telkom)',
+            'Jl. Surapati Timur',
+            'PUSDAI/Surapati Timur'
+          ],
+          nodeIds: [
+            'S1',
+            'V_Cikapayang',
+            'V_DU_Selatan',
+            'V_Gasibu_Barat',
+            'V_Gasibu_Timur',
+            'V_Surapati_Merak',
+            'V_Surapati_Gagak',
+            'T1'
+          ],
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89806, 107.60967],
+            [-6.89842, 107.61063],
+            [-6.89875, 107.61157],
+            [-6.89905, 107.61214],
+            [-6.89885, 107.61283],
+            [-6.89884, 107.61328],
+            [-6.89886, 107.61400],
+            [-6.89885, 107.61521],
+            [-6.89894, 107.61603],
+            [-6.89905, 107.61646],
+            [-6.89925, 107.61775],
+            [-6.89926, 107.61843],
+            [-6.89923, 107.61896],
+            [-6.89923, 107.61910],
+            [-6.89932, 107.61927],
+            [-6.89931, 107.61962],
+            [-6.89928, 107.61992],
+            [-6.89928, 107.62032],
+            [-6.89924, 107.62235],
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'S1-T2-Gasibu',
+          name: 'S₁ (Pasupati / Tamansari) → T₂ (Diponegoro) via Gasibu Atas',
+          fromName: 'Pasupati (Tamansari)',
+          toName: 'Diponegoro Timur (PUSDAI)',
+          corridor: 'Koridor Gasibu Atas – Sentot Alibasyah',
+          via: 'Jl. Cikapayang • Jl. Gasibu Atas • Jl. Sentot Alibasyah',
+          source: 'S1',
+          sink: 'T2',
+          color: '#a855f7',
+          distanceInfo: '2,8 km • ±8 mnt',
+          streets: [
+            'Turun Pasupati/Jl. Tamansari',
+            'Jl. Cikapayang',
+            'Jl. Surapati (Barat)',
+            'Jl. Gasibu Atas (Jl. Surapati)',
+            'Jl. Sentot Alibasyah',
+            'Jl. Diponegoro Timur/Pusdai'
+          ],
+          nodeIds: [
+            'S1',
+            'V_Cikapayang',
+            'V_DU_Selatan',
+            'V_Gasibu_Barat',
+            'V_Gasibu_Timur',
+            'V_Diponegoro_Sentot',
+            'T2'
+          ],
+          coords: [
+            [-6.89550, 107.60870],
+            [-6.89660, 107.60915],
+            [-6.89806, 107.60967],
+            [-6.89842, 107.61063],
+            [-6.89875, 107.61157],
+            [-6.89905, 107.61214],
+            [-6.89885, 107.61283],
+            [-6.89884, 107.61328],
+            [-6.89886, 107.61400],
+            [-6.89885, 107.61521],
+            [-6.89894, 107.61603],
+            [-6.89905, 107.61646],
+            [-6.89925, 107.61775],
+            [-6.89926, 107.61843],
+            [-6.89923, 107.61896],
+            [-6.89923, 107.61910],
+            [-6.89932, 107.61927],
+            [-6.89943, 107.61935],
+            [-6.89956, 107.61935],
+            [-6.89993, 107.61936],
+            [-6.90024, 107.61938],
+            [-6.90103, 107.61941],
+            [-6.90119, 107.61942],
+            [-6.90117, 107.61992],
+            [-6.90115, 107.62084],
+            [-6.90113, 107.62168],
+            [-6.90111, 107.62241],
+            [-6.90108, 107.62349],
+            [-6.90105, 107.62469],
+            [-6.90115, 107.62485]
+          ]
+        },
+        {
+          id: 'S2-T1-Gasibu',
+          name: 'S₂ (Dipatiukur) → T₁ (PUSDAI) via Gasibu Atas',
+          fromName: 'Dipatiukur (Unpad)',
+          toName: 'PUSDAI (Surapati Timur)',
+          corridor: 'Koridor Dago – Gasibu Atas – Surapati',
+          via: 'Jl. Hasanuddin • Jl. Ir. H. Djuanda • Jl. Gasibu Atas (Surapati)',
+          source: 'S2',
+          sink: 'T1',
+          color: '#84cc16',
+          distanceInfo: '3,5 km • ±9 mnt',
+          streets: [
+            'Jalan Dipati Ukur',
+            'Jl. Hasanuddin',
+            'Jl. Ir. H. Djuanda',
+            'Jl. Surapati (Barat)',
+            'Jl. Gasibu Atas (Jl. Surapati)',
+            'Jl. Surapati (Depan Telkom)',
+            'Jl. Surapati Timur',
+            'PUSDAI'
+          ],
+          nodeIds: [
+            'S2',
+            'V_Hasanuddin',
+            'V_Djuanda_Hasanuddin',
+            'V_DU_Selatan',
+            'V_Gasibu_Barat',
+            'V_Gasibu_Timur',
+            'V_Surapati_Merak',
+            'V_Surapati_Gagak',
+            'T1'
+          ],
+          coords: [
+            [-6.89190, 107.61758],
+            [-6.89231, 107.61778],
+            [-6.89350, 107.61802],
+            [-6.89474, 107.61743],
+            [-6.89485, 107.61663],
+            [-6.89487, 107.61605],
+            [-6.89490, 107.61450],
+            [-6.89492, 107.61321],
+            [-6.89650, 107.61305],
+            [-6.89810, 107.61290],
+            [-6.89885, 107.61283],
+            [-6.89884, 107.61328],
+            [-6.89886, 107.61400],
+            [-6.89885, 107.61521],
+            [-6.89894, 107.61603],
+            [-6.89905, 107.61646],
+            [-6.89925, 107.61775],
+            [-6.89926, 107.61843],
+            [-6.89923, 107.61896],
+            [-6.89923, 107.61910],
+            [-6.89932, 107.61927],
+            [-6.89931, 107.61962],
+            [-6.89928, 107.61992],
+            [-6.89928, 107.62032],
+            [-6.89924, 107.62235],
+            [-6.89923, 107.62373],
+            [-6.89924, 107.62491],
+            [-6.89926, 107.62614],
+            [-6.89946, 107.62702],
+            [-6.89955, 107.62709]
+          ]
+        },
+        {
+          id: 'S2-T2-Gasibu',
+          name: 'S₂ (Dipatiukur) → T₂ (Diponegoro) via Gasibu Atas',
+          fromName: 'Dipatiukur (Unpad)',
+          toName: 'Diponegoro Timur (PUSDAI)',
+          corridor: 'Koridor Dago – Gasibu Atas – Sentot Alibasyah',
+          via: 'Jl. Hasanuddin • Jl. Ir. H. Djuanda • Jl. Gasibu Atas • Jl. Sentot Alibasyah',
+          source: 'S2',
+          sink: 'T2',
+          color: '#f43f5e',
+          distanceInfo: '3,4 km • ±9 mnt',
+          streets: [
+            'Jalan Dipati Ukur',
+            'Jl. Hasanuddin',
+            'Jl. Ir. H. Djuanda',
+            'Jl. Surapati (Barat)',
+            'Jl. Gasibu Atas (Jl. Surapati)',
+            'Jl. Sentot Alibasyah',
+            'Jl. Diponegoro Timur'
+          ],
+          nodeIds: [
+            'S2',
+            'V_Hasanuddin',
+            'V_Djuanda_Hasanuddin',
+            'V_DU_Selatan',
+            'V_Gasibu_Barat',
+            'V_Gasibu_Timur',
+            'V_Diponegoro_Sentot',
+            'T2'
+          ],
+          coords: [
+            [-6.89190, 107.61758],
+            [-6.89231, 107.61778],
+            [-6.89350, 107.61802],
+            [-6.89474, 107.61743],
+            [-6.89485, 107.61663],
+            [-6.89487, 107.61605],
+            [-6.89490, 107.61450],
+            [-6.89492, 107.61321],
+            [-6.89650, 107.61305],
+            [-6.89810, 107.61290],
+            [-6.89885, 107.61283],
+            [-6.89884, 107.61328],
+            [-6.89886, 107.61400],
+            [-6.89885, 107.61521],
+            [-6.89894, 107.61603],
+            [-6.89905, 107.61646],
+            [-6.89925, 107.61775],
+            [-6.89926, 107.61843],
+            [-6.89923, 107.61896],
+            [-6.89923, 107.61910],
+            [-6.89932, 107.61927],
+            [-6.89943, 107.61935],
+            [-6.89956, 107.61935],
+            [-6.89993, 107.61936],
+            [-6.90024, 107.61938],
+            [-6.90103, 107.61941],
+            [-6.90119, 107.61942],
+            [-6.90117, 107.61992],
+            [-6.90115, 107.62084],
+            [-6.90113, 107.62168],
+            [-6.90111, 107.62241],
+            [-6.90108, 107.62349],
+            [-6.90105, 107.62469],
             [-6.90115, 107.62485]
           ]
         }
@@ -1453,6 +1709,101 @@
             [-6.90118, 107.62250],
             [-6.90115, 107.62485]
           ]
+        },
+        {
+          id: 'seg_djuanda_cikapayang',
+          name: 'Jalan Ir. H. Djuanda (Segmen SMAN 1 → Simpang Cikapayang/Surapati)',
+          fromNode: 'V_Djuanda_Hasanuddin',
+          toNode: 'V_DU_Selatan',
+          widthInfo: '~6 meter (1-2 lajur independen, Primary)',
+          osmType: 'primary',
+          coords: [
+            [-6.89492, 107.61321],
+            [-6.89650, 107.61305],
+            [-6.89810, 107.61290],
+            [-6.89885, 107.61283]
+          ]
+        },
+        {
+          id: 'seg_du_gasibu_barat',
+          name: 'Jalan Surapati (Barat / Bawah Flyover)',
+          fromNode: 'V_DU_Selatan',
+          toNode: 'V_Gasibu_Barat',
+          widthInfo: '~7-10 meter (2-3 lajur oneway, Primary/Trunk)',
+          osmType: 'trunk',
+          coords: [
+            [-6.89885, 107.61283],
+            [-6.89884, 107.61328],
+            [-6.89886, 107.61400],
+            [-6.89885, 107.61521],
+            [-6.89894, 107.61603],
+            [-6.89905, 107.61646],
+            [-6.89925, 107.61775],
+            [-6.89926, 107.61843]
+          ]
+        },
+        {
+          id: 'seg_gasibu_atas',
+          name: 'Jalan Gasibu Atas (Jl. Surapati Utara Lapangan Gasibu)',
+          fromNode: 'V_Gasibu_Barat',
+          toNode: 'V_Gasibu_Timur',
+          widthInfo: '~11 meter (3 lajur oneway, Trunk)',
+          osmType: 'trunk',
+          coords: [
+            [-6.89926, 107.61843],
+            [-6.89923, 107.61896],
+            [-6.89923, 107.61910],
+            [-6.89932, 107.61927]
+          ]
+        },
+        {
+          id: 'seg_gasibu_merak',
+          name: 'Jalan Surapati (Depan Telkom Gasibu)',
+          fromNode: 'V_Gasibu_Timur',
+          toNode: 'V_Surapati_Merak',
+          widthInfo: '~11 meter (3 lajur oneway, Trunk)',
+          osmType: 'trunk',
+          coords: [
+            [-6.89932, 107.61927],
+            [-6.89931, 107.61962],
+            [-6.89928, 107.61992],
+            [-6.89928, 107.62032]
+          ]
+        },
+        {
+          id: 'seg_sentot_alibasyah',
+          name: 'Jalan Sentot Alibasyah (Timur Lapangan Gasibu)',
+          fromNode: 'V_Gasibu_Timur',
+          toNode: 'V_Diponegoro_Sentot',
+          widthInfo: '~7 meter (2 lajur oneway, Primary)',
+          osmType: 'primary',
+          coords: [
+            [-6.89932, 107.61927],
+            [-6.89943, 107.61935],
+            [-6.89956, 107.61935],
+            [-6.89993, 107.61936],
+            [-6.90024, 107.61938],
+            [-6.90103, 107.61941],
+            [-6.90119, 107.61942]
+          ]
+        },
+        {
+          id: 'seg_diponegoro_sentot_T2',
+          name: 'Jalan Diponegoro Timur (Museum Geologi → PUSDAI)',
+          fromNode: 'V_Diponegoro_Sentot',
+          toNode: 'T2',
+          widthInfo: '~7 meter (2 lajur oneway, Primary)',
+          osmType: 'primary',
+          coords: [
+            [-6.90119, 107.61942],
+            [-6.90117, 107.61992],
+            [-6.90115, 107.62084],
+            [-6.90113, 107.62168],
+            [-6.90111, 107.62241],
+            [-6.90108, 107.62349],
+            [-6.90105, 107.62469],
+            [-6.90115, 107.62485]
+          ]
         }
       ],
 
@@ -1793,6 +2144,7 @@
       GRAPH_DATA.paths.forEach((p) => {
         const matches =
           filter === 'all' ||
+          (filter === 'gasibu' && p.id.endsWith('-Gasibu')) ||
           (filter === 'S1' && p.source === 'S1') ||
           (filter === 'S2' && p.source === 'S2') ||
           (filter === 'T1' && p.sink === 'T1') ||
@@ -1874,9 +2226,9 @@
       const selected = GRAPH_DATA.paths.find((p) => p.id === activePathId);
       if (!selected) {
         detailEl.innerHTML = `
-          <h3>Mode: Semua 4 Jalur Aktif</h3>
+          <h3>Mode: Semua 8 Jalur Aktif</h3>
           <p style="color: #94a3b8; line-height: 1.4;">
-            Keempat jalur (S<sub>1</sub>, S<sub>2</sub> → T<sub>1</sub>, T<sub>2</sub>) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan rute transit dan simpul yang dilalui.
+            Ke-8 jalur (4 jalur alternatif luar + 4 jalur via Jalan Gasibu Atas untuk S<sub>1</sub>, S<sub>2</sub> → T<sub>1</sub>, T<sub>2</sub>) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan rute transit dan simpul yang dilalui.
           </p>
         `;
       } else {
