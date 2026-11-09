@@ -123,3 +123,4 @@ describe('validateTrace', () => {
     expect(validation.errors.some((e) => e.includes('Teorema Min-Cut Gagal'))).toBe(true)
   })
 })
+

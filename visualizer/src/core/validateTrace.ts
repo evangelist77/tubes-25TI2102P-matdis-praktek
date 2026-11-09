@@ -110,3 +110,4 @@ export function validateTrace(topology: Topology, trace: Trace): ValidationResul
     errors
   }
 }
+
