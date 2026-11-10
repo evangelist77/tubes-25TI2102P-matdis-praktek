@@ -1,8 +1,8 @@
 case_id: "case_04_pasar_tumpah"
 title: "Kasus 4 - Pasar Tumpah Gasibu-Monju Bandung: Bottleneck Aliran Kendaraan (Maximum Flow)"
-description: "Jaringan aliran jalan di kawasan Gasibu-Monju-PUSDAI, Bandung (27 simpul asli + supersource S* dan supersink T*). Dua titik masuk (S1 Tamansari/Pasupati, S2 Dipatiukur) dan dua titik keluar (T1 Surapati Timur/PUSDAI, T2 Diponegoro Timur). Pasar tumpah di sepanjang Jl. Japati sampai Monju menyempitkan kapasitas ruas Japati, dan Jl. Singaperbangsa ditutup pada pagi hari pasar sampai sekitar pukul 11.00-12.00. Analisis dibatasi Minggu pagi sampai pukul 12.00. Kapasitas dalam kendaraan/jam (angka relatif dari GRAPH_SPEC_LLM.md, belum hasil survei)."
+description: "Jaringan aliran jalan di kawasan Gasibu-Monju-PUSDAI, Bandung (26 simpul asli + supersource S* dan supersink T*). Dua titik masuk (S1 Tamansari/Pasupati, S2 Dipatiukur) dan dua titik keluar (T1 Surapati Timur/PUSDAI, T2 Diponegoro Timur). Pasar tumpah menyempitkan kapasitas efektif Jl. Gasibu Atas, dan Jl. Singaperbangsa ditutup pada pagi hari pasar sampai sekitar pukul 11.00-12.00. Analisis dibatasi Minggu pagi sampai pukul 12.00. Kapasitas dalam kendaraan/jam (angka relatif dari GRAPH_SPEC_LLM.md, belum hasil survei)."
 
-# Konvensi id: 0 = S* (supersource), 1-2 = S1,S2, 3-4 = T1,T2, 5-27 = simpang, 28 = T* (supersink)
+# Konvensi id: 0 = S* (supersource), 1-2 = S1,S2, 3-4 = T1,T2, 5-26 = simpang, 27 = T* (supersink)
 # Posisi (pos) = [longitude, latitude] OpenStreetMap, supaya gambar graf mirip bentuk peta asli.
 nodes:
   - id: 0   # S*
@@ -77,35 +77,32 @@ nodes:
   - id: 23   # V_Cisangkuy
     label: "Simpang Jl. Cisanggarung / Cimanuk – Jl. Cisangkuy"
     pos: [107.62191, -6.90276]
-  - id: 24   # V_Monju_Utara
-    label: "Simpang Jl. Dipatiukur – Jl. Japati (Monju Utara)"
-    pos: [107.61802, -6.89390]
-  - id: 25   # V_Gasibu_Barat
-    label: "Simpang Jl. Surapati – Jl. Japati (Gasibu Atas Barat)"
+  - id: 24   # V_Gasibu_Barat
+    label: "Simpang Jl. Surapati – Gasibu Atas Barat"
     pos: [107.61843, -6.89926]
-  - id: 26   # V_Gasibu_Timur
+  - id: 25   # V_Gasibu_Timur
     label: "Simpang Jl. Surapati – Jl. Sentot Alibasyah (Gasibu Atas Timur)"
     pos: [107.61927, -6.89932]
-  - id: 27   # V_Diponegoro_Sentot
+  - id: 26   # V_Diponegoro_Sentot
     label: "Simpang Jl. Sentot Alibasyah – Jl. Diponegoro (Museum Geologi)"
     pos: [107.61942, -6.90119]
-  - id: 28   # T*
+  - id: 27   # T*
     label: "Supersink T* (gabungan seluruh titik keluar)"
-    pos: [107.63110, -6.90040]
+    pos: [107.63109, -6.90040]
 
 # Semua weight = 1.0 (tidak dipakai Max Flow); yang dipakai adalah capacity.
-# [FIX-1/2/3] = ruas yang di GRAPH_SPEC_LLM.md tertulis sebagai edge paralel padahal satu jalan fisik yang sama
+# [FIX-n] = ruas yang di GRAPH_SPEC_LLM.md tertulis sebagai edge paralel padahal satu jalan fisik yang sama
 #   (dirantai supaya kapasitas jalan tidak terhitung dobel). Lihat catatan di bawah file.
 edges:
   - from: 1   # S1 -> V_Cikapayang  (Turun Pasupati / Jl. Tamansari)
     to: 5
     weight: 1.0
     capacity: 500.0
-  - from: 5   # V_Cikapayang -> V_Sulanjana  (Jl. Tamansari lanjut ke Sulanjana  [FIX-1])
+  - from: 5   # V_Cikapayang -> V_Sulanjana  (Jl. Tamansari lanjut ke Sulanjana)  [FIX-1]
     to: 6
     weight: 1.0
     capacity: 500.0
-  - from: 5   # V_Cikapayang -> V_DU_Selatan  (Jl. Cikapayang (dual carriageway))
+  - from: 5   # V_Cikapayang -> V_DU_Selatan  (Jl. Cikapayang)
     to: 7
     weight: 1.0
     capacity: 1200.0
@@ -114,30 +111,26 @@ edges:
     weight: 1.0
     capacity: 500.0
   - from: 7   # V_DU_Selatan -> V_Gasibu_Barat  (Jl. Surapati (Barat))
-    to: 25
-    weight: 1.0
-    capacity: 1400.0
-  - from: 2   # S2 -> V_Monju_Utara  (Jl. Dipati Ukur)
     to: 24
     weight: 1.0
-    capacity: 500.0
-  - from: 24   # V_Monju_Utara -> V_Hasanuddin  (Jl. Dipati Ukur lanjut ke Hasanuddin  [FIX-2])
+    capacity: 1400.0
+  - from: 2   # S2 -> V_Hasanuddin  (Jl. Dipati Ukur (Tengah))
     to: 8
     weight: 1.0
     capacity: 500.0
-  - from: 8   # V_Hasanuddin -> V_Singaperbangsa  (Jl. Dipati Ukur lanjut ke Singaperbangsa  [FIX-2])
+  - from: 8   # V_Hasanuddin -> V_Singaperbangsa  (Jl. Dipati Ukur (Utara) lanjut ke Singaperbangsa)  [FIX-2]
     to: 11
     weight: 1.0
     capacity: 500.0
-  - from: 24   # V_Monju_Utara -> V_Gasibu_Barat  (Jl. Japati (Monju Barat)  <- ruas pasar tumpah)
-    to: 25
-    weight: 1.0
-    capacity: 750.0
   - from: 8   # V_Hasanuddin -> V_Djuanda_Hasanuddin  (Jl. Hasanuddin)
     to: 9
     weight: 1.0
     capacity: 400.0
-  - from: 9   # V_Djuanda_Hasanuddin -> V_Djuanda_Diponegoro  (Jl. Ir. H. Djuanda (Dago))
+  - from: 9   # V_Djuanda_Hasanuddin -> V_DU_Selatan  (Jl. Ir. H. Djuanda)
+    to: 7
+    weight: 1.0
+    capacity: 1200.0
+  - from: 7   # V_DU_Selatan -> V_Djuanda_Diponegoro  (Jl. Ir. H. Djuanda (Dago) lanjut ke Diponegoro)  [FIX-4]
     to: 10
     weight: 1.0
     capacity: 1200.0
@@ -177,7 +170,7 @@ edges:
     to: 4
     weight: 1.0
     capacity: 450.0
-  - from: 11   # V_Singaperbangsa -> V_Titiran  (Jl. Singaperbangsa  <- ditutup pagi di hari pasar)
+  - from: 11   # V_Singaperbangsa -> V_Titiran  (Jl. Singaperbangsa (Tutup Pagi Pasar))  <- ditutup pagi di hari pasar
     to: 12
     weight: 1.0
     capacity: 250.0
@@ -201,15 +194,15 @@ edges:
     to: 17
     weight: 1.0
     capacity: 150.0
-  - from: 25   # V_Gasibu_Barat -> V_Gasibu_Timur  (Jl. Gasibu Atas (Surapati))
-    to: 26
+  - from: 24   # V_Gasibu_Barat -> V_Gasibu_Timur  (Jl. Gasibu Atas (Pasar Tumpah))  <- ruas pasar tumpah
+    to: 25
     weight: 1.0
     capacity: 1800.0
-  - from: 26   # V_Gasibu_Timur -> V_Surapati_Merak  (Jl. Surapati (depan Telkom))
+  - from: 25   # V_Gasibu_Timur -> V_Surapati_Merak  (Jl. Surapati (depan Telkom))
     to: 14
     weight: 1.0
     capacity: 1800.0
-  - from: 14   # V_Surapati_Merak -> V_Surapati_Gagak  (Jl. Surapati Timur  [FIX-3])
+  - from: 14   # V_Surapati_Merak -> V_Surapati_Gagak  (Jl. Surapati Timur)  [FIX-3]
     to: 17
     weight: 1.0
     capacity: 1800.0
@@ -217,11 +210,11 @@ edges:
     to: 3
     weight: 1.0
     capacity: 1800.0
-  - from: 26   # V_Gasibu_Timur -> V_Diponegoro_Sentot  (Jl. Sentot Alibasyah)
-    to: 27
+  - from: 25   # V_Gasibu_Timur -> V_Diponegoro_Sentot  (Jl. Sentot Alibasyah)
+    to: 26
     weight: 1.0
     capacity: 900.0
-  - from: 27   # V_Diponegoro_Sentot -> T2  (Jl. Diponegoro Timur)
+  - from: 26   # V_Diponegoro_Sentot -> T2  (Jl. Diponegoro Timur / Pusdai)
     to: 4
     weight: 1.0
     capacity: 1200.0
@@ -235,24 +228,24 @@ edges:
     weight: 1.0
     capacity: 100000.0
   - from: 3   # T1 -> T*
-    to: 28
+    to: 27
     weight: 1.0
     capacity: 100000.0
   - from: 4   # T2 -> T*
-    to: 28
+    to: 27
     weight: 1.0
     capacity: 100000.0
 
 execution_plan:
   start_node: 0
-  goal_node: 28
+  goal_node: 27
   events:
     # ASUMSI: nilai new_capacity di bawah masih placeholder (penyempitan 50% lalu 25%). Ganti dengan hasil hitungan CCTV/survei.
     - step: 1
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
-      new_capacity: 375.0
-      description: "Pasar tumpah meluap di Jl. Japati (Monju sampai Gasibu Atas), kapasitas efektif ruas anjlok dari 750 menjadi 375 kendaraan/jam (penyempitan 50%) [ASUMSI]."
+      new_capacity: 900.0
+      description: "Pasar tumpah meluap di Jl. Gasibu Atas, kapasitas efektif ruas anjlok dari 1800 menjadi 900 kendaraan/jam (penyempitan 50%) [ASUMSI]."
     - step: 2
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [11, 12]
@@ -266,11 +259,14 @@ execution_plan:
     - step: 4
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
-      new_capacity: 562.5
-      description: "Pedagang mulai beres-beres, kapasitas Jl. Japati pulih sebagian dari 375 menjadi 562.5 kendaraan/jam (penyempitan 25%) [ASUMSI]."
+      new_capacity: 1350.0
+      description: "Pedagang mulai beres-beres, kapasitas Jl. Gasibu Atas pulih sebagian dari 900 menjadi 1350 kendaraan/jam (penyempitan 25%) [ASUMSI]."
 
 # CATATAN PERBAIKAN DARI GRAPH_SPEC_LLM.md (konfirmasi ke penyusun spec):
 #  FIX-1  S1->V_Sulanjana melewati V_Cikapayang (satu Jl. Tamansari). Dirantai S1->Cikapayang->Sulanjana.
-#  FIX-2  S2->Singaperbangsa, S2->Hasanuddin, S2->Monju_Utara adalah satu Jl. Dipati Ukur searah. Dirantai
-#         S2->Monju_Utara->Hasanuddin->Singaperbangsa.
+#  FIX-2  S2->V_Singaperbangsa melewati V_Hasanuddin (satu Jl. Dipati Ukur searah). Dirantai S2->Hasanuddin->Singaperbangsa.
 #  FIX-3  P3 memakai V_Surapati_Merak->T1 langsung, padahal P1/P5/P7 melewati V_Surapati_Gagak. Dirantai satu jalan.
+#  FIX-4  V_Djuanda_Hasanuddin->V_Djuanda_Diponegoro (P4) melewati V_DU_Selatan (Jl. Ir. H. Djuanda yang sama dengan P7/P8).
+#         Dirantai V_Djuanda_Hasanuddin->V_DU_Selatan->V_Djuanda_Diponegoro.
+# CATATAN LOKASI PASAR: spek terbaru tidak lagi memuat Jl. Japati/Monju Utara. Ruas pasar tumpah dipasang di
+#  Jl. Gasibu Atas (V_Gasibu_Barat -> V_Gasibu_Timur) sesuai catatan spek ("rawan hambatan samping saat pasar tumpah").
