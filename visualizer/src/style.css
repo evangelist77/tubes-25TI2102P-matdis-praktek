@@ -1,0 +1,51 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Kustomisasi Leaflet & Panah Aliran */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+  background-color: #f8fafc;
+}
+
+/* Tooltip & Badge Kustom */
+.custom-node-tooltip {
+  background-color: rgba(28, 25, 23, 0.9) !important;
+  color: #fef3c7 !important;
+  border: 1px solid #d97706 !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+}
+
+.custom-edge-tooltip {
+  background-color: #ffffff !important;
+  color: #1c1917 !important;
+  border: 1px solid #e7e5e4 !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Pola belang tenda pasar tumpah untuk header */
+.tenda-pattern {
+  background: repeating-linear-gradient(
+    -45deg,
+    #c2410c,
+    #c2410c 12px,
+    #fef3c7 12px,
+    #fef3c7 24px
+  );
+}
+
+
+/* Mode skematik (tanpa tile peta): latar polos agar graf tetap terbaca */
+.schematic-bg .leaflet-container {
+  background-color: #f5f5f4;
+  background-image: radial-gradient(#d6d3d1 1px, transparent 1px);
+  background-size: 18px 18px;
+}
