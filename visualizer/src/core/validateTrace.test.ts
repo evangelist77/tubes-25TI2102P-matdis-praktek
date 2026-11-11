@@ -21,7 +21,7 @@ describe('validateTrace', () => {
 
   it('validates a mathematically consistent trace', () => {
     const validTrace: Trace = {
-      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, scenario: 'C' },
+      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, pasarActive: false },
       effectiveCapacity: { 0: 500, 1: 400 },
       steps: [
         {
@@ -47,7 +47,7 @@ describe('validateTrace', () => {
 
   it('detects capacity violation when flow exceeds capacity', () => {
     const invalidTrace: Trace = {
-      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, scenario: 'C' },
+      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, pasarActive: false },
       effectiveCapacity: { 0: 500, 1: 400 },
       steps: [
         {
@@ -73,7 +73,7 @@ describe('validateTrace', () => {
 
   it('detects flow conservation violation at junction', () => {
     const invalidTrace: Trace = {
-      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, scenario: 'C' },
+      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, pasarActive: false },
       effectiveCapacity: { 0: 500, 1: 400 },
       steps: [
         {
@@ -99,7 +99,7 @@ describe('validateTrace', () => {
 
   it('detects min-cut theorem violation when cut capacity != max flow', () => {
     const invalidTrace: Trace = {
-      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, scenario: 'C' },
+      meta: { caseId: 'test_case', source: 1, sink: 3, alpha: 0, pasarActive: false },
       effectiveCapacity: { 0: 500, 1: 400 },
       steps: [
         {

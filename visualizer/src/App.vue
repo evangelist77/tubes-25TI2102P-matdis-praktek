@@ -1,396 +1,282 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import AlgorithmPanel from './components/AlgorithmPanel.vue'
+import ConditionCompare from './components/ConditionCompare.vue'
+import ConditionToggle from './components/ConditionToggle.vue'
+import CutPanel from './components/CutPanel.vue'
+import InspectPanel from './components/InspectPanel.vue'
+import Legend from './components/Legend.vue'
 import MapCanvas from './components/MapCanvas.vue'
+import RoutePanel from './components/RoutePanel.vue'
+import SensitivityPanel from './components/SensitivityPanel.vue'
 import StepPlayer from './components/StepPlayer.vue'
-import { loadManifest, loadTopology, loadTrace } from './core/loader'
-import type { Topology, EdgeDef, NodeDef, Trace, Manifest, ManifestEntry } from './core/types'
+import { useComparison } from './composables/useComparison'
+import { useReplay } from './composables/useReplay'
+import { loadGeometry, loadManifest, loadRoutes, loadTopology, loadTrace } from './core/loader'
+import {
+  describeCondition,
+  findDefaultRun,
+  pickRunForPair,
+  routesForPair,
+  runForCondition,
+  sinkSideNodeIds
+} from './core/selectors'
+import type { EdgeDef, GeometryMap, Manifest, ManifestEntry, NodeDef, RouteDef, Topology, Trace } from './core/types'
 
 const topology = ref<Topology | null>(null)
 const manifest = ref<Manifest | null>(null)
-const selectedManifestEntry = ref<ManifestEntry | null>(null)
+const routes = ref<RouteDef[]>([])
+const geometry = ref<GeometryMap>({})
+const selectedRun = ref<ManifestEntry | null>(null)
 const activeTrace = ref<Trace | null>(null)
+const selectedRouteId = ref<string | null>(null)
 
 const isLoading = ref(true)
 const errorMessage = ref<string | null>(null)
-
 const selectedEdge = ref<EdgeDef | null>(null)
 const selectedNode = ref<NodeDef | null>(null)
+const residualMode = ref(false)
+const showBaseMap = ref(true)
 
-const currentStepIndex = ref(0)
-const isPlaying = ref(false)
-const playSpeed = ref(1200) // ms
-let playTimer: ReturnType<typeof setInterval> | null = null
+const totalSteps = computed(() => activeTrace.value?.steps.length ?? 0)
+const { currentStepIndex, isPlaying, playSpeed, toggle, reset, stop, setSpeed } = useReplay(totalSteps)
+const comparison = useComparison(topology, manifest, selectedRun)
 
 onMounted(async () => {
   try {
-    isLoading.value = true
-    topology.value = await loadTopology('/data/topology.json')
-    manifest.value = await loadManifest('/data/manifest.json')
-
-    // Pilih default: S2 -> T1 dengan alpha=0.5 (Pasar Penuh Pagi)
-    const defaultEntry =
-      manifest.value.runs.find((r) => r.sourceCode === 'S2' && r.sinkCode === 'T1' && r.alpha === 0.5) ||
-      manifest.value.runs[0]
-
-    if (defaultEntry) {
-      await selectRun(defaultEntry)
-    }
-  } catch (err: any) {
-    errorMessage.value = err.message || 'Gagal memuat data simulasi.'
+    const [t, m, r, g] = await Promise.all([loadTopology(), loadManifest(), loadRoutes(), loadGeometry()])
+    topology.value = t
+    manifest.value = m
+    routes.value = r.routes
+    geometry.value = g
+    const first = findDefaultRun(m)
+    if (first) await selectRun(first)
+  } catch (err) {
+    errorMessage.value = err instanceof Error ? err.message : 'Gagal memuat data simulasi.'
   } finally {
     isLoading.value = false
   }
 })
 
 async function selectRun(entry: ManifestEntry) {
-  stopPlaying()
-  selectedManifestEntry.value = entry
+  stop()
   try {
     activeTrace.value = await loadTrace(entry.filename)
+    selectedRun.value = entry
     currentStepIndex.value = 0
-  } catch (err: any) {
-    errorMessage.value = err.message || 'Gagal memuat file trace.'
+    errorMessage.value = null
+  } catch (err) {
+    errorMessage.value = err instanceof Error ? err.message : 'Gagal memuat file trace.'
   }
 }
 
-// Komputasi status langkah saat ini
+function chooseCondition(condition: 'normal' | 'pasar') {
+  if (!manifest.value || !selectedRun.value) return
+  const run = runForCondition(manifest.value, selectedRun.value.sourceCode, selectedRun.value.sinkCode, condition)
+  if (run) selectRun(run)
+}
+
+function choosePair(sourceCode: string, sinkCode: string) {
+  if (!manifest.value) return
+  const run = pickRunForPair(manifest.value, sourceCode, sinkCode, selectedRun.value?.alpha ?? 0)
+  selectedRouteId.value = null
+  selectedEdge.value = null
+  selectedNode.value = null
+  if (run) selectRun(run)
+}
+
+const pairRoutes = computed(() =>
+  selectedRun.value ? routesForPair(routes.value, selectedRun.value.sourceCode, selectedRun.value.sinkCode) : []
+)
+const selectedRoute = computed(() => routes.value.find((r) => r.id === selectedRouteId.value) ?? null)
+const visibleEdgeIds = computed(() => selectedRoute.value?.edgeIds ?? null)
+const halos = computed(() =>
+  selectedRoute.value
+    ? [{ color: selectedRoute.value.color, edgeIds: selectedRoute.value.edgeIds }]
+    : pairRoutes.value.map((r) => ({ color: r.color, edgeIds: r.edgeIds }))
+)
+const activeTerminals = computed(() =>
+  activeTrace.value ? [activeTrace.value.meta.source, activeTrace.value.meta.sink] : []
+)
+
+// Bila satu rute dipilih, jalur augmentasi langkah ini bisa berada di luar rute tersebut
+const pathOutsideRoute = computed(() => {
+  const visible = visibleEdgeIds.value
+  const path = activePath.value
+  if (!visible || path.length === 0) return false
+  return !path.some((id) => visible.includes(id))
+})
+
 const currentStep = computed(() => {
   if (!activeTrace.value || currentStepIndex.value <= 0) return null
   return activeTrace.value.steps[currentStepIndex.value - 1] ?? null
 })
+const currentEdgeFlows = computed<Record<number, number>>(() => currentStep.value?.edgeFlows ?? {})
+const effectiveCapacities = computed<Record<number, number>>(() => activeTrace.value?.effectiveCapacity ?? {})
+const activePath = computed<number[]>(() => currentStep.value?.path ?? [])
 
-const currentEdgeFlows = computed<Record<number, number>>(() => {
-  if (!currentStep.value) return {}
-  return currentStep.value.edgeFlows
-})
-
-const effectiveCapacities = computed<Record<number, number>>(() => {
-  if (!activeTrace.value) return {}
-  return activeTrace.value.effectiveCapacity
-})
-
-const activePath = computed<number[]>(() => {
-  if (!currentStep.value) return []
-  return currentStep.value.path
-})
-
-const isAtFinalStep = computed(() => {
-  if (!activeTrace.value) return false
-  return currentStepIndex.value === activeTrace.value.steps.length
-})
-
-const minCutEdges = computed<number[]>(() => {
-  if (!activeTrace.value || !isAtFinalStep.value) return []
-  return activeTrace.value.result.minCut
-})
-
-const sourceSideNodes = computed<number[]>(() => {
-  if (!activeTrace.value || !isAtFinalStep.value) return []
-  return activeTrace.value.result.sourceSide
-})
-
-// Logika Pemutar Langkah Otomatis
-function togglePlay() {
-  if (isPlaying.value) {
-    stopPlaying()
-  } else {
-    startPlaying()
-  }
-}
-
-function startPlaying() {
-  if (!activeTrace.value) return
-  if (currentStepIndex.value >= activeTrace.value.steps.length) {
-    currentStepIndex.value = 0
-  }
-  isPlaying.value = true
-
-  playTimer = setInterval(() => {
-    if (!activeTrace.value) return
-    if (currentStepIndex.value < activeTrace.value.steps.length) {
-      currentStepIndex.value++
-    } else {
-      stopPlaying()
-    }
-  }, playSpeed.value)
-}
-
-function stopPlaying() {
-  isPlaying.value = false
-  if (playTimer) {
-    clearInterval(playTimer)
-    playTimer = null
-  }
-}
-
-function resetSteps() {
-  stopPlaying()
-  currentStepIndex.value = 0
-}
-
-function changeSpeed(speed: number) {
-  playSpeed.value = speed
-  if (isPlaying.value) {
-    stopPlaying()
-    startPlaying()
-  }
-}
-
-watch(playSpeed, () => {
-  if (isPlaying.value) {
-    stopPlaying()
-    startPlaying()
-  }
-})
-
-onUnmounted(() => {
-  stopPlaying()
-})
-
-function handleSelectEdge(edge: EdgeDef) {
-  selectedEdge.value = edge
-  selectedNode.value = null
-}
-
-function handleSelectNode(node: NodeDef) {
-  selectedNode.value = node
-}
+const isAtFinalStep = computed(() => !!activeTrace.value && currentStepIndex.value === totalSteps.value)
+const minCutEdges = computed(() => (isAtFinalStep.value ? (activeTrace.value?.result.minCut ?? []) : []))
+const sourceSideNodes = computed(() => (isAtFinalStep.value ? (activeTrace.value?.result.sourceSide ?? []) : []))
+const sinkSideNodes = computed(() =>
+  isAtFinalStep.value && topology.value && activeTrace.value
+    ? sinkSideNodeIds(topology.value, activeTrace.value.result.sourceSide)
+    : []
+)
+const condition = computed(() =>
+  selectedRun.value && manifest.value ? describeCondition(selectedRun.value.alpha, manifest.value.observedAlpha) : null
+)
 </script>
 
 <template>
-  <div class="flex flex-col h-screen w-screen overflow-hidden bg-stone-100 font-sans">
-    <!-- Header dengan aksen tenda pasar tumpah -->
-    <header class="bg-white border-b border-stone-200 shadow-xs z-10">
+  <div class="flex flex-col h-screen w-screen overflow-hidden bg-stone-100 font-sans text-stone-800">
+    <header class="bg-white border-b border-stone-200 z-10">
       <div class="h-1.5 tenda-pattern w-full"></div>
-      <div class="px-5 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="px-6 py-3 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 uppercase tracking-wider">
-              Tahap 2: Replay Langkah &amp; Aliran
-            </span>
-            <span class="text-xs text-stone-500 font-medium">Kasus 4 • Pasar Tumpah Gasibu–Monju</span>
-          </div>
-          <h1 class="text-base font-bold text-stone-900 leading-tight mt-0.5">
-            Visualisasi Jaringan Aliran Maksimum (Ford-Fulkerson)
-          </h1>
+          <div class="text-xs font-semibold uppercase tracking-wider text-amber-700">Kasus 4 · Pasar Tumpah Gasibu–Monju</div>
+          <h1 class="text-xl font-extrabold text-stone-900 leading-tight">Visualisasi Aliran Maksimum dengan Ford-Fulkerson</h1>
         </div>
-
-        <!-- Indikator Metrik Aliran Saat Ini -->
-        <div class="flex items-center gap-2 text-xs">
-          <div class="bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
-            <span class="text-[10px] uppercase font-bold text-orange-600">Aliran Berjalan:</span>
-            <span class="font-mono font-bold text-sm text-orange-900">
-              {{ currentStep ? currentStep.totalFlow : 0 }} kend/jam
-            </span>
-          </div>
-
-          <div v-if="activeTrace" class="bg-stone-50 border border-stone-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
-            <span class="text-[10px] uppercase font-bold text-stone-500">Max Flow:</span>
-            <span class="font-mono font-bold text-sm text-stone-900">
-              {{ activeTrace.result.maxFlow }} kend/jam
-            </span>
+        <div v-if="activeTrace" class="flex items-center gap-3">
+          <span v-if="condition" class="rounded-full px-3 py-1 text-sm font-bold"
+            :class="condition.key === 'normal' ? 'bg-emerald-100 text-emerald-800' : condition.key === 'pasar' ? 'bg-orange-100 text-orange-800' : 'bg-sky-100 text-sky-800'">
+            {{ condition.title }}
+          </span>
+          <div class="rounded-xl border border-stone-200 bg-stone-50 px-4 py-1.5 text-right">
+            <div class="text-[11px] font-bold uppercase text-stone-500">Arus maksimum</div>
+            <div class="font-mono text-xl font-extrabold text-stone-900 leading-tight">{{ activeTrace.result.maxFlow }}<span class="text-xs font-semibold text-stone-500"> kend/jam</span></div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Main Workspace -->
-    <div class="flex-1 flex overflow-hidden relative">
-      <!-- Sidebar Kontrol & Inspeksi -->
-      <aside class="w-80 md:w-96 bg-white border-r border-stone-200 flex flex-col z-10 shadow-xs overflow-y-auto">
-        <div class="p-4 space-y-4">
-          <!-- 1. Pemilih Kasus / Rute S-T & Skenario Alpha -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-bold uppercase tracking-wider text-stone-500">
-              Pilih Rute Terminal &amp; Skenario Pasar:
-            </label>
-            <select
-              v-if="manifest"
-              class="w-full text-xs font-medium bg-stone-50 border border-stone-300 rounded-lg p-2 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
-              :value="selectedManifestEntry?.filename"
-              @change="(e) => {
-                const target = e.target as HTMLSelectElement
-                const entry = manifest?.runs.find((r) => r.filename === target.value)
-                if (entry) selectRun(entry)
-              }"
-            >
-              <option
-                v-for="run in manifest.runs"
-                :key="run.filename"
-                :value="run.filename"
-              >
-                {{ run.label }}
-              </option>
-            </select>
-          </div>
+    <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[330px_minmax(0,1fr)_400px]">
+      <!-- Kiri: pilihan -->
+      <aside class="overflow-y-auto bg-white border-r border-stone-200 p-5 space-y-6">
+        <section v-if="manifest" class="space-y-2.5">
+          <h2 class="text-sm font-bold text-stone-900"><span class="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[11px] text-white">1</span>Pilih kondisi</h2>
+          <ConditionToggle :manifest="manifest" :selected="selectedRun" @choose="chooseCondition" />
+        </section>
 
-          <!-- 2. Ringkasan Status Skenario -->
-          <div v-if="activeTrace" class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 space-y-2 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-amber-900">
-                Skenario {{ activeTrace.meta.scenario }} (Penyempitan: {{ Math.round(activeTrace.meta.alpha * 100) }}%)
-              </span>
-              <span
-                class="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                :class="activeTrace.meta.scenario === 'A' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'"
-              >
-                {{ activeTrace.meta.scenario === 'A' ? 'Pasar Padat Pagi' : activeTrace.meta.scenario === 'B' ? 'Pasar Bubar' : 'Normal' }}
-              </span>
-            </div>
-            <div class="grid grid-cols-2 gap-1.5 text-[11px] text-stone-700">
-              <div>
-                <span class="text-stone-400 block">Jl. Japati:</span>
-                <span class="font-semibold text-orange-700">
-                  {{ effectiveCapacities[8] ?? 750 }} kend/jam
-                </span>
-              </div>
-              <div>
-                <span class="text-stone-400 block">Jl. Singaperbangsa:</span>
-                <span class="font-semibold" :class="(effectiveCapacities[20] ?? 250) === 0 ? 'text-red-600 font-bold' : 'text-stone-800'">
-                  {{ (effectiveCapacities[20] ?? 250) === 0 ? 'DITUTUP (0)' : `${effectiveCapacities[20]} kend/jam` }}
-                </span>
-              </div>
-            </div>
-          </div>
+        <section v-if="manifest" class="space-y-2.5">
+          <h2 class="text-sm font-bold text-stone-900"><span class="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[11px] text-white">2</span>Pilih rute</h2>
+          <RoutePanel
+            :manifest="manifest"
+            :routes="routes"
+            :selected="selectedRun"
+            :selected-route-id="selectedRouteId"
+            @choose-pair="choosePair"
+            @choose-route="(id) => (selectedRouteId = id)"
+          />
+        </section>
 
-          <!-- 3. Status Penyelesaian Aliran & Min-Cut -->
-          <div v-if="isAtFinalStep && activeTrace" class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 space-y-2 text-xs text-emerald-900">
-            <div class="flex items-center gap-1.5 font-bold">
-              <span>🎯</span>
-              <span>Aliran Maksimum Tercapai ({{ activeTrace.result.maxFlow }} kend/jam)</span>
-            </div>
-            <p class="text-[11px] text-stone-600 leading-relaxed">
-              Tidak ada lagi jalur augmentasi dari sumber ke muara. Seluruh aliran telah jenuh pada ruas pemotong (Min-Cut).
-            </p>
-            <div class="pt-1.5 border-t border-emerald-200/80">
-              <div class="text-[10px] font-bold uppercase text-emerald-700">Ruas Pemotong (Min-Cut / Bottleneck):</div>
-              <ul class="mt-1 space-y-1">
-                <li
-                  v-for="cutId in activeTrace.result.minCut"
-                  :key="cutId"
-                  class="flex items-center justify-between text-[11px] bg-white/70 px-2 py-1 rounded border border-emerald-200"
-                >
-                  <span class="font-semibold text-stone-800">
-                    {{ topology?.edges.find((e) => e.id === cutId)?.road || `Ruas #${cutId}` }}
-                  </span>
-                  <span class="font-mono text-red-600 font-bold">
-                    {{ effectiveCapacities[cutId] }} kend/jam
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
+        <section class="space-y-2">
+          <h2 class="text-sm font-bold text-stone-900"><span class="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-600 text-[11px] text-white">3</span>Tampilan</h2>
+          <label class="flex items-start gap-2.5 text-[13px] text-stone-700 cursor-pointer">
+            <input v-model="residualMode" type="checkbox" class="mt-0.5 accent-violet-600" />
+            <span><b>Mode residual</b><br /><span class="text-stone-500">tampilkan kapasitas sisa dan edge balik</span></span>
+          </label>
+          <label class="flex items-start gap-2.5 text-[13px] text-stone-700 cursor-pointer">
+            <input v-model="showBaseMap" type="checkbox" class="mt-0.5 accent-amber-600" />
+            <span><b>Peta dasar</b><br /><span class="text-stone-500">matikan untuk mode skematik</span></span>
+          </label>
+        </section>
 
-          <!-- 4. Detail Inspeksi Saat Ruas / Simpul Diklik -->
-          <div class="border border-stone-200 rounded-xl p-3.5 bg-white space-y-2">
-            <div class="text-xs font-bold uppercase tracking-wider text-stone-500">
-              Panel Inspeksi
-            </div>
-
-            <div v-if="selectedEdge" class="space-y-2 text-xs">
-              <div class="font-bold text-stone-900 text-sm border-b border-stone-100 pb-1">
-                {{ selectedEdge.road }}
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-stone-600">
-                <div>
-                  <span class="text-[10px] uppercase text-stone-400 block">ID Ruas</span>
-                  <span class="font-mono font-bold text-stone-800">#{{ selectedEdge.id }}</span>
-                </div>
-                <div>
-                  <span class="text-[10px] uppercase text-stone-400 block">Arus Saat Ini</span>
-                  <span class="font-mono font-bold text-orange-700">
-                    {{ currentEdgeFlows[selectedEdge.id] ?? 0 }} kend/jam
-                  </span>
-                </div>
-                <div>
-                  <span class="text-[10px] uppercase text-stone-400 block">Kapasitas Efektif</span>
-                  <span class="font-bold text-stone-800">
-                    {{ effectiveCapacities[selectedEdge.id] ?? selectedEdge.capacity }} kend/jam
-                  </span>
-                </div>
-                <div>
-                  <span class="text-[10px] uppercase text-stone-400 block">Kapasitas Sisa (Residual)</span>
-                  <span class="font-mono font-bold text-emerald-700">
-                    {{ Math.max(0, (effectiveCapacities[selectedEdge.id] ?? selectedEdge.capacity) - (currentEdgeFlows[selectedEdge.id] ?? 0)) }}
-                  </span>
-                </div>
-                <div class="col-span-2">
-                  <span class="text-[10px] uppercase text-stone-400 block">Hubungan Simpul</span>
-                  <span class="font-mono font-semibold text-stone-700">{{ selectedEdge.code }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div v-else-if="selectedNode" class="space-y-2 text-xs">
-              <div class="font-bold text-stone-900 text-sm border-b border-stone-100 pb-1">
-                {{ selectedNode.code }} (ID: {{ selectedNode.id }})
-              </div>
-              <p class="text-stone-600 text-xs">{{ selectedNode.label }}</p>
-              <div class="text-[11px] text-stone-500 font-mono">
-                Posisi: [{{ selectedNode.pos[0].toFixed(5) }}, {{ selectedNode.pos[1].toFixed(5) }}]
-              </div>
-              <div v-if="sourceSideNodes.includes(selectedNode.id)" class="text-[11px] font-semibold text-blue-600">
-                Partisi: Sisi Sumber (S-Cut)
-              </div>
-              <div v-else-if="isAtFinalStep" class="text-[11px] font-semibold text-stone-500">
-                Partisi: Sisi Muara (T-Cut)
-              </div>
-            </div>
-
-            <div v-else class="text-xs text-stone-400 italic py-2 text-center">
-              Klik ruas jalan atau simpul pada peta untuk melihat detail spesifikasi aliran.
-            </div>
-          </div>
-        </div>
+        <SensitivityPanel
+          v-if="manifest"
+          :rows="comparison.rows.value"
+          :observed-alpha="manifest.observedAlpha"
+          :selected="selectedRun"
+          @select-run="selectRun"
+        />
       </aside>
 
-      <!-- Area Peta Leaflet & StepPlayer -->
-      <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+      <!-- Tengah: peta + pemutar -->
+      <main class="flex flex-col min-h-0 min-w-0 relative">
         <div v-if="isLoading" class="absolute inset-0 z-50 bg-white/80 backdrop-blur-xs flex items-center justify-center">
-          <div class="flex items-center gap-2 text-stone-700 font-medium text-sm">
-            <span class="w-4 h-4 rounded-full border-2 border-amber-600 border-t-transparent animate-spin"></span>
+          <div class="flex items-center gap-2 text-stone-700 font-medium">
+            <span class="w-5 h-5 rounded-full border-2 border-amber-600 border-t-transparent animate-spin"></span>
             Memuat peta dan simulasi aliran...
           </div>
         </div>
-
         <div v-else-if="errorMessage" class="absolute inset-0 z-50 bg-red-50 flex items-center justify-center p-6">
-          <div class="bg-white border border-red-200 rounded-xl p-4 max-w-md shadow-md text-center space-y-2">
-            <div class="text-red-600 font-bold text-sm">Gagal Memuat Data</div>
-            <p class="text-xs text-stone-600">{{ errorMessage }}</p>
+          <div class="bg-white border border-red-200 rounded-xl p-5 max-w-md shadow-md text-center space-y-2">
+            <div class="text-red-600 font-bold">Gagal memuat data</div>
+            <p class="text-sm text-stone-600">{{ errorMessage }}</p>
           </div>
         </div>
 
-        <!-- Peta Leaflet Utama -->
-        <div class="flex-1 relative">
+        <div class="flex-1 min-h-0 relative">
           <MapCanvas
             v-if="topology"
             :topology="topology"
+            :geometry="geometry"
             :edge-flows="currentEdgeFlows"
             :effective-capacities="effectiveCapacities"
             :active-path="activePath"
             :min-cut-edges="minCutEdges"
             :source-side-nodes="sourceSideNodes"
+            :sink-side-nodes="sinkSideNodes"
             :selected-edge-id="selectedEdge?.id ?? null"
-            @select-edge="handleSelectEdge"
-            @select-node="handleSelectNode"
-          />
+            :residual-mode="residualMode"
+            :show-base-map="showBaseMap"
+            :visible-edge-ids="visibleEdgeIds"
+            :halos="halos"
+            :active-terminals="activeTerminals"
+            :market-active="activeTrace?.meta.pasarActive ?? true"
+            @select-edge="(e) => { selectedEdge = e; selectedNode = null }"
+            @select-node="(n) => { selectedNode = n; selectedEdge = null }"
+          >
+            <Legend :residual-mode="residualMode" />
+            <div
+              v-if="pathOutsideRoute"
+              class="absolute top-4 left-1/2 -translate-x-1/2 z-[400] max-w-[80%] rounded-xl border border-amber-300 bg-amber-50/95 px-4 py-2 text-[13px] text-amber-900 shadow-md"
+            >
+              Jalur langkah ini tidak melewati rute yang dipilih. Pilih <b>Semua rute</b> untuk melihatnya di peta.
+            </div>
+          </MapCanvas>
         </div>
 
-        <!-- Pemutar Langkah (StepPlayer) -->
         <StepPlayer
           v-if="activeTrace"
-          :topology="topology"
-          :steps="activeTrace.steps"
+          :total-steps="totalSteps"
           :current-step-index="currentStepIndex"
+          :total-flow="currentStep ? currentStep.totalFlow : 0"
           :max-flow="activeTrace.result.maxFlow"
           :is-playing="isPlaying"
           :play-speed="playSpeed"
-          @update:current-step-index="(idx) => currentStepIndex = idx"
-          @toggle-play="togglePlay"
-          @change-speed="changeSpeed"
-          @reset="resetSteps"
+          @update:current-step-index="(i) => (currentStepIndex = i)"
+          @toggle-play="toggle"
+          @change-speed="setSpeed"
+          @reset="reset"
         />
       </main>
+
+      <!-- Kanan: penjelasan algoritma -->
+      <aside class="overflow-y-auto bg-stone-50 border-l border-stone-200 p-5 space-y-5">
+        <template v-if="topology && activeTrace">
+          <AlgorithmPanel :topology="topology" :trace="activeTrace" :step-index="currentStepIndex" />
+          <CutPanel :topology="topology" :trace="activeTrace" :is-final="isAtFinalStep" />
+        </template>
+
+        <ConditionCompare
+          v-if="manifest && selectedRun"
+          :rows="comparison.rows.value"
+          :observed-alpha="manifest.observedAlpha"
+          :source-code="selectedRun.sourceCode"
+          :sink-code="selectedRun.sinkCode"
+          :is-loading="comparison.isLoading.value"
+        />
+
+        <InspectPanel
+          :edge="selectedEdge"
+          :node="selectedNode"
+          :edge-flows="currentEdgeFlows"
+          :effective-capacities="effectiveCapacities"
+          :source-side-nodes="sourceSideNodes"
+          :is-final="isAtFinalStep"
+        />
+      </aside>
     </div>
   </div>
 </template>

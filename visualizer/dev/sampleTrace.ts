@@ -11,6 +11,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Topology, Trace, TraceStep, Manifest, ManifestEntry } from '../src/core/types'
+
+/**
+ * Penyempitan ruas pasar saat PASAR PENUH. Angka ini PLACEHOLDER sampai data CCTV/video manual selesai
+ * dihitung; ganti lalu jalankan `npm run gen:traces`.
+ */
+const OBSERVED_ALPHA = 0.5
 import { validateTrace } from '../src/core/validateTrace'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -32,22 +38,22 @@ function solveFordFulkerson(
   topology: Topology,
   sourceId: number,
   sinkId: number,
-  alpha: number,
-  scenario: 'A' | 'B' | 'C'
+  alpha: number
 ): Trace {
+  const pasarActive = alpha > 0
   // 1. Hitung kapasitas efektif untuk setiap edge berdasarkan alpha & skenario
   const effectiveCapacity: Record<number, number> = {}
 
   for (const edge of topology.edges) {
     let cap = edge.capacity
 
-    // Ruas pasar tumpah (Jl. Japati, edge #8)
-    if (edge.isMarket || edge.id === 8) {
+    // Ruas pasar tumpah (ditandai flag isMarket pada topologi): kapasitas menyempit sebesar alpha
+    if (edge.isMarket) {
       cap = Math.round(edge.capacity * (1 - alpha))
     }
 
-    // Ruas Singaperbangsa (edge #20, ditutup pagi di skenario A)
-    if (edge.id === 20 && scenario === 'A') {
+    // Ruas yang ditutup selama pasar berlangsung (flag closedInMorning): kapasitas 0 bila pasar aktif
+    if (edge.closedInMorning && pasarActive) {
       cap = 0
     }
 
@@ -162,7 +168,13 @@ function solveFordFulkerson(
       .map((eid) => topology.edges.find((e) => e.id === eid)?.road || `Ruas #${eid}`)
       .join(' → ')
 
-    const narrative = `Langkah #${stepIndex}: Ditemukan rute augmentasi [${pathRoadNames}]. Arus bertambah +${bottleneck} kend/jam. Akumulasi aliran saat ini mencapai ${totalFlow} kend/jam.`
+    const sCode = topology.nodes.find((n) => n.id === sourceId)?.code ?? 'S'
+    const tCode = topology.nodes.find((n) => n.id === sinkId)?.code ?? 'T'
+    const previousTotal = totalFlow - bottleneck
+    const narrative =
+      `Langkah ${stepIndex}: ditemukan jalur dari ${sCode} ke ${tCode} lewat ${pathRoadNames}. ` +
+      `Ruas paling sempit hanya menyisakan ${bottleneck} kend/jam, jadi arus yang dialirkan sebesar ${bottleneck}. ` +
+      `Total arus ${previousTotal} + ${bottleneck} = ${totalFlow} kend/jam.`
 
     steps.push({
       step: stepIndex,
@@ -204,7 +216,7 @@ function solveFordFulkerson(
       source: sourceId,
       sink: sinkId,
       alpha,
-      scenario
+      pasarActive
     },
     effectiveCapacity,
     steps,
@@ -229,46 +241,55 @@ export function generateAllSampleTraces() {
     { s: 2, t: 4, sCode: 'S2', tCode: 'T2', label: 'S2 (Dipatiukur) → T2 (Diponegoro)' }
   ]
 
-  // Nilai alpha penyempitan pasar
-  const alphas: Array<{ alpha: number; scenario: 'A' | 'B' | 'C'; desc: string }> = [
-    { alpha: 0.0, scenario: 'C', desc: 'Normal (Tanpa Pasar, alpha=0)' },
-    { alpha: 0.25, scenario: 'B', desc: 'Pasar Mulai Bubar (Penyempitan 25%, alpha=0.25)' },
-    { alpha: 0.5, scenario: 'A', desc: 'Pasar Penuh Pagi (Penyempitan 50%, alpha=0.5)' },
-    { alpha: 0.75, scenario: 'A', desc: 'Pasar Sangat Padat (Penyempitan 75%, alpha=0.75)' }
-  ]
+  // Tangga penyempitan pasar 0%..90%. 0% = tanpa pasar (data CCTV hari biasa),
+  // OBSERVED_ALPHA = pasar penuh (data CCTV/video manual saat pasar padat), sisanya simulasi sensitivitas.
+  const alphas = Array.from({ length: 10 }, (_, k) => Math.round(k * 10) / 100)
+  if (!alphas.includes(OBSERVED_ALPHA)) alphas.push(OBSERVED_ALPHA)
+  alphas.sort((x, y) => x - y)
+
+  for (const f of fs.readdirSync(PUBLIC_DATA_DIR)) {
+    if (f.startsWith('trace_') && f.endsWith('.json')) fs.unlinkSync(path.join(PUBLIC_DATA_DIR, f))
+  }
 
   const manifestEntries: ManifestEntry[] = []
+  const stepCounts = new Map<string, number>()
 
   for (const p of pairs) {
     for (const a of alphas) {
-      const trace = solveFordFulkerson(topology, p.s, p.t, a.alpha, a.scenario)
+      const trace = solveFordFulkerson(topology, p.s, p.t, a)
 
       // Validasi konsistensi trace sebelum disimpan
       const validation = validateTrace(topology, trace)
       if (!validation.isValid) {
-        console.error(`Validation failed for ${p.sCode}->${p.tCode} alpha=${a.alpha}:`, validation.errors)
+        console.error(`Validation failed for ${p.sCode}->${p.tCode} alpha=${a}:`, validation.errors)
         throw new Error(`Invalid sample trace generated: ${p.sCode}->${p.tCode}`)
       }
 
-      const filename = `trace_${p.sCode}_${p.tCode}_a${Math.round(a.alpha * 100)}.json`
+      const filename = `trace_${p.sCode}_${p.tCode}_a${Math.round(a * 100)}.json`
       const outPath = path.join(PUBLIC_DATA_DIR, filename)
 
       fs.writeFileSync(outPath, JSON.stringify(trace, null, 2), 'utf-8')
+      stepCounts.set(filename, trace.steps.length)
 
       manifestEntries.push({
         source: p.s,
         sink: p.t,
         sourceCode: p.sCode,
         sinkCode: p.tCode,
-        alpha: a.alpha,
-        scenario: a.scenario,
+        alpha: a,
         filename,
-        label: `${p.label} [${a.desc}]`
+        label: `${p.label} · penyempitan ${Math.round(a * 100)}%`
       })
     }
   }
 
-  const manifest: Manifest = { runs: manifestEntries }
+  // Run default: di antara kondisi berbasis data (tanpa pasar / pasar penuh), pilih yang punya langkah terbanyak
+  // supaya cara kerja algoritma paling terlihat saat halaman dibuka.
+  const dataBacked = manifestEntries.filter((m) => m.alpha === 0 || m.alpha === OBSERVED_ALPHA)
+  const defaultEntry = dataBacked.reduce((best, m) => (stepCounts.get(m.filename)! > stepCounts.get(best.filename)! ? m : best), dataBacked[0])
+  if (defaultEntry) defaultEntry.isDefault = true
+
+  const manifest: Manifest = { observedAlpha: OBSERVED_ALPHA, runs: manifestEntries }
   const manifestPath = path.join(PUBLIC_DATA_DIR, 'manifest.json')
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8')
 

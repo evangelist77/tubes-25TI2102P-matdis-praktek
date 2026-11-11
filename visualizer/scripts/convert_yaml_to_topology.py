@@ -46,7 +46,8 @@ def main():
             "code": meta.get("code", f"{edge['from']} -> {edge['to']}"),
             "road": meta.get("road", f"Ruas {edge['from']} ke {edge['to']}"),
             "isMarket": meta.get("isMarket", False),
-            "isVirtual": meta.get("isVirtual", False)
+            "isVirtual": meta.get("isVirtual", False),
+            "closedInMorning": meta.get("closedInMorning", False)
         })
 
     events = yaml_data.get("execution_plan", {}).get("events", [])

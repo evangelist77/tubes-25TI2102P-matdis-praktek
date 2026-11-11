@@ -57,8 +57,8 @@ export interface TraceMeta {
   caseId: string
   source: number
   sink: number
-  alpha: number
-  scenario: 'A' | 'B' | 'C'
+  alpha: number // penyempitan ruas pasar (0 = tanpa pasar)
+  pasarActive: boolean // true bila pasar tumpah aktif (alpha > 0)
 }
 
 export interface Trace {
@@ -74,12 +74,36 @@ export interface ManifestEntry {
   sourceCode: string
   sinkCode: string
   alpha: number
-  scenario: 'A' | 'B' | 'C'
   filename: string
   label: string
+  isDefault?: boolean
 }
 
 export interface Manifest {
+  /** Penyempitan ruas pasar saat pasar penuh (hasil pengamatan; masih placeholder sampai data CCTV selesai). */
+  observedAlpha: number
   runs: ManifestEntry[]
 }
+
+/** Rute S -> T (koridor) untuk dipilih di antarmuka. Warna unik per rute. */
+export interface RouteDef {
+  id: string
+  name: string
+  fromName: string
+  toName: string
+  corridor: string
+  via: string
+  source: string // kode simpul, mis. 'S1'
+  sink: string // kode simpul, mis. 'T1'
+  color: string
+  distanceInfo: string
+  edgeIds: number[] // urutan id edge sepanjang rute
+}
+
+export interface RoutesFile {
+  routes: RouteDef[]
+}
+
+/** Bentuk jalan tiap edge: id edge -> daftar titik [lon, lat]. */
+export type GeometryMap = Record<number, [number, number][]>
 

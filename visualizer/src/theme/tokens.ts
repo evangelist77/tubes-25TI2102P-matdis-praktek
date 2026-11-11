@@ -39,6 +39,12 @@ export const themeTokens = {
       residualBack: '#8b5cf6'
     },
 
+    // Partisi min-cut (sisi S vs sisi T)
+    partition: {
+      source: '#2563eb',
+      sink: '#a16207'
+    },
+
     // Background & Surface
     surface: {
       bgApp: '#fffdfa',
