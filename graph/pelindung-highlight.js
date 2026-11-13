@@ -37,7 +37,13 @@
     { id: '4d000111-f853-4b53-a72c-8d196cea25f2', name: 'TAMAN LANSIA', node: 'V_Cisangkuy', role: 'Aliran P4 di Jl. Cisangkuy simpang Jl. Diponegoro (utara/atas Taman Lansia)', lat: -6.90123, lng: 107.62084 },
 
     // 10. T1: Sink PUSDAI (Jl. Surapati Timur)
-    { id: 'e46b2d97-e032-470c-96d3-97f68171bdda', name: 'CCTV PHH MUSTOFA-PUSDAI 01', node: 'T1', role: 'Outflow Sink T1 (PUSDAI / Surapati Timur)', lat: -6.899439, lng: 107.627107 }
+    { id: 'e46b2d97-e032-470c-96d3-97f68171bdda', name: 'CCTV PHH MUSTOFA-PUSDAI 01', node: 'T1', role: 'Outflow Sink T1 (PUSDAI / Surapati Timur)', lat: -6.899439, lng: 107.627107 },
+
+    // 11. V_Gasibu_Barat: Jl. Surapati (Barat) sebelum Gasibu Atas, dilewati P5 sampai P8
+    { id: 'b058067e-3281-4e37-b673-932b4bb6ba33', name: 'CCTV JL. SURAPATI - GASIBU 01', node: 'V_Gasibu_Barat', role: 'Aliran Surapati Barat masuk Gasibu Atas (P5 sampai P8)', lat: -6.898899, lng: 107.616002 },
+
+    // 12. V_Gasibu_Timur: Jl. Gasibu Atas (utara Lapangan Gasibu), dilewati P5 sampai P8
+    { id: '074d20ae-af7b-4969-aec8-1dc0efb81a6e', name: 'CCTV LAPANG GASIBU 02', node: 'V_Gasibu_Timur', role: 'Aliran Jl. Gasibu Atas arah Telkom Japati (P5 sampai P8)', lat: -6.898644, lng: 107.618605 }
   ];
 
   const MAROON_PIN_FILTER =
@@ -129,7 +135,7 @@
       });
     }
 
-    // Highlight dan pindahkan tepat 10 item CCTV target ke urutan teratas pada sidebar kiri web Pelindung
+    // Highlight dan pindahkan tepat 12 item CCTV target ke urutan teratas pada sidebar kiri web Pelindung
     const listItems = Array.from(doc.querySelectorAll('ul.list-group li.list-group-item'));
     let highlightedList = 0;
     listItems.reverse().forEach((li) => {
@@ -156,7 +162,7 @@
     });
 
     console.log(
-      `✅ [Max-Flow Pelindung Highlighter] Berhasil mewarnai tepat ${highlightedPins} pinpoint peta & ${highlightedList} item daftar CCTV menjadi MAROON (1-to-1 dengan 10 titik rute graf)!`
+      `✅ [Max-Flow Pelindung Highlighter] Berhasil mewarnai tepat ${highlightedPins} pinpoint peta & ${highlightedList} item daftar CCTV menjadi MAROON (1-to-1 dengan ${PELINDUNG_MAXFLOW_TARGETS.length} titik rute graf)!`
     );
     console.table(
       PELINDUNG_MAXFLOW_TARGETS.map((t) => ({

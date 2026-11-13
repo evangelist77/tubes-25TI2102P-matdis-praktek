@@ -446,7 +446,7 @@ Salin teks berikut bersama isi dokumen ini ketika Anda ingin meminta LLM melakuk
 
 Untuk menghitung arus aktual (real traffic flow) kendaraan per jam pada model Maximum Flow, tim dapat memanfaatkan data streaming video daring dari sistem **Pelindung Bandung** (`https://pelindung.bandung.go.id/`) yang dikelola Diskominfo, Dishub, dan DPKP3 Kota Bandung, dikombinasikan dengan titik **Survei Manual (Rekam Lapangan)** pada ruas jalan perumahan/lingkungan yang tidak terjangkau CCTV publik.
 
-### 7.1 Matriks 10 Titik Lokasi Pantau CCTV Pelindung Bandung (24 Kamera)
+### 7.1 Matriks 12 Titik Lokasi Pantau CCTV Pelindung Bandung (27 Kamera)
 
 Daftar kamera berikut telah dipetakan langsung dengan koordinat dan ID streaming resmi dari portal `pelindung.bandung.go.id:8443/api/cek`:
 
@@ -462,6 +462,16 @@ Daftar kamera berikut telah dipetakan langsung dengan koordinat dan ID streaming
 | 8 | **V_Surapati_Merak** | `CCTV GASIBU_01 / 02` & `SP TELKOM - Gasibu` | DISKOMINFO / DISHUB | -6.899280, 107.620320 | Memantau arus keluar Jl. Merak (P1) yang bergabung ke Jl. Surapati depan Gasibu |
 | 9 | **V_Cisangkuy** | `TAMAN LANSIA` & `Taman Pustaka Bunga_03` | DPKP3 | -6.901230, 107.620840 | Memantau arus P4 di Jl. Cisangkuy simpang Jl. Diponegoro (utara/atas Taman Lansia) |
 | 10 | **T1 & T2** | `CCTV PHH MUSTOFA-PUSDAI 01 / 02` & `CCTV PUSDAI 01 / 02` | DISKOMINFO | -6.899550, 107.627090 | Menghitung total outflow akhir pada Sink $T_1$ (Surapati Timur) dan $T_2$ (Diponegoro Timur) |
+| 11 | **V_Gasibu_Barat** | `CCTV JL. SURAPATI - GASIBU 01` | DISKOMINFO | -6.898899, 107.616002 | Jalur Gasibu Atas (Path 5 sampai 8): menghitung arus Jl. Surapati (Barat) di ruas `V_DU_Selatan` ke `V_Gasibu_Barat` (kamera 4 m dari ruas, 271 m sebelum `V_Gasibu_Barat`, menghadap arah Gasibu) |
+| 12 | **V_Gasibu_Timur** | `CCTV LAPANG GASIBU 02` | DISKOMINFO | -6.898644, 107.618605 | Jalur Gasibu Atas (Path 5 sampai 8): memantau arus Jl. Gasibu Atas di ruas `V_Gasibu_Barat` ke `V_Gasibu_Timur` (kamera 67 m dari ruas, 105 m dari `V_Gasibu_Timur`, menghadap arah Telkom Japati; ruas yang terlihat masih perlu dipastikan kelompok) |
+
+Titik 11 dan 12 ditambahkan 13 Nov 2026 atas permintaan Hafiz untuk keempat jalur yang lewat Jalan Gasibu Atas. Keduanya dicari dari
+`pelindung.bandung.go.id:8443/api/cek` dalam radius sekitar 300 m dari simpul dan ruas Path 5 sampai 8, lalu dicek hidup dengan ffprobe
+dan dilihat satu frame-nya (13 Nov 2026 sekitar 18.24 WIB). Kamera lain di radius itu yang tidak dimasukkan: `CCTV JL. SURAPATI - GASIBU 02`
+(hidup tetapi pada malam hari gambarnya tertutup silau lampu sehingga sudutnya belum bisa dipastikan, perlu dicek ulang siang hari),
+`CCTV DAGO 3-BORROMEUS 01 / 02` (hidup tetapi menyorot Jl. Ir. H. Djuanda di utara simpang Hasanuddin yang tidak dilewati jalur, dan
+simpang `V_Djuanda_Hasanuddin` sudah dipantau `CCTV DAGO 2-SMA 1`), `TAMAN LANSIA_02 / 03 / 04` (stream 404), dan `Lobby PDAM TIRTAWENING`
+(kamera dalam ruangan). `CCTV GASIBU_02` dan `SP TELKOM - Gasibu` yang dekat `V_Gasibu_Timur` sudah tercatat di titik 8.
 
 ### 7.2 Matriks 6 Titik Wajib Survei Manual / Rekam Lapangan (Blind Spots)
 
