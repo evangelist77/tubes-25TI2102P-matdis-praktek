@@ -304,6 +304,18 @@ for (const seg of segments) {
 assert.match(html, /segment-tooltip/, 'Harus memiliki kelas CSS .segment-tooltip');
 assert.match(html, /segment-patch/, 'Harus memiliki kelas CSS .segment-patch');
 
+// Lebar jalur terarah harus mengikuti spec, bukan total dua badan jalan.
+for (const [id, expectedWidth] of Object.entries({
+  seg_cikapayang_du: '~6 meter (1-2 lajur independen, Primary)',
+  seg_djuanda_diponegoro: '~6 meter (1-2 lajur independen, Primary)',
+  seg_diponegoro_ariajipang: '~7 meter (2 lajur independen, jalur selatan, Primary)'
+})) {
+  assert.equal(segments.find((seg) => seg.id === id)?.widthInfo, expectedWidth);
+}
+assert.doesNotMatch(specContent, /\d+\s*kend\/jam/, 'Spec tidak boleh memuat angka kapasitas tanpa data');
+assert.match(specContent, /Data kapasitas kendaraan \(kend\/jam\) belum tersedia/);
+assert.match(html, /Data kapasitas kendaraan \(kend\/jam\) belum tersedia/);
+
 // 10. Cek script Console pelindung-highlight.js untuk web pelindung.bandung.go.id
 const highlightScriptPath = new URL('./pelindung-highlight.js', import.meta.url);
 assert.ok(fs.existsSync(highlightScriptPath), 'File pelindung-highlight.js harus ada');
