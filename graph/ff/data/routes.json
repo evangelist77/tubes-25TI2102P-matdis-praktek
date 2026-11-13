@@ -1,0 +1,178 @@
+{
+  "routes": [
+    {
+      "id": "S1-T1",
+      "name": "S₁ (Pasupati / Tamansari) → T₁ (PUSDAI / Surapati Timur)",
+      "fromName": "Pasupati (Tamansari)",
+      "toName": "PUSDAI (Surapati Timur)",
+      "corridor": "Koridor Utara Gasibu",
+      "via": "Jl. Singaperbangsa • Jl. Tikukur • Jl. Gagak",
+      "source": "S1",
+      "sink": "T1",
+      "color": "#10b981",
+      "distanceInfo": "3,4 km • ±11 mnt",
+      "edgeIds": [
+        0,
+        2,
+        3,
+        19,
+        22,
+        23,
+        24,
+        28
+      ]
+    },
+    {
+      "id": "S1-T2",
+      "name": "S₁ (Pasupati / Tamansari) → T₂ (Diponegoro)",
+      "fromName": "Pasupati (Tamansari)",
+      "toName": "Diponegoro Timur (PUSDAI)",
+      "corridor": "Koridor Selatan Belakang Gedung Sate",
+      "via": "Jl. Sulanjana • Jl. Cilamaya • Jl. Cisangkuy",
+      "source": "S1",
+      "sink": "T2",
+      "color": "#ec4899",
+      "distanceInfo": "3,1 km • ±9 mnt",
+      "edgeIds": [
+        0,
+        1,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": "S2-T1",
+      "name": "S₂ (Dipatiukur) → T₁ (PUSDAI / Surapati Timur)",
+      "fromName": "Dipatiukur (Unpad)",
+      "toName": "PUSDAI (Surapati Timur)",
+      "corridor": "Koridor Utara Dipatiukur – Monju",
+      "via": "Jl. Singaperbangsa • Jl. Merak • Jl. Surapati",
+      "source": "S2",
+      "sink": "T1",
+      "color": "#3b82f6",
+      "distanceInfo": "2,3 km • ±8 mnt",
+      "edgeIds": [
+        5,
+        6,
+        19,
+        20,
+        21,
+        27,
+        28
+      ]
+    },
+    {
+      "id": "S2-T2",
+      "name": "S₂ (Dipatiukur) → T₂ (Diponegoro)",
+      "fromName": "Dipatiukur (Unpad)",
+      "toName": "Diponegoro Timur (PUSDAI)",
+      "corridor": "Koridor Selatan Dago – Diponegoro",
+      "via": "Jl. Hasanuddin • Jl. Djuanda • Jl. Cisanggarung",
+      "source": "S2",
+      "sink": "T2",
+      "color": "#f59e0b",
+      "distanceInfo": "3,8 km • ±10 mnt",
+      "edgeIds": [
+        5,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        17,
+        18
+      ]
+    },
+    {
+      "id": "S1-T1-Gasibu",
+      "name": "S₁ (Pasupati / Tamansari) → T₁ (PUSDAI) via Gasibu Atas",
+      "fromName": "Pasupati (Tamansari)",
+      "toName": "PUSDAI (Surapati Timur)",
+      "corridor": "Koridor Gasibu Atas – Surapati",
+      "via": "Jl. Cikapayang • Jl. Gasibu Atas (Surapati) • PUSDAI",
+      "source": "S1",
+      "sink": "T1",
+      "color": "#06b6d4",
+      "distanceInfo": "2,9 km • ±7 mnt",
+      "edgeIds": [
+        0,
+        2,
+        4,
+        25,
+        26,
+        27,
+        28
+      ]
+    },
+    {
+      "id": "S1-T2-Gasibu",
+      "name": "S₁ (Pasupati / Tamansari) → T₂ (Diponegoro) via Gasibu Atas",
+      "fromName": "Pasupati (Tamansari)",
+      "toName": "Diponegoro Timur (PUSDAI)",
+      "corridor": "Koridor Gasibu Atas – Sentot Alibasyah",
+      "via": "Jl. Cikapayang • Jl. Gasibu Atas • Jl. Sentot Alibasyah",
+      "source": "S1",
+      "sink": "T2",
+      "color": "#a855f7",
+      "distanceInfo": "2,8 km • ±8 mnt",
+      "edgeIds": [
+        0,
+        2,
+        4,
+        25,
+        29,
+        30
+      ]
+    },
+    {
+      "id": "S2-T1-Gasibu",
+      "name": "S₂ (Dipatiukur) → T₁ (PUSDAI) via Gasibu Atas",
+      "fromName": "Dipatiukur (Unpad)",
+      "toName": "PUSDAI (Surapati Timur)",
+      "corridor": "Koridor Dago – Gasibu Atas – Surapati",
+      "via": "Jl. Hasanuddin • Jl. Ir. H. Djuanda • Jl. Gasibu Atas (Surapati)",
+      "source": "S2",
+      "sink": "T1",
+      "color": "#84cc16",
+      "distanceInfo": "3,5 km • ±9 mnt",
+      "edgeIds": [
+        5,
+        7,
+        8,
+        4,
+        25,
+        26,
+        27,
+        28
+      ]
+    },
+    {
+      "id": "S2-T2-Gasibu",
+      "name": "S₂ (Dipatiukur) → T₂ (Diponegoro) via Gasibu Atas",
+      "fromName": "Dipatiukur (Unpad)",
+      "toName": "Diponegoro Timur (PUSDAI)",
+      "corridor": "Koridor Dago – Gasibu Atas – Sentot Alibasyah",
+      "via": "Jl. Hasanuddin • Jl. Ir. H. Djuanda • Jl. Gasibu Atas • Jl. Sentot Alibasyah",
+      "source": "S2",
+      "sink": "T2",
+      "color": "#f43f5e",
+      "distanceInfo": "3,4 km • ±9 mnt",
+      "edgeIds": [
+        5,
+        7,
+        8,
+        4,
+        25,
+        29,
+        30
+      ]
+    }
+  ]
+}

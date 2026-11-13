@@ -1,0 +1,366 @@
+{
+  "observedAlpha": 0.5,
+  "runs": [
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0,
+      "filename": "trace_S1_T1_a0.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 0%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.1,
+      "filename": "trace_S1_T1_a10.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 10%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.2,
+      "filename": "trace_S1_T1_a20.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 20%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.3,
+      "filename": "trace_S1_T1_a30.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 30%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.4,
+      "filename": "trace_S1_T1_a40.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 40%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.5,
+      "filename": "trace_S1_T1_a50.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 50%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.6,
+      "filename": "trace_S1_T1_a60.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 60%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.7,
+      "filename": "trace_S1_T1_a70.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 70%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.8,
+      "filename": "trace_S1_T1_a80.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 80%"
+    },
+    {
+      "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 0.9,
+      "filename": "trace_S1_T1_a90.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 90%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0,
+      "filename": "trace_S1_T2_a0.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 0%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.1,
+      "filename": "trace_S1_T2_a10.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 10%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.2,
+      "filename": "trace_S1_T2_a20.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 20%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.3,
+      "filename": "trace_S1_T2_a30.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 30%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.4,
+      "filename": "trace_S1_T2_a40.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 40%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.5,
+      "filename": "trace_S1_T2_a50.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 50%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.6,
+      "filename": "trace_S1_T2_a60.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 60%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.7,
+      "filename": "trace_S1_T2_a70.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 70%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.8,
+      "filename": "trace_S1_T2_a80.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 80%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 0.9,
+      "filename": "trace_S1_T2_a90.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 90%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0,
+      "filename": "trace_S2_T1_a0.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 0%",
+      "isDefault": true
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.1,
+      "filename": "trace_S2_T1_a10.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 10%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.2,
+      "filename": "trace_S2_T1_a20.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 20%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.3,
+      "filename": "trace_S2_T1_a30.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 30%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.4,
+      "filename": "trace_S2_T1_a40.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 40%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.5,
+      "filename": "trace_S2_T1_a50.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 50%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.6,
+      "filename": "trace_S2_T1_a60.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 60%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.7,
+      "filename": "trace_S2_T1_a70.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 70%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.8,
+      "filename": "trace_S2_T1_a80.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 80%"
+    },
+    {
+      "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 0.9,
+      "filename": "trace_S2_T1_a90.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 90%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0,
+      "filename": "trace_S2_T2_a0.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 0%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.1,
+      "filename": "trace_S2_T2_a10.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 10%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.2,
+      "filename": "trace_S2_T2_a20.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 20%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.3,
+      "filename": "trace_S2_T2_a30.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 30%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.4,
+      "filename": "trace_S2_T2_a40.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 40%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.5,
+      "filename": "trace_S2_T2_a50.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 50%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.6,
+      "filename": "trace_S2_T2_a60.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 60%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.7,
+      "filename": "trace_S2_T2_a70.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 70%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.8,
+      "filename": "trace_S2_T2_a80.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 80%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 0.9,
+      "filename": "trace_S2_T2_a90.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 90%"
+    }
+  ]
+}

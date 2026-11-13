@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "caseId": "case_04_pasar_tumpah",
+    "source": 1,
+    "sink": 3,
+    "alpha": 0.4,
+    "pasarActive": true
+  },
+  "effectiveCapacity": {
+    "0": 500,
+    "1": 500,
+    "2": 1200,
+    "3": 500,
+    "4": 1400,
+    "5": 500,
+    "6": 500,
+    "7": 400,
+    "8": 1200,
+    "9": 1200,
+    "10": 400,
+    "11": 1600,
+    "12": 350,
+    "13": 450,
+    "14": 400,
+    "15": 400,
+    "16": 450,
+    "17": 400,
+    "18": 450,
+    "19": 0,
+    "20": 150,
+    "21": 200,
+    "22": 150,
+    "23": 150,
+    "24": 150,
+    "25": 1080,
+    "26": 1800,
+    "27": 1800,
+    "28": 1800,
+    "29": 900,
+    "30": 1200,
+    "31": 100000,
+    "32": 100000,
+    "33": 100000,
+    "34": 100000
+  },
+  "steps": [
+    {
+      "step": 1,
+      "path": [
+        0,
+        2,
+        4,
+        25,
+        26,
+        27,
+        28
+      ],
+      "bottleneck": 500,
+      "totalFlow": 500,
+      "edgeFlows": {
+        "0": 500,
+        "1": 0,
+        "2": 500,
+        "3": 0,
+        "4": 500,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0,
+        "16": 0,
+        "17": 0,
+        "18": 0,
+        "19": 0,
+        "20": 0,
+        "21": 0,
+        "22": 0,
+        "23": 0,
+        "24": 0,
+        "25": 500,
+        "26": 500,
+        "27": 500,
+        "28": 500,
+        "29": 0,
+        "30": 0,
+        "31": 0,
+        "32": 0,
+        "33": 0,
+        "34": 0
+      },
+      "narrative": "Langkah 1: ditemukan jalur dari S1 ke T1 lewat Turun Pasupati / Jl. Tamansari → Jl. Cikapayang → Jl. Surapati (Barat) → Jl. Gasibu Atas → Jl. Surapati (depan Telkom) → Jl. Surapati Timur → Jl. Surapati ke PUSDAI. Ruas paling sempit hanya menyisakan 500 kend/jam, jadi arus yang dialirkan sebesar 500. Total arus 0 + 500 = 500 kend/jam."
+    }
+  ],
+  "result": {
+    "maxFlow": 500,
+    "minCut": [
+      0
+    ],
+    "sourceSide": [
+      1
+    ]
+  }
+}
