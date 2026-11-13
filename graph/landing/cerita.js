@@ -858,8 +858,10 @@ const per = (t, z = 0.55) => {
   return lerp(x, 1, sstep(0.8, 1, t));
 };
 const PANAH = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+/* angkatan kartu saat disorot: kecil, supaya kartu tetap dekat posisi diamnya dan kartu di bawah kursor tetap yang terlihat */
+const ANGKAT = { putar: 0.25, naik: 14 };
 const Cards = {
-  els: [], cw: 220, ch: 319, spread: 120, hover: -1, ptr: -1, foc: -1, near: -1, hi: -1, hk: 0, pos: [], raw: [],
+  els: [], cw: 220, ch: 319, spread: 120, hover: -1, foc: -1, mh: -1, calon: -1, calonT: 0, hi: -1, hk: 0, pos: [], raw: [],
   /* detail landscape: cur = kartu yang sedang dimorf, m = progres morf 0 (portrait di kipas) sampai 1 (landscape terbuka).
      pin = kartu yang dibuka dengan klik, tutupS = kartu gulir yang baru ditutup pengguna (tidak dibuka lagi sampai ganti kartu) */
   cur: -1, m: 0, pin: -1, tutupS: -1, sI: -1, h0: 0, isiI: -1, from: null, fokus: false, geo: null,
@@ -867,11 +869,10 @@ const Cards = {
     const deck = $('#deck'); this.deck = deck;
     deck.innerHTML = TIM.map((c, i) => `<div class="card" style="--acc:${c.acc}" role="button" tabindex="0" aria-label="Buka kartu ${esc(c.nama)}"><div class="card-in"><div class="face front">${cardFront(c, i)}</div></div></div>`).join('');
     this.els = $$('.card', deck).map((el, i) => {
-      el.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') this.ptr = i; });
-      el.addEventListener('pointerleave', () => { if (this.ptr === i) this.ptr = -1; });
       el.addEventListener('focus', () => { this.foc = i; });
       el.addEventListener('blur', () => { if (this.foc === i) this.foc = -1; });
-      el.addEventListener('click', () => this.buka(i));
+      /* dengan mouse, yang dibuka kartu yang tersorot di bawah kursor (bukan elemen yang kebetulan menutupi karena sedang terangkat) */
+      el.addEventListener('click', e => { const j = FINE && e.detail ? this.hit(e.clientX, e.clientY) : -1; this.buka(j >= 0 ? j : i); });
       el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.buka(i); } });
       return { el, inn: el.firstElementChild };
     });
@@ -946,12 +947,25 @@ const Cards = {
     this.geo = Object.assign(g, { W, H, cx, cy, kol });
   },
   /* pose layar kartu portrait i (proyeksi perspektif .k-stage 1500px, origin 50% 42%), termasuk angkatan sorot saat diklik */
-  proj(i) {
-    const q = this.raw[i], h = this.h0;
-    const rz = lerp(q.rz, 0, 0.6 * h), z = q.z + 90 * h, s = 1 + 0.07 * h;
-    const cx = this.deckX + q.x + this.ch * Math.sin(rz * RAD), cy = this.deckY + q.y - 22 * h + this.ch * (1 - Math.cos(rz * RAD));
+  proj(i) { return this.pose(i, this.h0); },
+  /* pose layar kartu i dengan angkatan sorot h (0 = diam di kipas, 1 = terangkat penuh) */
+  pose(i, h) {
+    const q = this.raw[i];
+    const rz = lerp(q.rz, 0, ANGKAT.putar * h), z = q.z + 90 * h, s = 1 + 0.07 * h;
+    const cx = this.deckX + q.x + this.ch * Math.sin(rz * RAD), cy = this.deckY + q.y - ANGKAT.naik * h + this.ch * (1 - Math.cos(rz * RAD));
     const k = 1500 / (1500 - z), ox = S.vw * 0.5, oy = S.vh * 0.42;
     return { x: ox + (cx - ox) * k, y: oy + (cy - oy) * k, w: this.cw * s * k, h: this.ch * s * k, r: rz };
+  },
+  /* kartu di bawah titik layar (mx, my) menurut bentuk DIAM tiap kartu di kipas: bagian kartu yang terlihat saat tidak ada yang
+     terangkat. Kartu yang sedang terangkat tidak ikut memperluas daerahnya, jadi tiap kartu tetap kebagian giliran saat kursor
+     digeser dan daerah sentuh tidak berubah-ubah (sorot tidak bolak-balik). Di daerah tumpang, kartu paling atas (indeks terbesar) menang */
+  hit(mx, my) {
+    if (this.raw.length < this.els.length) return -1;
+    for (let i = this.els.length - 1; i >= 0; i--) {
+      const P = this.pose(i, 0), dx = mx - P.x, dy = my - P.y, c = Math.cos(P.r * RAD), s = Math.sin(P.r * RAD);
+      if (Math.abs(dx * c + dy * s) <= P.w / 2 && Math.abs(-dx * s + dy * c) <= P.h / 2) return i;
+    }
+    return -1;
   },
   mulai(i) {
     this.cur = i; this.m = 0;
@@ -1034,14 +1048,15 @@ const Cards = {
     if (this.cur >= 0 && this.m <= 0) this.selesai();
     if (!REDUCED && m0 < 0.62 && this.m >= 0.62) this.percik();
     const buka = this.cur >= 0;
-    /* sorot hover/fokus: dianimasikan waktu (bukan gulir), kartu terangkat di tempat dan kartu lain meredup.
-       Dengan mouse, kartu terdekat ikut disorot begitu kursor mendekat (posisi kartu dari frame sebelumnya). Mati selama detail terbuka */
-    let near = -1;
-    if (FINE && !buka && this.ptr < 0 && this.pos.length && performance.now() - S.mouse.last < 4000) {
-      let bd = this.cw * 0.95;
-      this.pos.forEach(([x, y], i) => { const d = Math.hypot(S.mouse.x - this.deckX - x, S.mouse.y - this.deckY - y) * (i === this.near ? 0.85 : 1); if (d < bd) { bd = d; near = i; } });   // 0,85 = histeresis supaya sorot tidak berkedip di batas
-    }
-    this.near = near; this.hover = buka ? -1 : this.ptr >= 0 ? this.ptr : this.foc >= 0 ? this.foc : near;
+    /* sorot hover/fokus: dianimasikan waktu (bukan gulir), kartu terangkat di tempat dan kartu lain meredup. Mati selama detail terbuka.
+       Dengan mouse, yang disorot hanya kartu yang benar-benar di bawah kursor (hit). Pindah dari satu kartu ke kartu lain baru terjadi
+       setelah kursor sekitar 90 ms di kartu baru, dan sorot hilang 140 ms setelah kursor keluar, jadi menyenggol batas tidak berkedip */
+    const now = performance.now();
+    const tunjuk = FINE && !buka && S.mouse.last > 0 ? this.hit(S.mouse.x, S.mouse.y) : -1;
+    if (tunjuk !== this.calon) { this.calon = tunjuk; this.calonT = now; }
+    if (tunjuk !== this.mh && (this.mh < 0 || now - this.calonT > (tunjuk < 0 ? 140 : 90))) this.mh = tunjuk;
+    if (buka) this.mh = -1;
+    this.hover = buka ? -1 : this.mh >= 0 ? this.mh : this.foc;
     if (this.hover >= 0) this.hi = this.hover;
     this.hk = lerp(this.hk, this.hover >= 0 ? 1 : 0, 1 - Math.pow(1 - (REDUCED ? 1 : 0.16), dt));
     if (this.hover < 0 && this.hk < 0.003) { this.hk = 0; this.hi = -1; }
@@ -1057,7 +1072,7 @@ const Cards = {
       this.raw[i] = { x, y, z, rz };
       this.pos[i] = [x + this.ch * Math.sin(rz * RAD), y + this.ch * (1 - Math.cos(rz * RAD))];   // pusat kartu sebelum disorot, sudah diputar di transform-origin 50% 150%
       if (i === hi && hk > 0) {
-        y -= 22 * hk; z += 90 * hk; s *= 1 + 0.07 * hk; rz = lerp(rz, 0, hk * 0.6);
+        y -= ANGKAT.naik * hk; z += 90 * hk; s *= 1 + 0.07 * hk; rz = lerp(rz, 0, hk * ANGKAT.putar);
         rx = -S.mouse.sy * 7 * hk; ry = S.mouse.sx * 10 * hk;
       }
       setT(el, `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotate(${rz.toFixed(2)}deg)`);
