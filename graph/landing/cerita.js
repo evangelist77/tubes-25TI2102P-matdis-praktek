@@ -1674,7 +1674,7 @@ const Data = {
     });
     (g.manualSurveyPoints || []).forEach(s => {
       const m = mm[s.id] || {}, k = m.klip;
-      this.items.push({ jenis: 'hp', judul: bersih(s.name).replace(/^Survei Manual \d+:\s*(Simpang\s+)?/i, ''), simpul: simpulTxt(s.nodeId), jam: k && k.jam, src: src(k), poster: poster(k), catatan: m.catatan || '', status: 'jumlah kendaraan belum dihitung', ket: k ? `Minggu 1 Nov 2026 sekitar ${k.jam} · cuplikan ${k.durasi_detik} detik dari menit ke-${k.dari_menit} · sudah diproses program hitung` : '' });
+      this.items.push({ jenis: 'hp', judul: bersih(s.name).replace(/^Survei Manual \d+:\s*(Simpang\s+)?/i, ''), simpul: simpulTxt(s.nodeId), jam: k && k.jam, src: src(k), poster: poster(k), catatan: m.catatan || '', status: 'arus sudah dihitung, angka sementara', ket: k ? `Minggu 1 Nov 2026 sekitar ${k.jam} · cuplikan ${k.durasi_detik} detik dari menit ke-${k.dari_menit} · sudah diproses program hitung` : '' });
     });
     (MD.deteksi || []).forEach(d => this.items.push({ jenis: 'det', judul: 'Deteksi YOLO · ' + kamera(d.judul), simpul: simpulTxt((/\((V_[A-Za-z_]+|[ST]\d)\)/.exec(d.judul) || [])[1] || ''), src: d.src ? BASE + d.src : null, poster: d.poster ? BASE + d.poster : null, catatan: ruasBaca(d.catatan), status: 'hasil uji, belum dipakai sebagai kapasitas', ket: 'Cuplikan uji 29 Okt 2026 · sudah diproses program hitung' }));
     const wrap = $('#pols'), nC = this.items.filter(i => i.jenis === 'cctv').length, nH = this.items.filter(i => i.jenis === 'hp').length;
