@@ -2,7 +2,7 @@ window.MEDIA_DATA = {
   diperbarui: "2026-11-13T18:30:00+07:00",
   // ID video kolase YouTube hasil program hitung kendaraan (semua rekaman diputar bersamaan). Selama null, pemutar
   // dan tombol "Lihat rekaman penuh di YouTube" tidak ditampilkan.
-  youtube: { hp: null, cctv: null },
+  youtube: { hp: "rOYqXmBW57s", cctv: null },
   cctv: {
     cctv_itb_bonbin: {
       status: "aman",
