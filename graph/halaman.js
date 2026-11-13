@@ -165,7 +165,7 @@
             <h4>${esc(judul)}</h4>
             <p class="meta">${simpul(x.p.nodeId)} · sekitar ${esc(k.jam || '')} · asli ${k.durasi_asli_detik ? durasi(k.durasi_asli_detik) : '-'}</p>
             <p>${esc(x.info.alasan || '')}${khusus ? ` ${esc(khusus)}` : ''}</p>
-            <span class="belum">Jumlah kendaraan belum dihitung</span>
+            <span class="belum">Arus sudah dihitung, angka sementara</span>
           </figcaption>
         </figure>`;
     }).join('');
