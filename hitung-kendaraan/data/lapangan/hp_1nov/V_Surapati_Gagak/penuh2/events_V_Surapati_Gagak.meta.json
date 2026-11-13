@@ -1,0 +1,145 @@
+{
+  "titik": "V_Surapati_Gagak",
+  "cctv": null,
+  "garis": [
+    {
+      "id": "L1",
+      "edge_model": "V_Gagak->V_Surapati_Gagak",
+      "koordinat": [
+        [
+          1000,
+          725
+        ],
+        [
+          1260,
+          725
+        ]
+      ],
+      "arah_dihitung": "negatif"
+    },
+    {
+      "id": "L2",
+      "edge_model": "V_Surapati_Gagak->T1",
+      "koordinat": [
+        [
+          1650,
+          860
+        ],
+        [
+          1650,
+          1180
+        ]
+      ],
+      "arah_dihitung": "positif"
+    },
+    {
+      "id": "L3",
+      "edge_model": "V_Surapati_Merak->V_Surapati_Gagak",
+      "koordinat": [
+        [
+          500,
+          660
+        ],
+        [
+          500,
+          960
+        ]
+      ],
+      "arah_dihitung": "positif"
+    }
+  ],
+  "bobot": "yolo26s.pt",
+  "tracker": "bytetrack.yaml",
+  "imgsz": 1920,
+  "conf": 0.1,
+  "agnostic_nms": true,
+  "iou_ganda": null,
+  "kelas": [
+    1,
+    2,
+    3,
+    5,
+    7
+  ],
+  "min_frame_track": 5,
+  "device": "mps",
+  "ultralytics": "8.4.192",
+  "lama_proses_detik": 4064.2,
+  "frame_per_detik_proses": 6.7,
+  "bagian": [
+    {
+      "video": "/Users/ghaisan/Downloads/gagak-surapati.mp4",
+      "mulai": "2026-11-01T11:00:54+07:00",
+      "fps": 30.303,
+      "frame_diproses": 27325,
+      "frame_rusak": 0,
+      "durasi_detik": 901.722,
+      "ukuran": [
+        1920,
+        1080
+      ],
+      "kamera_geser": [
+        [
+          462.33,
+          462.36
+        ],
+        [
+          464.77,
+          496.12
+        ],
+        [
+          498.23,
+          501.3
+        ],
+        [
+          502.39,
+          503.81
+        ],
+        [
+          505.49,
+          512.59
+        ],
+        [
+          515.06,
+          524.2
+        ],
+        [
+          525.33,
+          526.18
+        ],
+        [
+          565.98,
+          566.01
+        ],
+        [
+          570.14,
+          571.29
+        ],
+        [
+          652.71,
+          652.74
+        ],
+        [
+          723.09,
+          723.13
+        ],
+        [
+          758.04,
+          758.07
+        ],
+        [
+          764.77,
+          764.81
+        ]
+      ],
+      "inlier_min": null,
+      "geser_maks_px": null,
+      "garis_terlihat_detik": {
+        "L1": 885.1,
+        "L2": 451.2,
+        "L3": 787.3
+      }
+    }
+  ],
+  "dibuat": "2026-11-14T00:53:31+07:00"
+}

@@ -1,0 +1,55 @@
+{
+  "titik": "V_Cisanggarung",
+  "cctv": null,
+  "garis": [
+    {
+      "id": "L1",
+      "edge_model": "V_Cimandiri->V_Cisanggarung",
+      "koordinat": [
+        [
+          1050,
+          400
+        ],
+        [
+          1050,
+          720
+        ]
+      ],
+      "arah_dihitung": "negatif"
+    }
+  ],
+  "bobot": "yolo26s.pt",
+  "tracker": "bytetrack.yaml",
+  "imgsz": 1280,
+  "conf": 0.1,
+  "kelas": [
+    1,
+    2,
+    3,
+    5,
+    7
+  ],
+  "min_frame_track": 5,
+  "device": "mps",
+  "ultralytics": "8.4.192",
+  "lama_proses_detik": 1621.3,
+  "frame_per_detik_proses": 16.7,
+  "bagian": [
+    {
+      "video": "/Users/ghaisan/Downloads/cimandiri-cisanggarung.mp4",
+      "mulai": "2026-11-01T10:15:24+07:00",
+      "fps": 29.995,
+      "frame_diproses": 27146,
+      "frame_rusak": 0,
+      "durasi_detik": 905.008,
+      "ukuran": [
+        1280,
+        720
+      ],
+      "kamera_geser": [],
+      "inlier_min": null,
+      "geser_maks_px": null
+    }
+  ],
+  "dibuat": "2026-11-13T22:26:20+07:00"
+}

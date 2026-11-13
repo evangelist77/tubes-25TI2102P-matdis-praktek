@@ -1,0 +1,55 @@
+{
+  "titik": "V_Singaperbangsa",
+  "cctv": null,
+  "garis": [
+    {
+      "id": "L1",
+      "edge_model": "S2->V_Singaperbangsa",
+      "koordinat": [
+        [
+          730,
+          380
+        ],
+        [
+          800,
+          740
+        ]
+      ],
+      "arah_dihitung": "negatif"
+    }
+  ],
+  "bobot": "yolo26s.pt",
+  "tracker": "bytetrack.yaml",
+  "imgsz": 1280,
+  "conf": 0.1,
+  "kelas": [
+    1,
+    2,
+    3,
+    5,
+    7
+  ],
+  "min_frame_track": 5,
+  "device": "mps",
+  "ultralytics": "8.4.192",
+  "lama_proses_detik": 1102.6,
+  "frame_per_detik_proses": 18.2,
+  "bagian": [
+    {
+      "video": "/Users/ghaisan/Downloads/dipatiukur-singaperbangsa.mp4",
+      "mulai": "2026-11-01T08:44:59+07:00",
+      "fps": 22.243,
+      "frame_diproses": 20012,
+      "frame_rusak": 0,
+      "durasi_detik": 899.705,
+      "ukuran": [
+        1280,
+        720
+      ],
+      "kamera_geser": [],
+      "inlier_min": null,
+      "geser_maks_px": null
+    }
+  ],
+  "dibuat": "2026-11-13T21:58:56+07:00"
+}

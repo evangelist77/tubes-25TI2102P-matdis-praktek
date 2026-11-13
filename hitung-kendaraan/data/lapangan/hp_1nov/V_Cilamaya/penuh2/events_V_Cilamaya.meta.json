@@ -1,0 +1,56 @@
+{
+  "titik": "V_Cilamaya",
+  "cctv": null,
+  "garis": [
+    {
+      "id": "L2",
+      "edge_model": "V_AriaJipang->V_Cilamaya",
+      "koordinat": [
+        [
+          1020,
+          500
+        ],
+        [
+          1020,
+          720
+        ]
+      ],
+      "arah_dihitung": "negatif"
+    }
+  ],
+  "bobot": "yolo26s.pt",
+  "tracker": "bytetrack.yaml",
+  "imgsz": 1280,
+  "conf": 0.1,
+  "agnostic_nms": false,
+  "kelas": [
+    1,
+    2,
+    3,
+    5,
+    7
+  ],
+  "min_frame_track": 5,
+  "device": "mps",
+  "ultralytics": "8.4.192",
+  "lama_proses_detik": 2152.9,
+  "frame_per_detik_proses": 12.6,
+  "bagian": [
+    {
+      "video": "/Users/ghaisan/Downloads/diponegoro-cilamaya.mp4",
+      "mulai": "2026-11-01T09:46:34+07:00",
+      "fps": 30.003,
+      "frame_diproses": 27116,
+      "frame_rusak": 0,
+      "durasi_detik": 903.768,
+      "ukuran": [
+        1280,
+        720
+      ],
+      "kamera_geser": [],
+      "inlier_min": null,
+      "geser_maks_px": null
+    }
+  ],
+  "dibuat": "2026-11-13T23:29:05+07:00"
+}

@@ -1,0 +1,55 @@
+{
+  "titik": "V_Titiran",
+  "cctv": null,
+  "garis": [
+    {
+      "id": "L1",
+      "edge_model": "V_Singaperbangsa->V_Titiran",
+      "koordinat": [
+        [
+          1000,
+          400
+        ],
+        [
+          1000,
+          715
+        ]
+      ],
+      "arah_dihitung": "positif"
+    }
+  ],
+  "bobot": "yolo26s.pt",
+  "tracker": "bytetrack.yaml",
+  "imgsz": 1280,
+  "conf": 0.1,
+  "kelas": [
+    1,
+    2,
+    3,
+    5,
+    7
+  ],
+  "min_frame_track": 5,
+  "device": "mps",
+  "ultralytics": "8.4.192",
+  "lama_proses_detik": 1698.0,
+  "frame_per_detik_proses": 15.9,
+  "bagian": [
+    {
+      "video": "/Users/ghaisan/Downloads/singaperbangsa-titiran.mp4",
+      "mulai": "2026-11-01T12:19:01+07:00",
+      "fps": 29.98,
+      "frame_diproses": 27026,
+      "frame_rusak": 0,
+      "durasi_detik": 901.477,
+      "ukuran": [
+        1280,
+        720
+      ],
+      "kamera_geser": [],
+      "inlier_min": null,
+      "geser_maks_px": null
+    }
+  ],
+  "dibuat": "2026-11-13T22:34:13+07:00"
+}

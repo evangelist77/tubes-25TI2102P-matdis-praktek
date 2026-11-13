@@ -1,0 +1,72 @@
+{
+  "titik": "V_Hasanuddin",
+  "cctv": null,
+  "garis": [
+    {
+      "id": "L1",
+      "edge_model": "V_Hasanuddin->V_Djuanda_Hasanuddin",
+      "koordinat": [
+        [
+          550,
+          600
+        ],
+        [
+          550,
+          1100
+        ]
+      ],
+      "arah_dihitung": "negatif"
+    },
+    {
+      "id": "L2",
+      "edge_model": "S2->V_Singaperbangsa",
+      "koordinat": [
+        [
+          1450,
+          680
+        ],
+        [
+          1450,
+          1080
+        ]
+      ],
+      "arah_dihitung": "positif"
+    }
+  ],
+  "bobot": "yolo26s.pt",
+  "tracker": "bytetrack.yaml",
+  "imgsz": 1920,
+  "conf": 0.1,
+  "agnostic_nms": true,
+  "iou_ganda": 0.5,
+  "kelas": [
+    1,
+    2,
+    3,
+    5,
+    7
+  ],
+  "min_frame_track": 5,
+  "device": "mps",
+  "ultralytics": "8.4.192",
+  "lama_proses_detik": 2884.4,
+  "frame_per_detik_proses": 9.5,
+  "bagian": [
+    {
+      "video": "/Users/ghaisan/Downloads/dipatiukur-hasanuddin.mp4",
+      "mulai": "2026-11-01T08:55:44+07:00",
+      "fps": 30.001,
+      "frame_diproses": 27311,
+      "frame_rusak": 0,
+      "durasi_detik": 910.342,
+      "ukuran": [
+        1920,
+        1080
+      ],
+      "kamera_geser": [],
+      "inlier_min": null,
+      "geser_maks_px": null
+    }
+  ],
+  "dibuat": "2026-11-13T23:54:40+07:00"
+}
