@@ -123,7 +123,7 @@
           ? `<p class="pop-mono">Minggu 1 Nov 2026 sekitar ${esc(k.jam)} · rekaman asli ${durasi(k.durasi_asli_detik)}</p>${video(k, true)}<p class="pop-ket">Cuplikan ${k.durasi_detik} detik dari menit ke-${k.dari_menit} · sudah diproses program hitung</p>`
           : '<p class="pop-kosong">Video belum tersedia.</p>'}
         <p class="pop-cat">${esc(info.alasan || bersih(pt.reason))}</p>
-        <p class="pop-lewat">Dilewati ${lewat(pt.nodeId).join(', ')} · jumlah kendaraan belum dihitung</p>
+        <p class="pop-lewat">Dilewati ${lewat(pt.nodeId).join(', ')} · arus sudah dihitung program, angka sementara</p>
       </div>`, OPSI_POPUP);
   });
 
