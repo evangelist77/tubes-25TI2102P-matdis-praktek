@@ -1,0 +1,58 @@
+/* Navigasi atas bersama (landing / dan halaman /graph/). Pola menu GeForce, gaya pusaran versi terang. */
+/* ---------- kit label kertas (MASUKAN PEMILIK 10) ----------
+   Bentuk dipakai bersama landing, /graph/cctv, /graph/visualisasi, dan Dashboard: sobekan kertas, ujung selotip washi, sapuan
+   kuas, dan coretan bawah. Cap tinta memakai filter #tinta yang disisipkan situs.js. Semuanya CSS/SVG, tanpa gambar raster */
+:root{
+  --sobek-a:polygon(3px 2px,16% 0,33% 3px,51% 1px,68% 3px,86% 0,calc(100% - 2px) 2px,100% 24%,calc(100% - 4px) 45%,100% 66%,calc(100% - 3px) 86%,calc(100% - 1px) 100%,82% calc(100% - 3px),63% 100%,45% calc(100% - 2px),26% 100%,8% calc(100% - 3px),2px 100%,4px 78%,0 57%,3px 36%,0 17%);
+  --sobek-b:polygon(0 3px,21% 0,40% 2px,58% 0,79% 3px,calc(100% - 3px) 0,100% 19%,calc(100% - 3px) 40%,100% 61%,calc(100% - 4px) 82%,100% calc(100% - 2px),77% 100%,56% calc(100% - 3px),35% 100%,15% calc(100% - 2px),3px 100%,0 83%,4px 62%,1px 41%,4px 20%);
+  --sobek-l:polygon(6px 4px,14% 0,27% 6px,41% 1px,55% 5px,70% 0,84% 6px,calc(100% - 3px) 2px,100% 16%,calc(100% - 7px) 31%,100% 47%,calc(100% - 5px) 63%,100% 79%,calc(100% - 6px) 94%,calc(100% - 2px) 100%,85% calc(100% - 5px),69% 100%,52% calc(100% - 6px),37% calc(100% - 1px),21% calc(100% - 6px),6% 100%,0 calc(100% - 7px),5px 80%,0 63%,6px 46%,1px 29%,5px 13%);
+  --selotip:polygon(0 0,100% 0,calc(100% - 4px) 17%,100% 33%,calc(100% - 4px) 50%,100% 67%,calc(100% - 4px) 83%,100% 100%,0 100%,4px 83%,0 67%,4px 50%,0 33%,4px 17%);
+  --m-kuas:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60' preserveAspectRatio='none'%3E%3Cpath d='M7 15C40 7 92 11 141 8s101-4 151 3l-6 8 11 8-9 8 7 9-11 8c-54 5-114 1-164 4-40 2-80-1-111-5l6-8-12-8 10-8-11-7z'/%3E%3Cpath d='M22 9l98-5-2 4-94 4zm140 45l106-2-2 4-102 2z' opacity='.55'/%3E%3C/svg%3E");
+  --m-coret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 16' preserveAspectRatio='none'%3E%3Cpath d='M2 9c28-5 68-3 108-5s70-2 88 1l-3 5c-35 1-75 2-115 2s-60 1-76 2z'/%3E%3C/svg%3E");
+}
+:root{--nav-h:56px;--nav-ink:#151a4f;--nav-paper:#fbf3e4;--nav-acc:#e0492f}
+@media (max-width:900px){:root{--nav-h:52px}}
+.snav{position:fixed;left:0;right:0;top:0;z-index:70;height:calc(var(--nav-h) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) clamp(16px,2.6vw,38px) 0;display:flex;align-items:center;gap:clamp(16px,2.6vw,40px);background:var(--nav-paper);color:var(--nav-ink);border-bottom:1.5px solid var(--nav-ink);font:600 16px/1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+.snav *{box-sizing:border-box}
+.snav a,.snav button{color:inherit;font:inherit;text-decoration:none;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.snav-logo{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:20px;letter-spacing:.04em;white-space:nowrap}
+.snav-logo svg{width:24px;height:24px;flex:none;animation:snavSpin 14s linear infinite}
+.snav-logo path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round}
+@keyframes snavSpin{to{transform:rotate(360deg)}}
+.snav-menu{display:flex;align-items:stretch;align-self:stretch;gap:2px;margin:0;padding:0;list-style:none}
+.snav-item{position:relative;display:flex}
+.snav-link{position:relative;display:flex;align-items:center;gap:7px;height:100%;padding:0 13px;letter-spacing:0;white-space:nowrap}
+.snav-link::after{content:"";position:absolute;left:10px;right:10px;bottom:9px;height:6px;background:currentColor;-webkit-mask:var(--m-coret) 0 0/100% 100% no-repeat;mask:var(--m-coret) 0 0/100% 100% no-repeat;transform:scaleX(0);transform-origin:left;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.snav-link:hover::after,.snav-link:focus-visible::after,.snav-item.aktif>.snav-link::after{transform:scaleX(1)}
+.snav-item.aktif>.snav-link::after{background:var(--nav-acc)}
+.snav-caret{width:9px;height:9px;flex:none;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.snav-item.buka .snav-caret{transform:rotate(180deg)}
+.snav-drop{position:absolute;left:0;top:calc(100% - 2px);min-width:250px;margin:0;padding:14px 8px 8px;list-style:none;background:var(--nav-paper);border:1.5px solid var(--nav-ink);border-radius:3px;box-shadow:5px 6px 0 var(--nav-ink);rotate:-.7deg;opacity:0;visibility:hidden;transform:translate3d(0,-6px,0);transition:opacity .18s,transform .25s cubic-bezier(.2,.8,.2,1),visibility 0s .25s}
+.snav-item.buka .snav-drop{opacity:1;visibility:visible;transform:none;transition:opacity .18s,transform .25s cubic-bezier(.2,.8,.2,1)}
+.snav-drop::before{content:"";position:absolute;left:50%;top:-11px;width:78px;height:22px;margin-left:-39px;background:rgba(242,167,184,.85);clip-path:var(--selotip);-webkit-clip-path:var(--selotip);rotate:-4deg}
+.snav-drop a{display:flex;align-items:baseline;gap:12px;min-height:44px;padding:11px 12px;border-radius:2px;font:600 15px/1.2 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;letter-spacing:0;transition:background .15s,color .15s}
+.snav-drop a span{font:700 18px/1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:#b3361f;min-width:2ch;rotate:-6deg}
+.snav-drop a:hover,.snav-drop a:focus-visible{background:var(--nav-ink);color:var(--nav-paper)}
+.snav-drop a:hover span,.snav-drop a:focus-visible span{color:#f6d98c}
+.snav-btn{display:none;margin-left:auto;align-items:center;gap:10px;min-height:44px;padding:0 4px;font-weight:700;font-size:17px}
+.snav-btn .snav-ico{position:relative;display:block;width:20px;height:2px;background:currentColor}
+.snav-btn .snav-ico::before,.snav-btn .snav-ico::after{content:"";position:absolute;left:0;width:20px;height:2px;background:currentColor;transition:transform .25s}
+.snav-btn .snav-ico::before{top:-6px}.snav-btn .snav-ico::after{top:6px}
+.snav.panel-buka .snav-btn .snav-ico{background:transparent}
+.snav.panel-buka .snav-btn .snav-ico::before{transform:translateY(6px) rotate(45deg)}
+.snav.panel-buka .snav-btn .snav-ico::after{transform:translateY(-6px) rotate(-45deg)}
+.snav-panel{position:fixed;left:0;right:0;bottom:0;top:calc(var(--nav-h) + env(safe-area-inset-top,0px));overflow:auto;overscroll-behavior:contain;background:var(--nav-paper);color:var(--nav-ink);padding:8px 16px calc(32px + env(safe-area-inset-bottom,0px));border-top:0;opacity:0;visibility:hidden;transform:translate3d(0,-10px,0);transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s .3s}
+.snav.panel-buka .snav-panel{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .3s cubic-bezier(.2,.8,.2,1)}
+.snav-panel details,.snav-panel>a{display:block;border-bottom:1.5px solid rgba(21,26,79,.18)}
+.snav-panel summary,.snav-panel>a{display:flex;align-items:center;justify-content:space-between;min-height:56px;font:700 24px/1.1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;letter-spacing:-.01em;list-style:none;cursor:pointer}
+.snav-panel summary::-webkit-details-marker{display:none}
+.snav-panel summary svg{width:12px;height:12px;transition:transform .25s}
+.snav-panel details[open] summary svg{transform:rotate(180deg)}
+.snav-panel details a{display:flex;align-items:baseline;gap:12px;min-height:44px;padding:10px 4px;font:600 17px/1.25 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+.snav-panel details a span{font:700 18px/1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:#b3361f;min-width:2ch}
+.snav-panel details ul{list-style:none;margin:0 0 12px;padding:0}
+.snav-panel .aktif>summary,.snav-panel>a.aktif{color:var(--nav-acc)}
+html.snav-kunci,html.snav-kunci body{overflow:hidden}
+@media (max-width:900px){.snav-menu{display:none}.snav-btn{display:flex}}
+@media (min-width:901px){.snav-panel{display:none}}
+@media (prefers-reduced-motion:reduce){.snav-logo svg{animation:none}.snav *{transition-duration:.01ms!important}}

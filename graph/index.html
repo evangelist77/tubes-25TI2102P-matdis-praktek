@@ -2,809 +2,654 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="referrer" content="origin-when-cross-origin" />
-  <title>Visualisasi Graf Aliran Jalan (Maximum Flow) — Gasibu &amp; Monju Bandung</title>
+  <meta name="theme-color" content="#fbf3e4" />
+  <title>Dashboard Peta · Max Flow Gasibu</title>
+  <meta name="description" content="Peta interaktif 8 rute S1, S2 ke T1, T2 di sekitar pasar tumpah Gasibu, lengkap dengan titik CCTV dan titik rekam HP." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2715%27 fill=%27%23e0492f%27/%3E%3Cpath d=%27M16 16m-2 0a2 2 0 1 1 4 0a5 5 0 1 1-9 0a8 8 0 1 1 15 0%27 fill=%27none%27 stroke=%27%23fbf3e4%27 stroke-width=%272.4%27 stroke-linecap=%27round%27/%3E%3C/svg%3E" />
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
+  <link rel="stylesheet" href="/graph/situs.css" />
   <style>
+    /* Dashboard Peta dengan gaya pusaran versi terang (palet, font, garis tebal, bayangan keras). */
     :root {
-      --bg-panel: #0f172a;
-      --bg-card: #1e293b;
-      --bg-card-hover: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
+      --ink: #151a4f; --navy: #232a78; --cream: #fbf3e4; --paper: #f4e6c8; --kertas: #fffaf0;
+      --vermilion: #e0492f; --orange: #f08a3c; --gold: #f2b84b; --butter: #f6d98c;
+      --rose: #e8737a; --lavender: #b9a2e6; --sky: #86c8e3; --mint: #a3d9bb; --teal: #2e9184;
+      --cctv: #1e3a8a;
+      --garis: rgba(21, 26, 79, 0.18);
+      --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, "Noto Serif", Georgia, serif;
+      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --pegas: cubic-bezier(.2, .9, .2, 1.4);
+      --halus: cubic-bezier(.2, .8, .2, 1);
+      --intip: calc(76px + env(safe-area-inset-bottom, 0px));
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    em, i, cite, address, var, dfn { font-style: normal; }
+    html, body { height: 100%; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg-panel);
-      color: var(--text-main);
-      display: flex;
-      height: 100vh;
-      width: 100vw;
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: var(--gold); color: var(--ink); }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+
+    .peta-app {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      top: calc(var(--nav-h, 56px) + env(safe-area-inset-top, 0px));
+      display: flex;
     }
 
+    /* ---------- Panel rute (kiri di desktop, lembar bawah di HP) ---------- */
     #sidebar {
-      width: 390px;
-      min-width: 340px;
-      background: var(--bg-panel);
-      border-right: 1px solid var(--border);
+      width: 410px;
+      flex: none;
       display: flex;
       flex-direction: column;
       z-index: 1000;
-      overflow-y: auto;
+      background-color: var(--cream);
+      background-image: radial-gradient(rgba(35, 42, 120, 0.13) 1.1px, transparent 1.6px);
+      background-size: 22px 22px;
+      border-right: 1.5px solid var(--ink);
+      overflow: hidden;
     }
+    .lembar-isi { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 28px; }
+    .lembar-pegangan { display: none; }
 
-    .header {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .header .badge {
+    .header { padding: 24px 22px 18px; }
+    /* label halaman: potongan selotip washi (kit label kertas di situs.css) */
+    .tag {
       display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #1d4ed8;
-      color: #dbeafe;
-      margin-bottom: 6px;
+      padding: 7px 18px 8px;
+      background: rgba(246, 217, 140, 0.92);
+      clip-path: var(--selotip);
+      -webkit-clip-path: var(--selotip);
+      rotate: -2.5deg;
+      font: 700 17px/1 var(--serif);
     }
-
-    .header h1 {
-      font-size: 16px;
-      line-height: 1.35;
-      margin-bottom: 4px;
-    }
-
-    .header p {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
+    .header h1 { font: 700 34px/1 var(--serif); letter-spacing: -0.02em; margin: 16px 0 10px; }
+    .header p { font: 400 15.5px/1.45 var(--serif); max-width: 34ch; }
 
     .controls {
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      margin: 0 22px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      background: var(--kertas);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 var(--ink);
     }
-
-    .btn-reset {
-      width: 100%;
-      padding: 8px 12px;
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .btn-reset:hover {
-      background: #1d4ed8;
-    }
-
-    .btn-toggle-cctv {
-      width: 100%;
-      margin-top: 8px;
-      padding: 8px 12px;
-      background: #1e3a8a;
-      color: #ffffff;
-      border: 1px solid #3b82f6;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-toggle-cctv:hover {
-      background: #172554;
-    }
-
-    .btn-toggle-cctv.inactive {
-      background: #1e293b;
-      color: #94a3b8;
-      border-color: #475569;
-    }
-
-    .cctv-circle-pin {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #1e3a8a;
-      border: 2px solid #93c5fd;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+    /* tombol panel: kertas sobek dengan bayangan datar, angka di lingkaran kertas guntingan */
+    .btn-reset, .btn-toggle-cctv {
+      --bb: #b3361f;
+      position: relative;
+      isolation: isolate;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .cctv-circle-pin:hover {
-      transform: scale(1.22);
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.85);
-      z-index: 1000;
-    }
-
-    .manual-circle-pin {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #d97706;
-      border: 2px solid #fef3c7;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .manual-circle-pin:hover {
-      transform: scale(1.22);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.85);
-      z-index: 1000;
-    }
-
-    .map-legend {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1000;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 11px;
-      color: #f8fafc;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      pointer-events: auto;
-    }
-
-    .map-legend .legend-title {
-      font-weight: 700;
-      font-size: 11px;
-      color: #38bdf8;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .map-legend .legend-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .map-legend .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 11px;
-      color: #cbd5e1;
-    }
-
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-
-    .legend-dot.source-dot {
-      background: #22c55e;
-      border: 1.5px solid #14532d;
-      box-shadow: 0 0 6px #22c55e;
-    }
-
-    .legend-dot.sink-dot {
-      background: #ef4444;
-      border: 1.5px solid #7f1d1d;
-      box-shadow: 0 0 6px #ef4444;
-    }
-
-    .legend-dot.junction-dot {
-      background: #ffffff;
-      border: 1.5px solid #0f172a;
-    }
-
-    .legend-dot.cctv-dot {
-      background: #1e3a8a;
-      border: 1.5px solid #93c5fd;
-      box-shadow: 0 0 6px #3b82f6;
-    }
-
-    .legend-dot.manual-dot {
-      background: #d97706;
-      border: 1.5px solid #fef3c7;
-      box-shadow: 0 0 6px #d97706;
-    }
-
-    .legend-icon {
-      font-size: 12px;
-      width: 14px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .opacity-control {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .opacity-header {
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .opacity-header strong {
-      color: var(--text-main);
-    }
-
-    .opacity-slider {
+      gap: 12px;
       width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: #334155;
-      outline: none;
-      -webkit-appearance: none;
-      cursor: pointer;
+      min-height: 48px;
+      padding: 0 10px 0 18px;
+      color: var(--cream);
+      rotate: -0.6deg;
+      font: 700 16px/1.2 var(--serif);
+      text-align: left;
+      transition: transform 0.35s var(--pegas), rotate 0.35s var(--pegas), color 0.2s;
     }
+    .btn-reset::before, .btn-toggle-cctv::before, .btn-reset::after, .btn-toggle-cctv::after { content: ""; position: absolute; inset: 0; clip-path: var(--sobek-a); -webkit-clip-path: var(--sobek-a); }
+    .btn-reset::before, .btn-toggle-cctv::before { z-index: -1; background: var(--bb); transition: background 0.2s; }
+    .btn-reset::after, .btn-toggle-cctv::after { z-index: -2; background: var(--ink); transform: translate(3px, 4px); transition: transform 0.35s var(--pegas); }
+    .btn-toggle-cctv { --bb: var(--cctv); rotate: 0.5deg; }
+    .btn-toggle-cctv.inactive { --bb: var(--kertas); color: var(--ink); }
+    .btn-reset:hover, .btn-toggle-cctv:hover { transform: translateY(-2px); rotate: 0deg; }
+    .btn-reset:hover::after, .btn-toggle-cctv:hover::after { transform: translate(5px, 6px); }
+    .btn-reset:active::after, .btn-toggle-cctv:active::after { transform: translate(1px, 1px); }
+    .btn-reset b, .btn-toggle-cctv b {
+      flex: none;
+      display: grid;
+      place-items: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 6px;
+      border-radius: 53% 47% 56% 44% / 46% 55% 45% 54%;
+      background: var(--cream);
+      color: var(--ink);
+      rotate: -8deg;
+      font: 700 16px/1 var(--serif);
+      font-variant-numeric: tabular-nums;
+    }
+    .btn-toggle-cctv.inactive b { background: var(--ink); color: var(--cream); }
 
+    .opacity-control { display: grid; gap: 8px; padding: 6px 4px 2px; }
+    .opacity-header { display: flex; justify-content: space-between; align-items: baseline; }
+    .opacity-header label { font: 700 16px/1 var(--serif); }
+    .opacity-header strong { font: 700 16px/1 var(--serif); font-variant-numeric: tabular-nums; }
+    .opacity-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; cursor: pointer; }
+    .opacity-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--ink); }
+    .opacity-slider::-moz-range-track { height: 4px; border-radius: 2px; background: var(--ink); }
     .opacity-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 22px; height: 22px; margin-top: -9px;
       border-radius: 50%;
-      background: #38bdf8;
-      cursor: pointer;
-      box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+      background: var(--gold);
+      border: 1.5px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .opacity-slider::-moz-range-thumb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 1.5px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
     }
 
-    .section-title {
-      padding: 12px 18px 6px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
+    /* saring rute: sobekan kertas yang ditempel miring, yang aktif kertas biru tua */
+    .filter-tab-bar { display: flex; flex-wrap: wrap; gap: 12px 10px; padding: 22px 22px 4px; }
+    .filter-tab {
+      --fb: var(--kertas);
+      position: relative;
+      isolation: isolate;
+      min-height: 40px;
+      padding: 0 14px;
+      rotate: var(--fr, -1.5deg);
+      font: 700 15px/1 var(--serif);
+      transition: color 0.2s, transform 0.3s var(--pegas), rotate 0.3s var(--pegas);
     }
+    .filter-tab::before, .filter-tab::after { content: ""; position: absolute; inset: 0; clip-path: var(--sobek-b); -webkit-clip-path: var(--sobek-b); }
+    .filter-tab::before { z-index: -1; background: var(--fb); }
+    .filter-tab::after { z-index: -2; background: var(--ink); transform: translate(2px, 3px); }
+    .filter-tab:nth-child(3n + 2) { --fr: 1.2deg; }
+    .filter-tab:nth-child(3n + 3) { --fr: -0.5deg; }
+    .filter-tab sub { font-size: 0.75em; }
+    .filter-tab:hover { transform: translateY(-2px); rotate: 0deg; }
+    .filter-tab.active { --fb: var(--ink); color: var(--cream); }
+    .filter-tab.active::after { background: var(--vermilion); }
+    .filter-tab .n { font: 600 13px/1 var(--serif); opacity: 0.75; margin-left: 5px; }
 
-    #path-list {
-      padding: 6px 18px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .section-title { position: relative; padding: 26px 22px 16px; font: 700 21px/1.1 var(--serif); letter-spacing: -0.01em; }
+    .section-title::after, .detail-sub::after { content: ""; position: absolute; left: 20px; bottom: 6px; width: 96px; height: 8px; background: var(--vermilion); -webkit-mask: var(--m-coret) 0 0 / 100% 100% no-repeat; mask: var(--m-coret) 0 0 / 100% 100% no-repeat; }
 
+    #path-list { padding: 0 22px; display: grid; gap: 10px; }
     .path-card {
-      background: var(--bg-card);
-      border: 2px solid transparent;
-      border-radius: 8px;
-      padding: 10px 12px;
+      position: relative;
+      padding: 12px 14px 12px 20px;
+      background: var(--kertas);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      overflow: hidden;
+      transition: transform 0.35s var(--pegas), box-shadow 0.35s var(--pegas);
     }
-
-    .path-card:hover {
-      background: var(--bg-card-hover);
-    }
-
-    .path-card.active {
-      border-color: var(--path-color, #38bdf8);
-      background: #1e293b;
-      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
-    }
-
-    .path-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .path-id-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .color-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .path-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
+    .path-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 7px; background: var(--path-color); }
+    .path-card:hover { transform: translate(-1px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+    .path-card.active { box-shadow: 5px 5px 0 var(--path-color), 5px 5px 0 1.5px var(--ink); transform: translate(-2px, -2px); }
+    .path-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .path-id-pill { display: inline-block; font: 700 16px/1 var(--serif); }
+    .path-id-pill .color-dot { display: inline-block; margin-right: 8px; vertical-align: -1px; }
+    .path-id-pill sub, .metro-node-id sub, .node-chip sub, .terminal-label sub, .segment-tooltip sub, .concept-card sub, .pop sub, .lembar-ringkas sub { font-size: 0.75em; vertical-align: -0.2em; }
+    .color-dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink); flex: none; }
+    .path-meta { font: 500 14px/1 var(--serif); font-variant-numeric: tabular-nums; white-space: nowrap; }
     .path-endpoints {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      margin: 6px 0 5px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #f8fafc;
+      align-items: baseline;
+      gap: 8px;
+      margin: 9px 0 6px;
+      font: 700 15.5px/1.25 var(--serif);
     }
-
-    .endpoint-name {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .endpoint-arrow {
-      font-size: 11px;
-      font-weight: 800;
-      flex-shrink: 0;
-      opacity: 0.85;
-    }
-
-    .path-corridor {
-      margin-bottom: 5px;
-    }
-
-    .corridor-badge {
-      display: inline-block;
-      font-size: 10px;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-weight: 600;
-    }
-
-    .path-via {
-      font-size: 11px;
-      color: #94a3b8;
-      line-height: 1.35;
-    }
-
-    .via-label {
-      color: #cbd5e1;
-      font-weight: 600;
-    }
+    .endpoint-name { flex: 1 1 0; min-width: 0; }
+    .endpoint-arrow { flex: none; font: 700 15px/1 var(--serif); }
+    .path-corridor { margin-bottom: 5px; }
+    /* koridor: selotip berwarna rute */
+    .corridor-badge { position: relative; isolation: isolate; display: inline-block; padding: 3px 12px 4px; rotate: -1.5deg; font: 700 14px/1.25 var(--serif); color: var(--ink); }
+    .corridor-badge::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--path-color); opacity: 0.3; clip-path: var(--selotip); -webkit-clip-path: var(--selotip); }
+    .path-via { font: 400 13.5px/1.4 var(--serif); }
+    .via-label { font: 700 13.5px/1 var(--serif); margin-right: 4px; }
 
     #path-detail {
-      margin: 4px 18px 18px;
-      padding: 12px 14px;
-      background: #0b1120;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 12px;
+      margin: 0 22px;
+      padding: 16px;
+      background: var(--kertas);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px;
+      font: 400 14.5px/1.45 var(--serif);
     }
+    #path-detail h3 { font: 700 19px/1.15 var(--serif); letter-spacing: -0.01em; margin-bottom: 6px; }
+    .detail-meta { font: 500 14px/1.5 var(--serif); }
+    .detail-sub { position: relative; margin: 18px 0 10px; padding-bottom: 10px; font: 700 18px/1.1 var(--serif); }
+    .detail-sub::after { left: -2px; bottom: 0; width: 80px; }
 
-    #path-detail h3 {
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: #f8fafc;
-    }
-
-    /* Metro-Style Stepper */
-    .metro-stepper {
-      display: flex;
-      flex-direction: column;
-      margin-top: 10px;
-    }
-
-    .metro-step {
-      display: flex;
-      gap: 10px;
-    }
-
-    .metro-marker-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 14px;
-      flex-shrink: 0;
-    }
-
-    .metro-bullet {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: 2px solid #0f172a;
-      z-index: 2;
-      margin-top: 3px;
-      flex-shrink: 0;
-    }
-
-    .metro-bullet.source {
-      background: #22c55e;
-      border-color: #14532d;
-      box-shadow: 0 0 6px #22c55e;
-    }
-
-    .metro-bullet.sink {
-      background: #ef4444;
-      border-color: #7f1d1d;
-      box-shadow: 0 0 6px #ef4444;
-    }
-
-    .metro-line {
-      width: 2px;
-      flex: 1;
-      min-height: 24px;
-      margin: 2px 0;
-      opacity: 0.65;
-    }
-
-    .metro-content {
-      flex: 1;
-      padding-bottom: 10px;
-    }
-
-    .metro-node-head {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 5px;
-      font-size: 12px;
-      line-height: 1.3;
-    }
-
-    .metro-node-id {
-      font-weight: 700;
-      color: #f8fafc;
-    }
-
-    .metro-node-name {
-      color: #cbd5e1;
-      font-size: 11.5px;
-    }
-
+    .metro-stepper { display: flex; flex-direction: column; margin-top: 10px; }
+    .metro-step { display: flex; gap: 12px; }
+    .metro-marker-col { display: flex; flex-direction: column; align-items: center; width: 14px; flex-shrink: 0; }
+    .metro-bullet { width: 13px; height: 13px; margin-top: 3px; border-radius: 50%; background: var(--cream); border: 2px solid var(--ink); flex-shrink: 0; }
+    .metro-bullet.source { background: var(--teal); }
+    .metro-bullet.sink { background: var(--vermilion); }
+    .metro-line { width: 3px; flex: 1; min-height: 24px; margin: 2px 0; border-radius: 2px; }
+    .metro-content { flex: 1; min-width: 0; padding-bottom: 12px; }
+    .metro-node-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+    .metro-node-id { font: 700 15px/1.3 var(--serif); }
+    .metro-node-name { font: 400 14px/1.3 var(--serif); }
+    /* nama jalan di antara simpul: sobekan kertas kecil */
     .metro-road-link {
-      margin-top: 4px;
-      padding: 3px 7px;
-      background: rgba(30, 41, 59, 0.75);
-      border-radius: 4px;
-      font-size: 11px;
-      color: #94a3b8;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      border: 1px solid rgba(51, 65, 85, 0.5);
+      display: inline-block;
+      margin-top: 6px;
+      padding: 5px 12px 6px;
+      background: var(--paper);
+      clip-path: var(--sobek-b);
+      -webkit-clip-path: var(--sobek-b);
+      rotate: -0.8deg;
+      font: 500 14px/1.3 var(--serif);
     }
-
-    .metro-cctv-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      font-size: 9.5px;
-      background: #1e3a8a;
-      color: #93c5fd;
-      border: 1px solid #3b82f6;
-      border-radius: 3px;
-      padding: 1px 4px;
-      font-weight: 700;
+    /* CCTV dan rekam HP di simpul: cap tinta */
+    .metro-cctv-tag, .metro-manual-tag {
+      position: relative;
+      display: inline-block;
+      padding: 2px 8px 3px;
+      background: rgba(255, 250, 240, 0.9);
+      color: var(--cctv);
+      rotate: -4deg;
+      font: 700 13.5px/1.2 var(--serif);
     }
-
-    .metro-manual-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      font-size: 9.5px;
-      background: #78350f;
-      color: #fde68a;
-      border: 1px solid #d97706;
-      border-radius: 3px;
-      padding: 1px 4px;
-      font-weight: 700;
-    }
-
-    .node-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 10px;
-    }
-
-    .node-chip {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1px solid #334155;
-    }
-
-    .node-chip sub,
-    .terminal-label sub,
-    .segment-tooltip sub,
-    .concept-card sub {
-      font-size: 0.8em;
-      font-weight: 600;
-      vertical-align: -0.2em;
-    }
-
-    .filter-tab-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 10px 18px 4px;
-    }
-
-    .filter-tab {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      border-radius: 6px;
-      padding: 4px 9px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .filter-tab:hover {
-      background: var(--bg-card-hover);
-      color: var(--text-main);
-    }
-
-    .filter-tab.active {
-      background: #0284c7;
-      color: #ffffff;
-      border-color: #38bdf8;
-      font-weight: 700;
-      box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
-    }
+    .metro-cctv-tag::before, .metro-manual-tag::before { content: ""; position: absolute; inset: 0; border: 2px solid currentColor; border-radius: 3px; filter: url(#tinta); }
+    .metro-manual-tag { color: #9a4613; rotate: 3deg; }
+    .node-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px; margin-top: 8px; font: 500 14px/1 var(--serif); }
+    /* simpul graf: potongan kertas warna-warni seperti konfeti */
+    .node-chip { padding: 5px 10px 6px; background: var(--cream); clip-path: var(--sobek-a); -webkit-clip-path: var(--sobek-a); rotate: -1.5deg; font: 600 14px/1 var(--serif); }
+    .node-chip:nth-child(4n + 2) { background: var(--butter); rotate: 1.2deg; }
+    .node-chip:nth-child(4n + 3) { background: var(--mint); rotate: -0.6deg; }
+    .node-chip:nth-child(4n + 4) { background: #f8d3c6; rotate: 1.8deg; }
 
     .concept-card {
-      margin: 12px 18px 18px;
-      padding: 10px 12px;
-      background: #0b1120;
-      border: 1px solid var(--border);
-      border-left: 3px solid #38bdf8;
-      border-radius: 6px;
-      font-size: 11px;
-      line-height: 1.45;
+      margin: 22px 22px 0;
+      background: var(--kertas);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px;
+      font: 400 14.5px/1.5 var(--serif);
     }
-
     .concept-card summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 16px;
+      font: 700 16px/1.2 var(--serif);
       cursor: pointer;
-      font-weight: 700;
-      color: #38bdf8;
-      user-select: none;
-      outline: none;
+      list-style: none;
     }
+    .concept-card summary::-webkit-details-marker { display: none; }
+    .concept-card summary::after { content: "+"; font: 400 26px/1 var(--serif); transition: transform 0.3s var(--halus); }
+    .concept-card[open] summary::after { transform: rotate(45deg); }
+    .concept-card p { padding: 0 16px 16px; }
 
-    .concept-card p {
-      color: #94a3b8;
-      margin-top: 6px;
+    /* ---------- Peta ---------- */
+    #map { flex: 1; position: relative; height: 100%; background: #efe4cc; }
+    .leaflet-container { font-family: var(--sans); background: #efe4cc; }
+    .leaflet-tile-pane { filter: grayscale(1) sepia(0.32) brightness(1.05) contrast(0.86); }
+    .leaflet-control-attribution { background: rgba(251, 243, 228, 0.88) !important; color: var(--ink); font: 11px/1.4 var(--sans); }
+    .leaflet-control-attribution a { color: var(--navy); }
+    .leaflet-bar { border: 1.5px solid var(--ink) !important; border-radius: 12px !important; box-shadow: 3px 3px 0 var(--ink) !important; overflow: hidden; }
+    .leaflet-bar a, .leaflet-bar a:hover {
+      width: 44px !important; height: 44px !important; line-height: 42px !important;
+      background: var(--cream); color: var(--ink); border-bottom-color: var(--garis);
+      font: 400 24px/42px var(--serif) !important;
     }
-
-    #map {
-      flex: 1;
-      height: 100vh;
-      background: #e2e8f0;
-    }
+    .leaflet-bar a:hover { background: var(--butter); }
 
     /* Animasi garis mengalir searah S -> T */
     @keyframes flowDash {
-      from {
-        stroke-dashoffset: 36;
-      }
-      to {
-        stroke-dashoffset: 0;
-      }
+      from { stroke-dashoffset: 36; }
+      to { stroke-dashoffset: 0; }
     }
+    path.flow-anim-line { stroke-dasharray: 10, 8; animation: flowDash 0.9s linear infinite; pointer-events: none; }
 
-    path.flow-anim-line {
-      stroke-dasharray: 10, 8;
-      animation: flowDash 0.9s linear infinite;
-      pointer-events: none;
-    }
+    .arrow-icon { display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; pointer-events: none; }
+    .arrow-icon span { text-shadow: 0 0 2px var(--cream), 0 0 2px var(--cream), 0 0 3px var(--cream); }
 
+    /* label S dan T di peta: bendera kertas berekor */
     .terminal-label {
-      background: #0f172a;
-      color: #ffffff;
-      border: 2px solid #ffffff;
-      border-radius: 6px;
-      padding: 2px 6px;
-      font-size: 11px;
-      font-weight: 800;
+      --fl: #1f6f65;
+      position: relative;
+      left: 50%;
+      isolation: isolate;
+      display: block;
+      width: max-content;
+      padding: 5px 20px 6px 10px;
+      transform: translateX(-50%);
+      rotate: -3deg;
+      font: 700 15px/1 var(--serif);
       white-space: nowrap;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      color: var(--cream);
     }
+    .terminal-label::before, .terminal-label::after { content: ""; position: absolute; inset: 0; clip-path: polygon(0 1px, 100% 0, calc(100% - 10px) 50%, 100% 100%, 0 calc(100% - 1px)); -webkit-clip-path: polygon(0 1px, 100% 0, calc(100% - 10px) 50%, 100% 100%, 0 calc(100% - 1px)); }
+    .terminal-label::before { z-index: -1; background: var(--fl); }
+    .terminal-label::after { z-index: -2; background: var(--ink); transform: translate(2px, 3px); }
+    .terminal-sink { --fl: #b3361f; rotate: 2.5deg; }
 
-    .terminal-source {
-      background: #15803d;
+    /* Pin CCTV dan titik rekam HP */
+    .cctv-circle-pin, .manual-circle-pin {
+      position: relative;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
+      color: var(--cream);
+      cursor: pointer;
+      transition: transform 0.3s var(--pegas), box-shadow 0.3s var(--pegas);
     }
-
-    .terminal-sink {
-      background: #b91c1c;
+    .cctv-circle-pin { background: var(--cctv); }
+    .manual-circle-pin { background: var(--orange); color: var(--ink); border-radius: 9px; }
+    .cctv-circle-pin svg, .manual-circle-pin svg { width: 16px; height: 16px; }
+    .cctv-circle-pin:hover, .manual-circle-pin:hover { transform: translate(-1px, -2px) scale(1.12); box-shadow: 3px 4px 0 var(--ink); }
+    .cctv-circle-pin::after {
+      content: "";
+      position: absolute;
+      right: -4px; top: -4px;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink);
+      background: var(--mint);
     }
-
-    .arrow-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 900;
-      text-shadow: 0 0 3px #000, 0 0 3px #000;
-      pointer-events: none;
-    }
+    .cctv-circle-pin.st-mati { background: var(--kertas); color: var(--ink); }
+    .cctv-circle-pin.st-mati::after { background: var(--vermilion); }
+    .cctv-circle-pin.st-baru::after { background: var(--gold); }
+    .peta-sembunyi .cctv-circle-pin, .peta-sembunyi .manual-circle-pin { pointer-events: none; }
 
     /* Patch ruas jalan satuan */
-    .segment-patch {
-      cursor: pointer;
-      transition: stroke 0.15s ease, stroke-width 0.15s ease, opacity 0.15s ease;
-    }
+    .segment-patch { cursor: pointer; transition: stroke 0.15s ease, stroke-width 0.15s ease, opacity 0.15s ease; }
 
-    .leaflet-tooltip.segment-tooltip-container {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      padding: 0;
-    }
-
-    .segment-tooltip {
-      background: #0f172a;
-      border: 1px solid #38bdf8;
-      color: #f8fafc;
-      padding: 7px 11px;
-      border-radius: 6px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-      font-size: 12px;
-      line-height: 1.4;
+    .leaflet-tooltip.segment-tooltip-container { background: transparent; border: 0; box-shadow: none; padding: 0; }
+    .leaflet-tooltip.segment-tooltip-container::before { display: none; }
+    .segment-tooltip, .leaflet-tooltip {
+      background: var(--cream);
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+      border-radius: 12px;
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 9px 12px;
+      font: 400 13.5px/1.4 var(--serif);
       pointer-events: none;
+      max-width: 300px;
+      white-space: normal;
     }
+    .segment-tooltip-container .segment-tooltip { width: max-content; }
+    .leaflet-tooltip-top::before { border-top-color: var(--ink); }
+    .segment-tooltip .seg-name { font: 700 15px/1.25 var(--serif); }
+    .segment-tooltip .seg-detail { margin-top: 3px; }
+    .segment-tooltip .seg-nodes { margin-top: 4px; font: 500 14px/1.4 var(--serif); }
 
-    .segment-tooltip .seg-name {
-      font-weight: 700;
-      color: #38bdf8;
-      font-size: 13px;
+    /* Popup CCTV dan rekaman HP */
+    .leaflet-popup-content-wrapper {
+      background: var(--cream);
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+      border-radius: 16px;
+      box-shadow: 6px 6px 0 var(--ink);
     }
-
-    .segment-tooltip .seg-detail {
-      color: #e2e8f0;
-      margin-top: 2px;
+    .leaflet-popup-tip { background: var(--cream); border: 1.5px solid var(--ink); box-shadow: none; }
+    .leaflet-popup-content { margin: 16px 18px 16px 16px; font: 400 14px/1.45 var(--serif); }
+    .leaflet-container a.leaflet-popup-close-button {
+      top: 6px; right: 6px;
+      width: 34px; height: 34px;
+      font: 400 22px/32px var(--sans);
+      color: var(--ink);
     }
-
-    .segment-tooltip .seg-nodes {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-top: 2px;
+    .pop-k { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding-right: 26px; }
+    .pop-h { margin: 8px 0 4px; font: 700 18px/1.15 var(--serif); letter-spacing: -0.01em; }
+    .pop-mono, .pop-ket, .pop-lewat { font: 500 14px/1.45 var(--serif); }
+    .pop video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      margin: 10px 0 6px;
+      object-fit: contain;
+      background: var(--ink);
+      border: 1.5px solid var(--ink);
+      border-radius: 10px;
     }
+    .pop video.lebar { aspect-ratio: 16 / 9; }
+    .pop-cat { margin-top: 8px; }
+    .pop-lewat { margin-top: 8px; padding-top: 8px; border-top: 1.5px dashed var(--garis); }
+    .pop-kosong { margin: 10px 0 2px; padding: 12px; border: 1.5px dashed var(--ink); border-radius: 10px; font: 400 13.5px/1.4 var(--serif); }
+    /* status di popup: cap stempel tinta */
+    .pill {
+      --t: var(--ink);
+      position: relative;
+      display: inline-block;
+      padding: 3px 9px 4px;
+      background: rgba(255, 250, 240, 0.9);
+      color: var(--t);
+      rotate: -3deg;
+      font: 700 15px/1.1 var(--serif);
+    }
+    .pill::before { content: ""; position: absolute; inset: 0; border: 2px solid currentColor; border-radius: 3px; filter: url(#tinta); }
+    .pill.st-aman { --t: #1f6f65; rotate: 2deg; }
+    .pill.st-mati { --t: #b3361f; }
+    .pill.st-baru { --t: #8a5a00; }
+    .pill.st-hp { --t: #9a4613; }
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column-reverse;
-      }
+    /* Legenda */
+    .map-legend {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      z-index: 1000;
+      width: 260px;
+      background: var(--cream);
+      border: 1.5px solid var(--ink);
+      border-radius: 3px;
+      box-shadow: 5px 5px 0 var(--ink);
+      color: var(--ink);
+    }
+    .map-legend .legend-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 44px;
+      padding: 0 14px;
+      font: 700 18px/1 var(--serif);
+      cursor: pointer;
+      list-style: none;
+    }
+    .map-legend::before { content: ""; position: absolute; left: 50%; top: -10px; width: 70px; height: 20px; margin-left: -35px; background: rgba(163, 217, 187, 0.85); clip-path: var(--selotip); -webkit-clip-path: var(--selotip); rotate: 4deg; pointer-events: none; }
+    .map-legend .legend-title::-webkit-details-marker { display: none; }
+    .map-legend .legend-title::after { content: "+"; font: 400 24px/1 var(--serif); transition: transform 0.3s var(--halus); }
+    .map-legend[open] .legend-title::after { transform: rotate(45deg); }
+    .map-legend .legend-grid { display: grid; gap: 7px; padding: 2px 14px 14px; }
+    .map-legend .legend-item { display: flex; align-items: center; gap: 10px; font: 400 13.5px/1.25 var(--serif); }
+    .map-legend .legend-item b { margin-left: auto; font: 700 14.5px/1 var(--serif); font-variant-numeric: tabular-nums; }
+    .legend-dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--ink); flex: none; }
+    .legend-dot.source-dot { background: var(--teal); }
+    .legend-dot.sink-dot { background: var(--vermilion); }
+    .legend-dot.junction-dot { background: var(--cream); }
+    .legend-dot.cctv-dot { background: var(--cctv); position: relative; }
+    .legend-dot.cctv-dot::after { content: ""; position: absolute; right: -5px; top: -5px; width: 7px; height: 7px; border-radius: 50%; border: 1.2px solid var(--ink); background: var(--mint); }
+    .legend-dot.cctv-dot.mati { background: var(--kertas); }
+    .legend-dot.cctv-dot.mati::after { background: var(--vermilion); }
+    .legend-dot.cctv-dot.baru::after { background: var(--gold); }
+    .legend-dot.manual-dot { background: var(--orange); border-radius: 4px; }
+    .legend-garis { width: 22px; height: 8px; border-radius: 4px; flex: none; background: rgba(224, 73, 47, 0.38); margin: 0 -4px 0 -5px; }
+
+    /* ---------- HP: panel rute jadi lembar bawah ---------- */
+    @media (max-width: 900px) {
+      .peta-app { display: block; }
+      #map { position: absolute; left: 0; right: 0; top: 0; bottom: var(--intip); height: auto; }
       #sidebar {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        z-index: 1100;
+        width: auto;
+        height: min(86%, 760px);
+        border-right: 0;
+        border-top: 1.5px solid var(--ink);
+        border-radius: 22px 22px 0 0;
+        box-shadow: 0 -5px 0 rgba(21, 26, 79, 0.1);
+        transform: translate3d(0, calc(100% - var(--intip)), 0);
+        transition: transform 0.45s var(--halus);
+        touch-action: pan-y;
+      }
+      #sidebar.buka { transform: none; box-shadow: 0 -10px 30px rgba(21, 26, 79, 0.22); }
+      .lembar-isi { overflow: hidden; }
+      #sidebar.buka .lembar-isi { overflow-y: auto; }
+      .lembar-pegangan {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: none;
         width: 100%;
-        height: 46vh;
+        height: 76px;
+        padding: 14px 16px 0;
+        text-align: left;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
       }
-      #map {
-        height: 54vh;
-      }
+      .lembar-bar { position: absolute; left: 50%; top: 9px; width: 44px; height: 5px; margin-left: -22px; border-radius: 3px; background: var(--ink); opacity: 0.35; }
+      .lembar-judul { font: 700 22px/1 var(--serif); letter-spacing: -0.01em; }
+      .lembar-ringkas { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font: 600 15px/1.3 var(--serif); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+      .lembar-ringkas .color-dot { width: 10px; height: 10px; }
+      .lembar-panah { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--kertas); transition: transform 0.4s var(--halus); }
+      .lembar-panah svg { width: 14px; height: 14px; }
+      #sidebar.buka .lembar-panah { transform: rotate(180deg); }
+      .header { padding: 4px 16px 14px; }
+      .header h1 { font-size: 28px; margin-top: 12px; }
+      .header p { font-size: 15px; }
+      .controls { margin: 0 16px; }
+      .filter-tab-bar { padding: 20px 16px 4px; }
+      .filter-tab { min-height: 44px; padding: 0 15px; }
+      .section-title { padding: 24px 16px 12px; }
+      #path-list { padding: 0 16px; }
+      #path-detail { margin: 0 16px; }
+      .concept-card { margin: 20px 16px 0; }
+      .map-legend { top: 12px; right: 12px; width: min(250px, calc(100vw - 84px)); }
+      .map-legend:not([open]) { width: auto; }
+      .map-legend:not([open]) .legend-title { gap: 12px; }
+      .map-legend .legend-grid { max-height: 50vh; overflow-y: auto; }
+      .leaflet-popup-content { margin: 14px 14px 14px 14px; }
+    }
+
+    /* ---------- keterbacaan dan target sentuh (label min 12 px, target min 44 px, teks putih di latar gelap) ---------- */
+    .path-id-pill sub, .metro-node-id sub, .node-chip sub, .terminal-label sub, .segment-tooltip sub, .concept-card sub, .pop sub, .lembar-ringkas sub { font-size: 0.85em; }
+    .terminal-label { transform: translate(-50%, -8px); pointer-events: none; }
+    .btn-reset[hidden] { display: none; }
+    .filter-tab { min-height: 44px; }
+    .opacity-slider { height: 44px; }
+    .cctv-circle-pin::before, .manual-circle-pin::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; }
+
+    @media (prefers-reduced-motion: reduce) {
+      path.flow-anim-line { animation: none; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
 <body>
-  <aside id="sidebar">
-    <div class="header">
-      <span class="badge">Kasus 4 • Maximum Flow</span>
-      <h1>Jaringan Aliran Jalan Kawasan Gasibu – Monju</h1>
-      <p>Klik jalur di peta atau pilih kartu di bawah untuk menyorot arah aliran jalan &amp; simpul persimpangan.</p>
-    </div>
-
-    <div class="controls">
-      <button id="btn-show-all" class="btn-reset" type="button">
-        Tampilkan Semua 8 Jalur Sekaligus
+  <script src="/graph/situs.js"></script>
+  <div class="peta-app">
+    <aside id="sidebar" aria-label="Panel rute">
+      <button class="lembar-pegangan" id="lembar-pegangan" type="button" aria-expanded="false" aria-controls="lembar-isi">
+        <span class="lembar-bar" aria-hidden="true"></span>
+        <span class="lembar-judul">Rute</span>
+        <span class="lembar-ringkas" id="lembar-ringkas"></span>
+        <span class="lembar-panah" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2.5 9 7 4.5 11.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </button>
-
-      <button id="btn-toggle-cctv" class="btn-toggle-cctv" type="button">
-        📹 Tampilkan Titik CCTV Pelindung (10) &amp; Survei Manual (6)
-      </button>
-
-      <div class="opacity-control">
-        <div class="opacity-header">
-          <span>Transparansi Peta Dasar</span>
-          <strong id="label-map-opacity">100%</strong>
+      <div class="lembar-isi" id="lembar-isi">
+        <div class="header">
+          <span class="tag">Dashboard Peta</span>
+          <h1>Jaringan jalan Gasibu dan Monju</h1>
+          <p>Klik garis rute di peta atau pilih kartunya di bawah untuk melihat arah aliran dan simpang yang dilewati.</p>
         </div>
-        <input
-          id="slider-map-opacity"
-          class="opacity-slider"
-          type="range"
-          min="0"
-          max="100"
-          value="100"
-          step="5"
-        />
+
+        <div class="controls">
+          <button id="btn-show-all" class="btn-reset" type="button">
+            <span>Tampilkan semua rute</span><b data-n="rute"></b>
+          </button>
+
+          <button id="btn-toggle-cctv" class="btn-toggle-cctv" type="button" aria-pressed="true">
+            <span class="btn-teks">Sembunyikan CCTV dan titik rekam HP</span><b data-n="titik"></b>
+          </button>
+
+          <div class="opacity-control">
+            <div class="opacity-header">
+              <label for="slider-map-opacity">Kejelasan peta</label>
+              <strong id="label-map-opacity">100%</strong>
+            </div>
+            <input
+              id="slider-map-opacity"
+              class="opacity-slider"
+              type="range"
+              min="0"
+              max="100"
+              value="100"
+              step="5"
+            />
+          </div>
+        </div>
+
+        <div class="filter-tab-bar" id="path-filters" role="group" aria-label="Saring rute">
+          <button class="filter-tab active" data-filter="all" type="button">Semua</button>
+          <button class="filter-tab" data-filter="gasibu" type="button">Lewat Gasibu Atas</button>
+          <button class="filter-tab" data-filter="S1" type="button">Dari S<sub>1</sub></button>
+          <button class="filter-tab" data-filter="S2" type="button">Dari S<sub>2</sub></button>
+          <button class="filter-tab" data-filter="T1" type="button">Ke T<sub>1</sub></button>
+          <button class="filter-tab" data-filter="T2" type="button">Ke T<sub>2</sub></button>
+        </div>
+
+        <h2 class="section-title">Daftar rute</h2>
+        <div id="path-list"></div>
+
+        <h2 class="section-title">Urutan jalan dan simpul</h2>
+        <div id="path-detail"></div>
+
+        <details class="concept-card">
+          <summary>Super source S* dan super sink T*</summary>
+          <p>
+            Graf ini punya dua source dan dua sink, jadi supaya Ford-Fulkerson bisa dipakai ditambahkan simpul S* yang
+            terhubung ke S<sub>1</sub> dan S<sub>2</sub> serta simpul T* yang menerima edge dari T<sub>1</sub> dan T<sub>2</sub>.
+            Kapasitas edge tambahan itu sama dengan arus masuk atau keluarnya, atau tak hingga kalau memang tidak dibatasi.
+          </p>
+        </details>
       </div>
-    </div>
+    </aside>
 
-    <div class="filter-tab-bar" id="path-filters">
-      <button class="filter-tab active" data-filter="all" type="button">Semua (8)</button>
-      <button class="filter-tab" data-filter="gasibu" type="button">Via Gasibu Atas (4)</button>
-      <button class="filter-tab" data-filter="S1" type="button">Dari S₁</button>
-      <button class="filter-tab" data-filter="S2" type="button">Dari S₂</button>
-      <button class="filter-tab" data-filter="T1" type="button">Ke T₁</button>
-      <button class="filter-tab" data-filter="T2" type="button">Ke T₂</button>
-    </div>
-
-    <div class="section-title">Daftar 8 Path (Sumber S → Tujuan T)</div>
-    <div id="path-list"></div>
-
-    <div class="section-title">Detail Urutan Jalan &amp; Simpul</div>
-    <div id="path-detail"></div>
-
-    <details class="concept-card">
-      <summary>📐 Teori Graf: Supersource (S*) &amp; Supersink (T*)</summary>
-      <p>
-        Jaringan multi-source multi-sink (S₁, S₂ → T₁, T₂) ditransformasikan ke bentuk <em>Single-Source Single-Sink</em> standar dengan simpul semu:
-      </p>
-      <p style="margin-top: 4px;">
-        • <strong>Supersource (S*)</strong>: Terhubung ke S₁ dan S₂ dengan kapasitas busur tak hingga (c(S*, S) = ∞).<br/>
-        • <strong>Supersink (T*)</strong>: Menerima busur dari T₁ dan T₂ dengan kapasitas busur tak hingga (c(T, T*) = ∞).
-      </p>
-      <p style="margin-top: 4px; font-size: 10.5px; color: #64748b;">
-        Standar reduksi algoritma Ford-Fulkerson / Edmonds-Karp untuk optimasi aliran maksimum.
-      </p>
-    </details>
-  </aside>
-
-  <main id="map" style="position: relative;">
-    <div id="map-legend" class="map-legend">
-      <div class="legend-title">Legenda Visual Graf</div>
-      <div class="legend-grid">
-        <div class="legend-item"><span class="legend-dot source-dot"></span> <span><strong>S₁, S₂</strong>: Titik Sumber (Inflow)</span></div>
-        <div class="legend-item"><span class="legend-dot sink-dot"></span> <span><strong>T₁, T₂</strong>: Titik Muara (Outflow)</span></div>
-        <div class="legend-item"><span class="legend-dot junction-dot"></span> <span><strong>V</strong>: Simpul Persimpangan</span></div>
-        <div class="legend-item"><span class="legend-dot cctv-dot"></span> <span><strong>📹 CCTV</strong>: Kamera Pelindung (10)</span></div>
-        <div class="legend-item"><span class="legend-dot manual-dot"></span> <span><strong>📍 Manual</strong>: Titik Survei Lapangan (6)</span></div>
-      </div>
-    </div>
-  </main>
+    <main id="map">
+      <details id="map-legend" class="map-legend" open>
+        <summary class="legend-title">Legenda</summary>
+        <div class="legend-grid">
+          <div class="legend-item"><span class="legend-dot source-dot"></span><span>Source S<sub>1</sub>, S<sub>2</sub></span></div>
+          <div class="legend-item"><span class="legend-dot sink-dot"></span><span>Sink T<sub>1</sub>, T<sub>2</sub></span></div>
+          <div class="legend-item"><span class="legend-dot junction-dot"></span><span>Simpang</span><b data-n="simpang"></b></div>
+          <div class="legend-item"><span class="legend-dot cctv-dot"></span><span>CCTV aman</span><b data-n="aman"></b></div>
+          <div class="legend-item"><span class="legend-dot cctv-dot mati"></span><span>CCTV tidak bisa dibuka</span><b data-n="mati"></b></div>
+          <div class="legend-item"><span class="legend-dot cctv-dot baru"></span><span>CCTV baru, belum dicek</span><b data-n="baru"></b></div>
+          <div class="legend-item"><span class="legend-dot manual-dot"></span><span>Titik rekam HP</span><b data-n="hp"></b></div>
+          <div class="legend-item"><span class="legend-garis"></span><span>Ruas pasar Jl. Gasibu Atas</span></div>
+        </div>
+      </details>
+    </main>
+  </div>
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
+  <script src="/graph/media/media.js"></script>
   <script id="app-script">
     const GRAPH_DATA = {
       nodes: {
@@ -1917,6 +1762,28 @@
           cameras: ['CCTV PHH MUSTOFA-PUSDAI 01', 'CCTV PHH MUSTOFA-PUSDAI 02', 'CCTV PUSDAI 01', 'CCTV PUSDAI 02'],
           streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/Muspus.m3u8',
           role: 'Menghitung total outflow akhir di Sink T1 (Surapati Timur) & T2 (Diponegoro Timur)'
+        },
+        {
+          id: 'cctv_surapati_gasibu',
+          nodeId: 'V_Gasibu_Barat',
+          name: 'CCTV JL. SURAPATI - GASIBU 01',
+          dinas: 'DISKOMINFO',
+          lat: -6.898899,
+          lng: 107.616002,
+          cameras: ['CCTV JL. SURAPATI - GASIBU 01'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/DAHUA/Surat.m3u8',
+          role: 'Menghitung arus Jl. Surapati (Barat) yang masuk ke Gasibu Atas (P5 sampai P8), kamera di ruas V_DU_Selatan ke V_Gasibu_Barat menghadap arah Gasibu'
+        },
+        {
+          id: 'cctv_lapang_gasibu',
+          nodeId: 'V_Gasibu_Timur',
+          name: 'CCTV LAPANG GASIBU 02',
+          dinas: 'DISKOMINFO',
+          lat: -6.898644,
+          lng: 107.618605,
+          cameras: ['CCTV LAPANG GASIBU 02'],
+          streamUrl: 'https://pelindung.bandung.go.id:3443/video/HIKSVISION/lpgasibuu.m3u8',
+          role: 'Memantau arus di Jl. Gasibu Atas (V_Gasibu_Barat ke V_Gasibu_Timur) yang dilewati P5 sampai P8, kamera menghadap arah Telkom Japati'
         }
       ],
 
@@ -1974,6 +1841,12 @@
 
     window.GRAPH_DATA = GRAPH_DATA;
 
+    // Warna rute dari palet situs (graph/situs.js) supaya sama dengan landing, warna di GRAPH_DATA jadi cadangan
+    const WARNA_RUTE = (window.Situs && window.Situs.WARNA_RUTE) || [];
+    const warnaRute = (p) => WARNA_RUTE[GRAPH_DATA.paths.indexOf(p)] || p.color;
+    // Teks data ditampilkan tanpa en dash, em dash, dan bullet
+    const bersih = (t) => String(t || '').replace(/\s*[\u2013\u2014]\s*/g, ' - ').replace(/\s*\u2022\s*/g, ' · ');
+
     const map = L.map('map').setView([-6.8982, 107.6180], 15);
     const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -1994,7 +1867,7 @@
     // Render seluruh 4 path beserta animasi mengalir dan penanda arah panah
     GRAPH_DATA.paths.forEach((p) => {
       const baseLine = L.polyline(p.coords, {
-        color: p.color,
+        color: warnaRute(p),
         weight: 7,
         opacity: 0.75,
         lineCap: 'round',
@@ -2019,7 +1892,7 @@
           interactive: false,
           icon: L.divIcon({
             className: 'arrow-icon',
-            html: `<span style="transform: rotate(${angle}deg); color: ${p.color};">▲</span>`,
+            html: `<span style="transform: rotate(${angle}deg); color: ${warnaRute(p)};">▲</span>`,
             iconSize: [16, 16],
             iconAnchor: [8, 8]
           })
@@ -2035,9 +1908,9 @@
     const segmentLayers = {};
     GRAPH_DATA.segments.forEach((seg) => {
       const patch = L.polyline(seg.coords, {
-        color: '#ffffff',
+        color: '#151a4f',
         weight: 12,
-        opacity: 0.15,
+        opacity: 0,
         lineCap: 'round',
         lineJoin: 'round',
         className: 'segment-patch'
@@ -2046,9 +1919,9 @@
       patch.bindTooltip(
         `
         <div class="segment-tooltip">
-          <div class="seg-name">${seg.name}</div>
-          <div class="seg-detail">📐 Lebar: <strong>${seg.widthInfo}</strong></div>
-          <div class="seg-nodes">Ruas: ${formatNodeHtml(seg.fromNode)} → ${formatNodeHtml(seg.toNode)}</div>
+          <div class="seg-name">${bersih(seg.name)}</div>
+          <div class="seg-detail">Lebar ${bersih(seg.widthInfo)}</div>
+          <div class="seg-nodes">Ruas ${formatNodeHtml(seg.fromNode)} → ${formatNodeHtml(seg.toNode)}</div>
         </div>
         `,
         {
@@ -2059,18 +1932,18 @@
 
       patch.on('mouseover', () => {
         patch.setStyle({
-          color: '#38bdf8',
-          weight: 16,
-          opacity: 0.9
+          color: '#f2b84b',
+          weight: 15,
+          opacity: 0.75
         });
         patch.bringToFront();
       });
 
       patch.on('mouseout', () => {
         patch.setStyle({
-          color: '#ffffff',
+          color: '#151a4f',
           weight: 12,
-          opacity: 0.15
+          opacity: 0
         });
       });
 
@@ -2101,8 +1974,8 @@
       const isSource = node.type === 'source';
       const isSink = node.type === 'sink';
       const radius = isSource || isSink ? 9 : 6;
-      const fillColor = isSource ? '#22c55e' : isSink ? '#ef4444' : '#f8fafc';
-      const borderColor = isSource ? '#14532d' : isSink ? '#7f1d1d' : '#0f172a';
+      const fillColor = isSource ? '#2e9184' : isSink ? '#e0492f' : '#fbf3e4';
+      const borderColor = '#151a4f';
 
       const marker = L.circleMarker([node.lat, node.lng], {
         radius,
@@ -2112,18 +1985,18 @@
         fillOpacity: 1
       }).addTo(map);
 
-      marker.bindTooltip(`<strong>${node.label}</strong>`, {
+      marker.bindTooltip(`<strong>${bersih(node.label)}</strong>`, {
         direction: 'top',
         offset: [0, -6]
       });
 
       if (isSource || isSink) {
-        const roleLabel = isSource ? 'Sumber' : 'Muara';
+        const roleLabel = isSource ? 'Source' : 'Sink';
         L.marker([node.lat, node.lng], {
           interactive: false,
           icon: L.divIcon({
             className: '',
-            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${isSource ? '🟢' : '🔴'} ${formatNodeHtml(node.id)} (${roleLabel})</div>`,
+            html: `<div class="terminal-label ${isSource ? 'terminal-source' : 'terminal-sink'}">${formatNodeHtml(node.id)} · ${roleLabel}</div>`,
             iconSize: [88, 24],
             iconAnchor: [44, 30]
           })
@@ -2192,24 +2065,24 @@
         .map((p) => {
           const isActive = activePathId === p.id;
           return `
-            <div class="path-card ${isActive ? 'active' : ''}" data-path-id="${p.id}" style="--path-color: ${p.color}">
+            <div class="path-card ${isActive ? 'active' : ''}" data-path-id="${p.id}" style="--path-color: ${warnaRute(p)}" role="button" tabindex="0" aria-pressed="${isActive}">
               <div class="path-card-header">
-                <span class="path-id-pill" style="color: ${p.color}">
-                  <span class="color-dot" style="background: ${p.color}"></span>
-                  ${formatNodeHtml(p.source)} ➔ ${formatNodeHtml(p.sink)}
+                <span class="path-id-pill">
+                  <span class="color-dot" style="background: ${warnaRute(p)}"></span>
+                  ${formatNodeHtml(p.source)} → ${formatNodeHtml(p.sink)}${p.id.endsWith('-Gasibu') ? ' · Gasibu' : ''}
                 </span>
-                <span class="path-meta">${p.distanceInfo}</span>
+                <span class="path-meta">${bersih(p.distanceInfo)}</span>
               </div>
               <div class="path-endpoints">
                 <span class="endpoint-name">${p.fromName}</span>
-                <span class="endpoint-arrow" style="color: ${p.color}">──▶</span>
+                <span class="endpoint-arrow">→</span>
                 <span class="endpoint-name" style="text-align: right;">${p.toName}</span>
               </div>
               <div class="path-corridor">
-                <span class="corridor-badge">🏷️ ${p.corridor}</span>
+                <span class="corridor-badge">${bersih(p.corridor)}</span>
               </div>
               <div class="path-via">
-                <span class="via-label">🛣️ via:</span> ${p.via}
+                <span class="via-label">lewat</span> ${bersih(p.via)}
               </div>
             </div>
           `;
@@ -2225,10 +2098,11 @@
 
       const selected = GRAPH_DATA.paths.find((p) => p.id === activePathId);
       if (!selected) {
+        const nGasibu = GRAPH_DATA.paths.filter((p) => p.id.endsWith('-Gasibu')).length;
         detailEl.innerHTML = `
-          <h3>Mode: Semua 8 Jalur Aktif</h3>
-          <p style="color: #94a3b8; line-height: 1.4;">
-            Ke-8 jalur (4 jalur alternatif luar + 4 jalur via Jalan Gasibu Atas untuk S<sub>1</sub>, S<sub>2</sub> → T<sub>1</sub>, T<sub>2</sub>) ditampilkan bersamaan. Klik salah satu garis warna di peta atau kartu di atas untuk melihat rincian urutan rute transit dan simpul yang dilalui.
+          <h3>Semua ${GRAPH_DATA.paths.length} rute tampil</h3>
+          <p>
+            Ada ${GRAPH_DATA.paths.length - nGasibu} rute lewat koridor luar dan ${nGasibu} rute lewat Jl. Gasibu Atas dari S<sub>1</sub>, S<sub>2</sub> ke T<sub>1</sub>, T<sub>2</sub>. Klik salah satu garis di peta atau kartu di atas untuk melihat urutan jalan dan simpang yang dilewatinya.
           </p>
         `;
       } else {
@@ -2247,19 +2121,19 @@
 
             let tagHtml = '';
             if (cctvMap.has(nid)) {
-              tagHtml += `<span class="metro-cctv-tag" title="Tersedia rekaman CCTV Pelindung">📹 CCTV</span>`;
+              tagHtml += `<span class="metro-cctv-tag" title="Ada CCTV Pelindung di simpul ini">CCTV</span>`;
             }
             if (manualMap.has(nid)) {
-              tagHtml += `<span class="metro-manual-tag" title="Titik survei manual lapangan">📍 Survei</span>`;
+              tagHtml += `<span class="metro-manual-tag" title="Direkam dengan HP">Rekam HP</span>`;
             }
 
-            const cleanLabel = node.label ? node.label.replace(/^.+?:\s*/, '') : nid;
+            const cleanLabel = node.label ? bersih(node.label.replace(/^.+?:\s*/, '')) : nid;
 
             return `
               <div class="metro-step">
                 <div class="metro-marker-col">
                   <span class="metro-bullet ${isSource ? 'source' : isSink ? 'sink' : ''}"></span>
-                  ${!isLast ? `<span class="metro-line" style="background: ${selected.color}"></span>` : ''}
+                  ${!isLast ? `<span class="metro-line" style="background: ${warnaRute(selected)}"></span>` : ''}
                 </div>
                 <div class="metro-content">
                   <div class="metro-node-head">
@@ -2269,7 +2143,6 @@
                   </div>
                   ${!isLast && street ? `
                     <div class="metro-road-link">
-                      <span class="road-icon">🛣️</span>
                       <span class="road-name">${street}</span>
                     </div>
                   ` : ''}
@@ -2280,21 +2153,19 @@
           .join('');
 
         const nodesHtml = selected.nodeIds
-          .map((nid) => `<span class="node-chip" title="${GRAPH_DATA.nodes[nid]?.label || nid}">${formatNodeHtml(nid)}</span>`)
+          .map((nid) => `<span class="node-chip" title="${bersih(GRAPH_DATA.nodes[nid]?.label || nid)}">${formatNodeHtml(nid)}</span>`)
           .join(' → ');
 
         detailEl.innerHTML = `
-          <h3 style="color: ${selected.color}; margin-bottom: 2px;">
-            ${formatNodeHtml(selected.source)} ➔ ${formatNodeHtml(selected.sink)}: ${selected.corridor}
+          <h3>
+            ${formatNodeHtml(selected.source)} → ${formatNodeHtml(selected.sink)} · ${bersih(selected.corridor)}
           </h3>
-          <div style="font-size: 11px; color: #94a3b8; margin-bottom: 12px;">${selected.distanceInfo} • Dari ${selected.fromName} ke ${selected.toName}</div>
+          <div class="detail-meta">${bersih(selected.distanceInfo)} · dari ${selected.fromName} ke ${selected.toName}</div>
 
-          <div style="font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
-            Urutan Aliran Jalan (Transit Metro Line):
-          </div>
+          <div class="detail-sub">Urutan aliran</div>
           <div class="metro-stepper">${metroHtml}</div>
 
-          <div style="font-size: 11px; color: #94a3b8; margin-top: 14px; margin-bottom: 6px;">Simpul Graf (${selected.nodeIds.length} Vertex):</div>
+          <div class="detail-sub">Simpul graf (${selected.nodeIds.length})</div>
           <div class="node-badges">${nodesHtml}</div>
         `;
       }
@@ -2385,20 +2256,18 @@
       const m = L.marker([pt.lat, pt.lng], {
         icon: L.divIcon({
           className: '',
-          html: `<div class="cctv-circle-pin" title="${pt.name}">📹</div>`,
-          iconSize: [26, 26],
-          iconAnchor: [13, 13]
+          html: `<div class="cctv-circle-pin" title="${pt.name}"></div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
         })
       }).addTo(map);
 
       m.bindTooltip(
         `
         <div class="segment-tooltip">
-          <div class="seg-name" style="color: #60a5fa;">📹 CCTV Pelindung — ${formatNodeHtml(pt.nodeId)}</div>
-          <div class="seg-detail"><strong>Titik:</strong> ${pt.name}</div>
-          <div class="seg-detail"><strong>Instansi:</strong> ${pt.dinas}</div>
-          <div class="seg-detail">${pt.role}</div>
-          <div class="seg-nodes">Stream: ${pt.streamUrl}</div>
+          <div class="seg-name">CCTV Pelindung · ${formatNodeHtml(pt.nodeId)}</div>
+          <div class="seg-detail">${pt.name}</div>
+          <div class="seg-nodes">${pt.dinas}</div>
         </div>
         `,
         { direction: 'top', className: 'segment-tooltip-container', offset: [0, -8] }
@@ -2410,18 +2279,17 @@
       const m = L.marker([pt.lat, pt.lng], {
         icon: L.divIcon({
           className: '',
-          html: `<div class="manual-circle-pin" title="${pt.name}">📍</div>`,
-          iconSize: [26, 26],
-          iconAnchor: [13, 13]
+          html: `<div class="manual-circle-pin" title="${bersih(pt.name)}"></div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
         })
       }).addTo(map);
 
       m.bindTooltip(
         `
         <div class="segment-tooltip">
-          <div class="seg-name" style="color: #facc15;">📍 Survei Lapangan — ${formatNodeHtml(pt.nodeId)}</div>
-          <div class="seg-detail"><strong>Titik:</strong> ${pt.name}</div>
-          <div class="seg-detail"><strong>Justifikasi:</strong> ${pt.reason}</div>
+          <div class="seg-name">Titik rekam HP · ${formatNodeHtml(pt.nodeId)}</div>
+          <div class="seg-detail">${bersih(pt.name.replace(/^.+?:\s*/, ''))}</div>
         </div>
         `,
         { direction: 'top', className: 'segment-tooltip-container', offset: [0, -8] }
@@ -2461,5 +2329,6 @@
 
     renderSidebar();
   </script>
+  <script src="/graph/peta.js"></script>
 </body>
 </html>
