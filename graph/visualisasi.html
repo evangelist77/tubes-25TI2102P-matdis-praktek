@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="theme-color" content="#fbf3e4">
+<title>Visualisasi · Max Flow Gasibu</title>
+<meta name="description" content="Visualisasi Ford-Fulkerson di atas peta jaringan jalan Gasibu buatan Alifah, dan Iterative Ford-Fulkerson buatan Ganesh yang masih dikerjakan.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2715%27 fill=%27%23e0492f%27/%3E%3Cpath d=%27M16 16m-2 0a2 2 0 1 1 4 0a5 5 0 1 1-9 0a8 8 0 1 1 15 0%27 fill=%27none%27 stroke=%27%23fbf3e4%27 stroke-width=%272.4%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/graph/situs.css">
+<link rel="stylesheet" href="/graph/halaman.css">
+</head>
+<body class="hal">
+<script src="/graph/situs.js"></script>
+<section class="vis-panggung" id="ford-fulkerson" aria-labelledby="judul-ff">
+  <div class="vis-bingkai" id="vis-ff">
+    <iframe id="bingkai-ff" title="Visualisasi Ford-Fulkerson buatan Alifah"></iframe>
+    <div class="vis-muat" role="status"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 1 1-9.5 9.5M12 7a5 5 0 1 1-5 5"/></svg>Memuat visualisasi</div></div>
+  </div>
+  <div class="vis-strip">
+    <p class="vis-nama"><b id="judul-ff">Ford-Fulkerson</b><span class="oleh">oleh Alifah</span><span class="pill st-tunggu">data masih contoh</span></p>
+    <p class="vis-hp">Visualisasi ini paling nyaman dibuka di layar lebar seperti laptop, jadi kalau dari HP lebih enak lewat layar penuh.</p>
+    <a class="tombol" href="/graph/ff/" target="_blank" rel="noopener">Buka layar penuh <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</section>
+<main class="hal-isi">
+  <header class="hal-kepala">
+    <svg class="blob blob-a" viewBox="0 0 400 300" aria-hidden="true"><path d="M60 40c60-50 190-40 260 10s90 140 30 190-200 70-270 20S0 90 60 40z" fill="#b9a2e6" stroke="#151a4f" stroke-width="1.5"/><path d="M120 90c40-30 130-25 170 10s40 100-10 120-150 20-180-20-20-80 20-110z" fill="#f6d98c" stroke="#151a4f" stroke-width="1.5"/></svg>
+    <span class="tag">Visualisasi</span>
+    <h1 class="hal-judul">Visualisasi algoritma</h1>
+    <p class="hal-lede">Ada dua visualisasi max flow untuk graf ini, yaitu Ford-Fulkerson buatan Alifah yang sudah bisa dicoba langsung di atas dan Iterative Ford-Fulkerson buatan Ganesh yang masih dikerjakan.</p>
+    <p class="catatan-kotak">Di visualisasi Alifah augmenting path, residual graph, dan min cut digambar langkah demi langkah di atas peta, tetapi trace dan penyempitan 50% di sana masih contoh sampai kapasitas dari data lapangan selesai dihitung.</p>
+    <nav class="lompat" aria-label="Bagian halaman">
+      <a href="#ford-fulkerson">Ford-Fulkerson</a><a href="#iterative">Iterative Ford-Fulkerson</a>
+    </nav>
+  </header>
+
+  <section class="bagian vis-kartu" id="iterative" aria-labelledby="judul-iter">
+    <div class="vis-kepala">
+      <span class="romawi" aria-hidden="true">II</span>
+      <h2 id="judul-iter">Iterative Ford-Fulkerson</h2>
+      <span class="oleh">oleh Ganesh</span>
+      <span class="pill st-baru">Menyusul</span>
+    </div>
+    <p>Semua pasangan S<sub>1</sub>, S<sub>2</sub> ke T<sub>1</sub>, T<sub>2</sub> dihitung sekaligus, lalu tiap ruas nanti menampilkan arus maksimal, total arus yang lewat, dan kapasitas efektif dengan warna yang makin pekat saat mendekati kapasitas.</p>
+    <div class="menyusul">
+      <svg viewBox="0 0 420 150" role="img" aria-label="Skema S1 dan S2 ke T1 dan T2, visualisasinya menyusul">
+        <g fill="none" stroke="#151a4f" stroke-width="1.6" stroke-dasharray="6 6">
+          <path d="M70 40 C180 40 240 40 350 40"/><path d="M70 40 C180 50 240 100 350 110"/>
+          <path d="M70 110 C180 100 240 50 350 40"/><path d="M70 110 C180 110 240 110 350 110"/>
+        </g>
+        <g stroke="#151a4f" stroke-width="1.6">
+          <circle cx="60" cy="40" r="20" fill="#2e9184"/><circle cx="60" cy="110" r="20" fill="#2e9184"/>
+          <circle cx="360" cy="40" r="20" fill="#e0492f"/><circle cx="360" cy="110" r="20" fill="#e0492f"/>
+        </g>
+        <g fill="#fbf3e4" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="15" font-weight="700" text-anchor="middle">
+          <text x="60" y="45">S1</text><text x="60" y="115">S2</text><text x="360" y="45">T1</text><text x="360" y="115">T2</text>
+        </g>
+        <g transform="rotate(-6 210 75)" fill="#b3361f"><rect x="160" y="60" width="100" height="30" rx="3" fill="#fffaf0" stroke="#b3361f" stroke-width="2.4" filter="url(#tinta)"/><text x="210" y="81" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="17" font-weight="700" text-anchor="middle">Menyusul</text></g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="hal-akhir" aria-label="Halaman lain">
+    <h2>Lihat juga</h2>
+    <div class="tombol-baris">
+      <a class="tombol" href="/graph/">Dashboard Peta</a>
+      <a class="tombol alt" href="/graph/cctv.html">CCTV dan Video</a>
+      <a class="tombol alt" href="/#aliran">Contoh langkah Ford-Fulkerson</a>
+    </div>
+  </section>
+</main>
+<script src="/graph/halaman.js"></script>
+</body>
+</html>

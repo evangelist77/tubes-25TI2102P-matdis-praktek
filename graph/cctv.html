@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="theme-color" content="#fbf3e4">
+<title>CCTV dan Video · Max Flow Gasibu</title>
+<meta name="description" content="Status CCTV Pelindung, cuplikan CCTV, rekaman HP di enam simpang, contoh deteksi YOLO, dan cara kerja program hitung kendaraan untuk tubes Kasus 4 pasar tumpah Gasibu.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2715%27 fill=%27%23e0492f%27/%3E%3Cpath d=%27M16 16m-2 0a2 2 0 1 1 4 0a5 5 0 1 1-9 0a8 8 0 1 1 15 0%27 fill=%27none%27 stroke=%27%23fbf3e4%27 stroke-width=%272.4%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/graph/situs.css">
+<link rel="stylesheet" href="/graph/halaman.css">
+</head>
+<body class="hal">
+<script src="/graph/situs.js"></script>
+<main class="hal-isi">
+  <header class="hal-kepala">
+    <svg class="blob blob-a" viewBox="0 0 400 300" aria-hidden="true"><path d="M60 40c60-50 190-40 260 10s90 140 30 190-200 70-270 20S0 90 60 40z" fill="#a3d9bb" stroke="#151a4f" stroke-width="1.5"/><path d="M120 90c40-30 130-25 170 10s40 100-10 120-150 20-180-20-20-80 20-110z" fill="#86c8e3" stroke="#151a4f" stroke-width="1.5"/></svg>
+    <svg class="blob blob-b" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 6c18 0 30 16 44 26s12 34 2 50-30 32-50 30S16 96 10 78 6 40 20 24 42 6 60 6z" fill="#f2a7b8" stroke="#151a4f" stroke-width="1.5"/></svg>
+    <span class="tag">CCTV dan Video</span>
+    <h1 class="hal-judul">Data lapangan</h1>
+    <p class="hal-lede">Arus kendaraan di simpul graf kami ukur dari CCTV Pelindung Bandung dan dari rekaman HP di simpang yang tidak punya CCTV, lalu kendaraannya dihitung dengan program YOLO yang cara kerjanya ada di bagian bawah halaman ini.</p>
+    <ul class="ringkas" id="ringkas" aria-label="Ringkasan data lapangan"></ul>
+    <nav class="lompat" aria-label="Bagian halaman">
+      <a href="#cctv">CCTV</a><a href="#hp">Rekaman HP</a><a href="#deteksi">Deteksi kendaraan</a><a href="#program">Program hitung</a><a href="#jadwal">Jadwal rekam</a>
+    </nav>
+  </header>
+
+  <div class="mq" aria-hidden="true"><div class="mq-pita"><div class="mq-in" id="mq"></div></div></div>
+
+  <section class="bagian" id="cctv" aria-labelledby="judul-cctv">
+    <div class="bagian-kepala">
+      <span class="no">01</span>
+      <h2 id="judul-cctv">CCTV Pelindung</h2>
+      <p>Status kamera di bawah ini hasil cek Ganesh pada 31 Oktober dan Alifah pada 1 November 2026, sedangkan <span data-n="baru"></span> kamera di jalur Gasibu Atas baru ditambahkan 13 November atas permintaan Hafiz dan belum dicek bersama kelompok.</p>
+    </div>
+    <div class="tabel-wrap">
+      <table class="tabel" id="tabel-cctv">
+        <thead><tr><th scope="col">Kamera</th><th scope="col">Simpul</th><th scope="col">Status</th><th scope="col">Catatan</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-judul">Cuplikan <span data-n="klipCctv"></span> kamera</h3>
+    <p class="ket">Tiap cuplikan sekitar 20 detik dan sudah diproses program hitung, jadi kotak deteksi dan garis hitungnya ikut terlihat di video, sedangkan rekaman yang benar-benar dihitung untuk graf dijadwalkan 14 dan 15 November.</p>
+    <div class="yt" data-yt="cctv" hidden></div>
+    <div class="galeri" id="galeri-cctv"></div>
+  </section>
+
+  <section class="bagian" id="hp" aria-labelledby="judul-hp">
+    <div class="bagian-kepala">
+      <span class="no">02</span>
+      <h2 id="judul-hp">Rekaman HP</h2>
+      <p><span data-n="hp"></span> simpang yang tidak punya CCTV direkam anggota pakai HP pada Minggu 1 November 2026 sekitar 15 menit per titik dengan total rekaman asli <span data-n="totalHp"></span>, dan yang diputar di sini cuplikan 20 detik dari menit ke-5 yang sudah diproses program hitung.</p>
+    </div>
+    <div class="yt" data-yt="hp" hidden></div>
+    <div class="galeri" id="galeri-hp"></div>
+    <p class="catatan-kotak">Jam rekaman diambil dari metadata berkas di HP yang bisa berupa jam mulai atau jam selesai, makanya ditulis sekitar.</p>
+  </section>
+
+  <section class="bagian" id="deteksi" aria-labelledby="judul-deteksi">
+    <div class="bagian-kepala">
+      <span class="no">03</span>
+      <h2 id="judul-deteksi">Deteksi kendaraan</h2>
+      <p>Program diuji pada Kamis malam 29 Oktober 2026 dengan rekaman CCTV, dan di video ini kotak menandai kendaraan yang terdeteksi sedangkan garis kuning adalah garis hitungnya.</p>
+    </div>
+    <div class="galeri" id="galeri-deteksi"></div>
+    <p class="catatan-kotak">Kendaraan yang menghadap kamera terhitung tepat (14 dari 14 di V<sub>Djuanda Hasanuddin</sub> arah selatan), tetapi motor yang menjauhi kamera di malam hari hampir tidak terdeteksi, jadi angka uji ini belum dipakai sebagai kapasitas dan rekaman pagi tetap dicek dulu sebelum dipakai.</p>
+  </section>
+
+  <section class="bagian" id="program" aria-labelledby="judul-program">
+    <div class="bagian-kepala">
+      <span class="no">04</span>
+      <h2 id="judul-program">Program hitung kendaraan</h2>
+      <p>Programnya ditulis dengan Python di atas YOLO dari Ultralytics dan OpenCV, dan setiap tahap dijalankan dengan satu perintah dari folder hitung-kendaraan, mulai dari merekam stream sampai rekap per ruas seperti urutan di bawah ini.</p>
+    </div>
+
+    <ol class="alur">
+      <li>
+        <div>
+          <h3>Rekam stream CCTV</h3>
+          <span class="berkas">video_counting/rekam_cctv.py</span>
+          <p>CCTV direkam langsung dari stream HLS aslinya pakai ffmpeg tanpa encode ulang, bukan rekam layar situs Pelindung, jadi resolusinya asli dan semua kamera bisa direkam bersamaan. Tiap bagian rekaman disimpan sebagai .ts dengan berkas .json berisi jam mulai dari jam laptop, karena jam di layar beberapa CCTV meleset sampai 20 menit.</p>
+          <ul class="param"><li><code>-c copy</code></li><li><code>-live_start_index -1</code></li><li><code>.ts</code> + <code>.json</code></li><li>ulang otomatis kalau stream putus</li></ul>
+          <figure class="kode"><figcaption><span>rekam_cctv.py · rekam()</span><span>baris 47 sampai 50</span></figcaption><pre><code># -live_start_index -1: mulai dari potongan HLS terbaru. Bawaan ffmpeg mulai 3 potongan ke belakang
+# (sekitar 40 detik), dan kalau perekaman diulang, potongan lama itu terekam dua kali.
+cmd = ["ffmpeg", "-v", "error", "-nostdin", "-rw_timeout", "20000000", *HEADER, "-live_start_index", "-1",
+       "-i", url, "-t", f"{sisa:.0f}", "-map", "0:v:0", "-c", "copy", "-f", "mpegts", "-y", str(f)]</code></pre></figure>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Kalibrasi garis hitung</h3>
+          <span class="berkas">video_counting/kalibrasi.py</span>
+          <p>Satu edge graf diberi satu garis hitung yang dipasang tegak lurus jejak kendaraan 60 detik pertama dan dibentangkan dari trotoar ke trotoar, lalu ditandai sisi tempat kendaraan datang supaya arah edge-nya jelas.</p>
+          <ul class="param"><li><code>--lintasan 60</code></li><li><code>--koordinat X1 Y1 X2 Y2</code></li><li><code>--datang X Y</code></li></ul>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Deteksi YOLO dan pelacakan ByteTrack</h3>
+          <span class="berkas">video_counting/hitung.py</span>
+          <p>Setiap frame dibaca sendiri dengan OpenCV lalu dideteksi YOLO dan dilacak ByteTrack, sehingga satu kendaraan memegang satu track_id selama masih terlihat kamera dan frame rusak dari stream cukup dilewati.</p>
+          <ul class="param"><li>bobot <code>yolo26s.pt</code></li><li><code>imgsz 640</code> (1280 untuk S1)</li><li><code>conf</code> 0,1</li><li>tracker <code>bytetrack.yaml</code></li><li>kelas sepeda, mobil, motor, bus, truk</li></ul>
+          <figure class="kode"><figcaption><span>hitung.py · proses()</span><span>baris 266 sampai 267</span></figcaption><pre><code>r = model.track(img, persist=True, tracker=m["tracker"], classes=m["kelas"], conf=m["conf"],
+                imgsz=imgsz, device=device, verbose=False)[0]</code></pre></figure>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Kendaraan melintasi garis</h3>
+          <span class="berkas">video_counting/hitung.py · PenghitungGaris</span>
+          <p>Kendaraan dihitung saat titik tengah sisi bawah kotaknya pindah sisi garis di dalam segmen garis, asal sebelumnya pernah cukup jauh di sisi asal, jadi bus yang diam di atas garis tidak ikut terhitung dan arah serta waktu lintasannya tercatat per kendaraan.</p>
+          <ul class="param"><li><code>kedalaman_asal</code> 0,2 x tinggi kotak</li><li><code>min_frame_track 5</code></li><li>satu <code>track_id</code> satu event</li></ul>
+          <figure class="kode"><figcaption><span>hitung.py · PenghitungGaris.update()</span><span>baris 63 sampai 75</span></figcaption><pre><code>jarak = ((b[0] - a[0]) * (titik[1] - a[1]) - (b[1] - a[1]) * (titik[0] - a[0])) / self.panjang
+if jarak == 0:
+    return  # tepat di atas garis, tunggu frame berikutnya
+s = 1 if jarak &gt; 0 else -1
+if t["akhir"] and t["lintas"] is None:
+    p, s_lama = t["akhir"]
+    # tanda berubah, titik potongnya ada di dalam segmen garis (bukan di perpanjangannya), dan sebelumnya
+    # kendaraan pernah cukup jauh di sisi asal
+    if (s_lama != s and sisi(p, titik, self.a) * sisi(p, titik, self.b) &lt;= 0
+            and t["dalam"][s_lama] &gt;= self.kedalaman * tinggi):
+        t["lintas"] = (frame, "positif" if s_lama &gt; 0 else "negatif")
+t["dalam"][s] = max(t["dalam"][s], abs(jarak))
+t["akhir"] = (titik, s)</code></pre></figure>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Satuan kendaraan ringan menurut PKJI</h3>
+          <span class="berkas">video_counting/hitung.py · video_counting/agregasi.py</span>
+          <p>Kelas COCO diubah ke golongan PKJI, yaitu sepeda motor (SM), kendaraan ringan (KR), kendaraan berat (KB), dan sepeda (KTB), lalu kendaraan per jam diubah ke skr per jam memakai ekr PKJI 2014 yang angkanya masih diisi kelompok, jadi kolom skr dikosongkan selama ekr SM dan KB belum ada.</p>
+          <ul class="param"><li><code>car</code> ke KR</li><li><code>motorcycle</code> ke SM</li><li><code>bus</code> dan <code>truck</code> ke KB</li><li><code>bicycle</code> ke KTB</li></ul>
+          <figure class="kode"><figcaption><span>agregasi.py · rekap()</span><span>baris 80 sampai 81</span></figcaption><pre><code>per_jam = 3600 / cover
+skr = sum(n[c] * ekr[c] for c in ("KR", "SM", "KB")) * per_jam if lengkap else None</code></pre></figure>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Rekap per interval</h3>
+          <span class="berkas">video_counting/agregasi.py</span>
+          <p>Hitungan direkap per interval 5 menit yang mengikuti jam, dan durasi tiap interval hanya bagian yang benar-benar terekam dengan kamera diam, jadi angka kendaraan per jam tetap benar walaupun rekaman sempat putus.</p>
+          <ul class="param"><li><code>interval_menit 5</code></li><li><code>rekap.csv</code></li><li><code>jam_puncak.csv</code></li></ul>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Validasi dengan hitung manual</h3>
+          <span class="berkas">video_counting/potong_klip.py · video_counting/validasi.py</span>
+          <p>Tiap titik diambil 3 klip 2 menit yang dihitung manual oleh dua orang, lalu hasil program dianggap lulus kalau selisih totalnya paling besar 10% dan selisih sepeda motornya paling besar 15%.</p>
+          <ul class="param"><li><code>TARGET["TOTAL"]</code> 0,10</li><li><code>TARGET["SM"]</code> 0,15</li><li><code>validasi.csv</code></li></ul>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Penjaga kamera bergeser</h3>
+          <span class="berkas">video_counting/hitung.py · PenjagaKamera</span>
+          <p>Sekali per detik titik fitur ORB dicocokkan ke latar 5 detik pertama, dan kalau kamera bergeser lebih dari 8 piksel, skalanya berubah lebih dari 3%, atau titik yang cocok kurang dari 15 selama 3 kali berturut-turut, rentang waktu itu dikeluarkan dari rekap.</p>
+          <ul class="param"><li>ORB dan RANSAC</li><li><code>ambang_px</code> 8</li><li><code>ambang_skala</code> 0,03</li><li><code>min_inlier</code> 15</li><li><code>berturut</code> 3</li></ul>
+          <figure class="kode"><figcaption><span>hitung.py · PenjagaKamera.cek()</span><span>baris 139 sampai 140</span></figcaption><pre><code>geser = (inlier &lt; self.min_inlier or geser_px &gt; self.ambang_px
+         or abs(skala - 1) &gt; self.ambang_skala)</code></pre></figure>
+        </div>
+      </li>
+    </ol>
+
+    <h3 class="sub-judul">Hasil uji 29 Oktober 2026</h3>
+    <p class="ket">Uji dilakukan Kamis malam sekitar 18.40 sampai 18.48 WIB dengan tujuh CCTV, jadi kondisinya gelap dan hasilnya lebih menggambarkan kondisi terburuk daripada perkiraan akurasi Minggu pagi.</p>
+    <div class="stat">
+      <div><b>14 dari 14</b><span>kendaraan yang menghadap kamera di V<sub>Djuanda Hasanuddin</sub> arah selatan terhitung dengan kelas yang benar</span></div>
+      <div><b>45 frame/detik</b><span>kecepatan yolo26s dengan input 640 di MacBook M2 Pro, hampir dua kali lebih cepat dari video CCTV 25 fps</span></div>
+      <div><b>6 dari 10</b><span>CCTV usulan awal yang hidup saat dicek, keempat yang mati milik DPKP3 dan Dishub</span></div>
+    </div>
+    <ul class="daftar">
+      <li>Input 1280 dan model m atau l tidak lebih baik untuk CCTV 640 x 480, karena gambar yang diperbesar justru membuat kendaraan makin kabur.</li>
+      <li>Motor yang menjauhi kamera di malam hari hampir tidak terdeteksi karena pengendaranya terbaca sebagai person, sehingga uji siang hari masih diperlukan sebelum data dipakai.</li>
+      <li>Logika lintasan garis punya 20 tes di video_counting/tests/test_lintasan.py, dan laporan uji lengkapnya disimpan lokal oleh kelompok.</li>
+    </ul>
+    <div class="tombol-baris">
+      <a class="tombol" href="https://github.com/Finerium/matematika-diskrit-lanjut/tree/417d01d/2026-10-19-tubes-kasus-04-pasar-tumpah/hitung-kendaraan" target="_blank" rel="noopener">Lihat kode di GitHub <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </section>
+
+  <section class="bagian" id="jadwal" aria-labelledby="judul-jadwal">
+    <div class="bagian-kepala">
+      <span class="no">05</span>
+      <h2 id="judul-jadwal">Jadwal rekam</h2>
+      <p>Rekaman yang nanti dihitung diambil dua kali di jam yang sama supaya kondisi tanpa pasar tumpah bisa dibandingkan dengan kondisi saat pasar tumpah.</p>
+    </div>
+    <div class="tabel-wrap">
+      <table class="tabel">
+        <thead><tr><th scope="col">Hari</th><th scope="col">Tanggal</th><th scope="col">Jam</th><th scope="col">Kondisi</th></tr></thead>
+        <tbody>
+          <tr><td class="utama" data-l="Hari"><b>Sabtu</b></td><td data-l="Tanggal">14 November 2026</td><td data-l="Jam" class="simpul">07.30 sampai 08.00 WIB</td><td data-l="Kondisi">Tanpa pasar tumpah</td></tr>
+          <tr><td class="utama" data-l="Hari"><b>Minggu</b></td><td data-l="Tanggal">15 November 2026</td><td data-l="Jam" class="simpul">07.30 sampai 08.00 WIB</td><td data-l="Kondisi">Saat pasar tumpah</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="catatan-kotak">Jumlah kendaraan per ruas dan kapasitas dari CCTV maupun rekaman HP belum dihitung, jadi angka kapasitas di peta dan visualisasi masih nilai relatif atau contoh. Yang diukur program juga arus kendaraan, bukan kapasitas, karena arus baru sama dengan kapasitas kalau di hulu ruas sedang ada antrean.</p>
+  </section>
+
+  <section class="hal-akhir" aria-label="Halaman lain">
+    <h2>Lihat juga</h2>
+    <div class="tombol-baris">
+      <a class="tombol" href="/graph/">Dashboard Peta</a>
+      <a class="tombol alt" href="/graph/visualisasi.html">Visualisasi</a>
+      <a class="tombol alt" href="/#data">Kembali ke cerita</a>
+    </div>
+  </section>
+</main>
+<script src="/graph/media/media.js"></script>
+<script src="/graph/halaman.js"></script>
+</body>
+</html>
