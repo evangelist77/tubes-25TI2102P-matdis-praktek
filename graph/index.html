@@ -295,6 +295,7 @@
     .concept-card summary::after { content: "+"; font: 400 26px/1 var(--serif); transition: transform 0.3s var(--halus); }
     .concept-card[open] summary::after { transform: rotate(45deg); }
     .concept-card p { padding: 0 16px 16px; }
+    p.concept-card.catatan-data { padding: 12px 16px; }
 
     /* ---------- Peta ---------- */
     #map { flex: 1; position: relative; height: 100%; background: #efe4cc; }
@@ -609,6 +610,8 @@
           <button class="filter-tab" data-filter="T1" type="button">Ke T<sub>1</sub></button>
           <button class="filter-tab" data-filter="T2" type="button">Ke T<sub>2</sub></button>
         </div>
+
+        <p class="concept-card catatan-data">Data kapasitas kendaraan (kend/jam) belum tersedia. Kapasitas tiap ruas perlu ditentukan melalui survei atau perhitungan terverifikasi sebelum analisis Maximum Flow numerik.</p>
 
         <h2 class="section-title">Daftar rute</h2>
         <div id="path-list"></div>
@@ -1299,7 +1302,7 @@
           name: 'Jalan Ir. H. Djuanda (Dago)',
           fromNode: 'V_Djuanda_Hasanuddin',
           toNode: 'V_Djuanda_Diponegoro',
-          widthInfo: '~12 meter (3 lajur, Primary)',
+          widthInfo: '~6 meter (1-2 lajur independen, Primary)',
           osmType: 'primary',
           coords: [
             [-6.89492, 107.61321],
@@ -1313,7 +1316,7 @@
           name: 'Jalan Diponegoro (Barat)',
           fromNode: 'V_Djuanda_Diponegoro',
           toNode: 'V_AriaJipang',
-          widthInfo: '~14 meter (4 lajur, Primary)',
+          widthInfo: '~7 meter (2 lajur independen, jalur selatan, Primary)',
           osmType: 'primary',
           coords: [
             [-6.90025, 107.61262],
@@ -1415,7 +1418,7 @@
           name: 'Jalan Cikapayang',
           fromNode: 'V_Cikapayang',
           toNode: 'V_DU_Selatan',
-          widthInfo: '~12 meter (3 lajur, Primary)',
+          widthInfo: '~6 meter (1-2 lajur independen, Primary)',
           osmType: 'primary',
           coords: [
             [-6.89806, 107.60967],
