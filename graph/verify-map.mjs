@@ -371,12 +371,12 @@ vm.createContext(pelindungSandbox);
 vm.runInContext(highlightCode, pelindungSandbox);
 
 assert.ok(Array.isArray(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS), 'window.PELINDUNG_MAXFLOW_TARGETS harus berupa array');
-assert.equal(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length, 10, 'Script harus memuat tepat 10 titik CCTV utama agar konsisten 1-to-1 dengan peta rute graf');
+assert.equal(pelindungSandbox.window.PELINDUNG_MAXFLOW_TARGETS.length, 12, 'Script harus memuat tepat 12 titik CCTV utama agar konsisten 1-to-1 dengan peta rute graf');
 assert.match(mockMarkerIconTarget.style.filter || '', /invert|hue-rotate/, 'Pinpoint target harus diberi filter maroon');
 assert.ok(!((mockMarkerIconTarget.style.filter || '').includes('drop-shadow')), 'Pinpoint target tidak boleh memiliki filter drop-shadow');
 assert.equal(mockMarkerIconOther.style.opacity, '0.25', 'Pinpoint non-target harus diredupkan (opacity 0.25)');
 assert.ok(Array.isArray(GRAPH_DATA.cctvPoints), 'GRAPH_DATA.cctvPoints harus berupa array');
-assert.equal(GRAPH_DATA.cctvPoints.length, 10, 'Harus terdapat 10 titik lokasi CCTV Pelindung pada graf');
+assert.equal(GRAPH_DATA.cctvPoints.length, 12, 'Harus terdapat 12 titik lokasi CCTV Pelindung pada graf (10 awal + 2 jalur Gasibu Atas)');
 const cctvCisangkuy = GRAPH_DATA.cctvPoints.find((c) => c.id === 'cctv_lansia_pustaka' || c.nodeId === 'V_Cisangkuy');
 assert.ok(cctvCisangkuy, 'CCTV Cisangkuy harus ada');
 assert.ok(cctvCisangkuy.lat >= -6.9015, 'CCTV Cisangkuy harus berada di atas Taman Lansia (simpang Cisangkuy - Diponegoro, lat >= -6.9015)');
@@ -400,14 +400,15 @@ const osmHeader = vercelConfig.headers.find((h) =>
 );
 assert.ok(osmHeader, 'vercel.json harus menyuntikkan header Referrer-Policy: origin-when-cross-origin');
 
-assert.ok(Array.isArray(vercelConfig.redirects), 'vercel.json harus memiliki konfigurasi redirects');
-const rootRedirect = vercelConfig.redirects.find((r) => r.source === '/' && r.destination === '/graph/');
-assert.ok(rootRedirect, 'vercel.json harus mengarahkan root / ke /graph/');
+// Sejak 13 Nov root / adalah landing page cerita (bukan redirect lagi), peta tetap di /graph/.
+const rootRedirect = (vercelConfig.redirects || []).find((r) => r.source === '/');
+assert.ok(!rootRedirect, 'vercel.json tidak boleh lagi mengalihkan root / karena / adalah landing page');
 
 const rootHtmlPath = new URL('../index.html', import.meta.url);
-assert.ok(fs.existsSync(rootHtmlPath), 'File fallback index.html harus ada di root repositori');
+assert.ok(fs.existsSync(rootHtmlPath), 'File index.html landing harus ada di root repositori');
 const rootHtmlContent = fs.readFileSync(rootHtmlPath, 'utf8');
-assert.match(rootHtmlContent, /url=\/graph\//, 'Root index.html harus memuat meta redirect ke /graph/');
+assert.match(rootHtmlContent, /graph\/landing\/cerita\.js/, 'Root index.html harus memuat landing page (graph/landing/cerita.js)');
+assert.match(rootHtmlContent, /href="\/graph\/"/, 'Root index.html harus menautkan ke Dashboard Peta /graph/');
 
 const gitignorePath = new URL('../.gitignore', import.meta.url);
 assert.ok(fs.existsSync(gitignorePath), 'File .gitignore harus ada di root repositori');

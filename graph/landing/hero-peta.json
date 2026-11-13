@@ -1,0 +1,13 @@
+{
+ "bbox": [
+  11977410.31,
+  -771346.61,
+  11982528.23,
+  -768184.33
+ ],
+ "w": 2326,
+ "h": 1437,
+ "proyeksi": "EPSG:3857 (Web Mercator, meter)",
+ "sumber": "Tile OpenStreetMap standar zoom 16",
+ "atribusi": "© OpenStreetMap contributors"
+}

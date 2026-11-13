@@ -1,0 +1,356 @@
+{
+  "viewBox": "0 0 560 300",
+  "note": "Graf mainan, angka kapasitas contoh tanpa satuan. BFS memeriksa tetangga urut abjad.",
+  "nodes": [
+    {
+      "id": "S",
+      "role": "source",
+      "x": 40,
+      "y": 150
+    },
+    {
+      "id": "A",
+      "role": "simpul",
+      "x": 180,
+      "y": 60
+    },
+    {
+      "id": "B",
+      "role": "simpul",
+      "x": 180,
+      "y": 240
+    },
+    {
+      "id": "C",
+      "role": "simpul",
+      "x": 320,
+      "y": 150
+    },
+    {
+      "id": "D",
+      "role": "simpul",
+      "x": 420,
+      "y": 60
+    },
+    {
+      "id": "T",
+      "role": "sink",
+      "x": 520,
+      "y": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "S-A",
+      "from": "S",
+      "to": "A",
+      "capacity": 10,
+      "flowFinal": 10,
+      "pasar": false
+    },
+    {
+      "id": "S-B",
+      "from": "S",
+      "to": "B",
+      "capacity": 6,
+      "flowFinal": 5,
+      "pasar": false
+    },
+    {
+      "id": "A-C",
+      "from": "A",
+      "to": "C",
+      "capacity": 8,
+      "flowFinal": 5,
+      "pasar": false
+    },
+    {
+      "id": "A-D",
+      "from": "A",
+      "to": "D",
+      "capacity": 5,
+      "flowFinal": 5,
+      "pasar": false
+    },
+    {
+      "id": "B-C",
+      "from": "B",
+      "to": "C",
+      "capacity": 7,
+      "flowFinal": 5,
+      "pasar": false
+    },
+    {
+      "id": "C-T",
+      "from": "C",
+      "to": "T",
+      "capacity": 10,
+      "flowFinal": 10,
+      "pasar": true
+    },
+    {
+      "id": "D-T",
+      "from": "D",
+      "to": "T",
+      "capacity": 10,
+      "flowFinal": 5,
+      "pasar": false
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "path": [
+        "S",
+        "A",
+        "C",
+        "T"
+      ],
+      "hops": [
+        {
+          "from": "S",
+          "to": "A",
+          "residual": 10,
+          "direction": "maju"
+        },
+        {
+          "from": "A",
+          "to": "C",
+          "residual": 8,
+          "direction": "maju"
+        },
+        {
+          "from": "C",
+          "to": "T",
+          "residual": 10,
+          "direction": "maju"
+        }
+      ],
+      "bottleneck": 8,
+      "totalFlow": 8,
+      "flowAfter": {
+        "S-A": 8,
+        "S-B": 0,
+        "A-C": 8,
+        "A-D": 0,
+        "B-C": 0,
+        "C-T": 8,
+        "D-T": 0
+      }
+    },
+    {
+      "step": 2,
+      "path": [
+        "S",
+        "A",
+        "D",
+        "T"
+      ],
+      "hops": [
+        {
+          "from": "S",
+          "to": "A",
+          "residual": 2,
+          "direction": "maju"
+        },
+        {
+          "from": "A",
+          "to": "D",
+          "residual": 5,
+          "direction": "maju"
+        },
+        {
+          "from": "D",
+          "to": "T",
+          "residual": 10,
+          "direction": "maju"
+        }
+      ],
+      "bottleneck": 2,
+      "totalFlow": 10,
+      "flowAfter": {
+        "S-A": 10,
+        "S-B": 0,
+        "A-C": 8,
+        "A-D": 2,
+        "B-C": 0,
+        "C-T": 8,
+        "D-T": 2
+      }
+    },
+    {
+      "step": 3,
+      "path": [
+        "S",
+        "B",
+        "C",
+        "T"
+      ],
+      "hops": [
+        {
+          "from": "S",
+          "to": "B",
+          "residual": 6,
+          "direction": "maju"
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "residual": 7,
+          "direction": "maju"
+        },
+        {
+          "from": "C",
+          "to": "T",
+          "residual": 2,
+          "direction": "maju"
+        }
+      ],
+      "bottleneck": 2,
+      "totalFlow": 12,
+      "flowAfter": {
+        "S-A": 10,
+        "S-B": 2,
+        "A-C": 8,
+        "A-D": 2,
+        "B-C": 2,
+        "C-T": 10,
+        "D-T": 2
+      }
+    },
+    {
+      "step": 4,
+      "path": [
+        "S",
+        "B",
+        "C",
+        "A",
+        "D",
+        "T"
+      ],
+      "hops": [
+        {
+          "from": "S",
+          "to": "B",
+          "residual": 4,
+          "direction": "maju"
+        },
+        {
+          "from": "B",
+          "to": "C",
+          "residual": 5,
+          "direction": "maju"
+        },
+        {
+          "from": "C",
+          "to": "A",
+          "residual": 8,
+          "direction": "mundur"
+        },
+        {
+          "from": "A",
+          "to": "D",
+          "residual": 3,
+          "direction": "maju"
+        },
+        {
+          "from": "D",
+          "to": "T",
+          "residual": 8,
+          "direction": "maju"
+        }
+      ],
+      "bottleneck": 3,
+      "totalFlow": 15,
+      "flowAfter": {
+        "S-A": 10,
+        "S-B": 5,
+        "A-C": 5,
+        "A-D": 5,
+        "B-C": 5,
+        "C-T": 10,
+        "D-T": 5
+      }
+    }
+  ],
+  "maxFlow": 15,
+  "minCut": {
+    "sourceSide": [
+      "A",
+      "B",
+      "C",
+      "S"
+    ],
+    "sinkSide": [
+      "D",
+      "T"
+    ],
+    "edges": [
+      "A-D",
+      "C-T"
+    ],
+    "capacity": 15
+  },
+  "alphaVariation": [
+    {
+      "edge": "C-T",
+      "alpha": 0,
+      "capacityEffective": 10,
+      "maxFlow": 15,
+      "minCut": [
+        "A-D",
+        "C-T"
+      ]
+    },
+    {
+      "edge": "C-T",
+      "alpha": 0.2,
+      "capacityEffective": 8,
+      "maxFlow": 13,
+      "minCut": [
+        "A-D",
+        "C-T"
+      ]
+    },
+    {
+      "edge": "C-T",
+      "alpha": 0.5,
+      "capacityEffective": 5,
+      "maxFlow": 10,
+      "minCut": [
+        "A-D",
+        "C-T"
+      ]
+    },
+    {
+      "edge": "B-C",
+      "alpha": 0,
+      "capacityEffective": 7,
+      "maxFlow": 15,
+      "minCut": [
+        "A-D",
+        "C-T"
+      ]
+    },
+    {
+      "edge": "B-C",
+      "alpha": 0.2,
+      "capacityEffective": 5.6,
+      "maxFlow": 15,
+      "minCut": [
+        "A-D",
+        "C-T"
+      ]
+    },
+    {
+      "edge": "B-C",
+      "alpha": 0.5,
+      "capacityEffective": 3.5,
+      "maxFlow": 13.5,
+      "minCut": [
+        "S-A",
+        "B-C"
+      ]
+    }
+  ]
+}
