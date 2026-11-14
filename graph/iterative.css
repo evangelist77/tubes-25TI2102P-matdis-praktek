@@ -1,0 +1,423 @@
+/* ==========================================================================
+   Visualisasi Iterative Ford-Fulkerson (Ganesh)
+   Gaya visual pusaran terang yang selaras dengan tema situs Gasibu.
+   ========================================================================== */
+
+.iter-dashboard {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Filter Bar ---------- */
+.iter-filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  background: var(--kertas, #fffaf0);
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 3px 3px 0 var(--ink, #151a4f);
+}
+
+.iter-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.iter-label {
+  font-family: var(--serif, Georgia, serif);
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--navy, #232a78);
+  letter-spacing: -0.01em;
+}
+
+.iter-toggle-group {
+  display: flex;
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--paper, #f4e6c8);
+}
+
+.iter-toggle-btn {
+  flex: 1;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: var(--ink, #151a4f);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.iter-toggle-btn:not(:last-child) {
+  border-right: 1.5px solid var(--ink, #151a4f);
+}
+
+.iter-toggle-btn.aktif {
+  background: var(--navy, #232a78);
+  color: #ffffff;
+}
+
+.iter-toggle-btn:hover:not(.aktif) {
+  background: rgba(21, 26, 79, 0.08);
+}
+
+.iter-select {
+  width: 100%;
+  padding: 9px 12px;
+  font-family: var(--sans, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink, #151a4f);
+  background: var(--paper, #f4e6c8);
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.iter-select:focus {
+  border-color: var(--vermilion, #e0492f);
+  box-shadow: 0 0 0 2px rgba(224, 73, 47, 0.2);
+}
+
+/* ---------- Stat Cards ---------- */
+.iter-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.iter-stat-card {
+  background: var(--kertas, #fffaf0);
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 2.5px 2.5px 0 var(--ink, #151a4f);
+  display: flex;
+  flex-direction: column;
+}
+
+.iter-stat-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #57534e;
+  margin-bottom: 6px;
+}
+
+.iter-stat-val {
+  font-family: var(--serif, Georgia, serif);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink, #151a4f);
+}
+
+.iter-stat-val.font-sm {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.iter-stat-sub {
+  font-size: 12px;
+  color: #78716c;
+  margin-top: 4px;
+}
+
+/* ---------- Main Grid (Map + Inspector) ---------- */
+.iter-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+  min-height: 520px;
+}
+
+@media (max-width: 960px) {
+  .iter-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.iter-map-wrapper {
+  position: relative;
+  background: #fbfaf8;
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 3px 3px 0 var(--ink, #151a4f);
+  min-height: 480px;
+}
+
+.iter-map-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  z-index: 1;
+}
+
+/* Legenda Mengambang di Peta */
+.iter-map-legend {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 1000;
+  background: rgba(255, 250, 240, 0.94);
+  backdrop-filter: blur(4px);
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: 290px;
+  box-shadow: 2px 2px 0 var(--ink, #151a4f);
+  font-size: 11.5px;
+}
+
+.iter-leg-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--navy, #232a78);
+}
+
+.iter-leg-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(21, 26, 79, 0.3);
+}
+
+.iter-leg-bar span {
+  flex: 1;
+}
+
+.iter-leg-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 10px;
+  color: #57534e;
+  font-family: var(--mono, monospace);
+}
+
+.iter-leg-extra {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(21, 26, 79, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.dot-market, .dot-closed {
+  display: inline-block;
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.dot-market { background: #ea580c; border: 1px solid #c2410c; }
+.dot-closed { background: #94a3b8; border: 1px dashed #475569; }
+
+/* Inspector Panel */
+.iter-inspect-panel {
+  background: var(--kertas, #fffaf0);
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--ink, #151a4f);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.iter-inspect-header {
+  border-bottom: 1.5px solid rgba(21, 26, 79, 0.15);
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.iter-inspect-header h3 {
+  font-family: var(--serif, Georgia, serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink, #151a4f);
+  line-height: 1.25;
+}
+
+.iter-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--paper, #f4e6c8);
+  border: 1px solid var(--ink, #151a4f);
+}
+
+.iter-badge.lancar { background: #dcfce7; color: #15803d; border-color: #16a34a; }
+.iter-badge.sedang { background: #ecfccb; color: #4d7c0f; border-color: #65a30d; }
+.iter-badge.padat  { background: #fef9c3; color: #a16207; border-color: #ca8a04; }
+.iter-badge.kritis { background: #ffedd5; color: #c2410c; border-color: #ea580c; }
+.iter-badge.jenuh  { background: #fee2e2; color: #b91c1c; border-color: #dc2626; }
+
+.iter-inspect-hint {
+  font-size: 13.5px;
+  color: #78716c;
+  line-height: 1.5;
+}
+
+.iter-metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.iter-metric-box {
+  background: var(--cream, #fbf3e4);
+  border: 1px solid rgba(21, 26, 79, 0.15);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.iter-metric-box.span-2 {
+  grid-column: span 2;
+}
+
+.iter-metric-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #57534e;
+}
+
+.iter-metric-val {
+  font-family: var(--mono, monospace);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink, #151a4f);
+  margin-top: 2px;
+}
+
+.iter-meter-wrap {
+  margin-top: 8px;
+}
+
+.iter-meter-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: #e7e5e4;
+  overflow: hidden;
+}
+
+.iter-meter-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ---------- Tabel Rincian Ruas Jalan ---------- */
+.iter-table-section {
+  background: var(--kertas, #fffaf0);
+  border: 1.5px solid var(--ink, #151a4f);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--ink, #151a4f);
+  overflow: hidden;
+}
+
+.iter-table-head {
+  padding: 16px 20px;
+  border-bottom: 1.5px solid var(--ink, #151a4f);
+  background: var(--cream, #fbf3e4);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.iter-table-head h3 {
+  font-family: var(--serif, Georgia, serif);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink, #151a4f);
+}
+
+.iter-table-hint {
+  font-size: 12.5px;
+  color: #78716c;
+}
+
+.iter-table-wrap {
+  overflow-x: auto;
+  max-height: 420px;
+}
+
+.iter-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  text-align: left;
+}
+
+.iter-table th {
+  background: var(--paper, #f4e6c8);
+  color: var(--ink, #151a4f);
+  font-family: var(--serif, Georgia, serif);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1.5px solid var(--ink, #151a4f);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.iter-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(21, 26, 79, 0.1);
+  color: var(--ink, #151a4f);
+  vertical-align: middle;
+}
+
+.iter-table tr:hover {
+  background: rgba(242, 184, 75, 0.12);
+  cursor: pointer;
+}
+
+.iter-table tr.terpilih {
+  background: rgba(224, 73, 47, 0.12);
+}
+
+.iter-bar-mini {
+  display: inline-block;
+  width: 60px;
+  height: 6px;
+  background: #e7e5e4;
+  border-radius: 3px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.iter-bar-mini span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+}
