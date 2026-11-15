@@ -6,7 +6,7 @@
       "sink": 3,
       "sourceCode": "S1",
       "sinkCode": "T1",
-      "alpha": 0,
+      "alpha": 0.0,
       "filename": "trace_S1_T1_a0.json",
       "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 0%"
     },
@@ -96,7 +96,7 @@
       "sink": 4,
       "sourceCode": "S1",
       "sinkCode": "T2",
-      "alpha": 0,
+      "alpha": 0.0,
       "filename": "trace_S1_T2_a0.json",
       "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 0%"
     },
@@ -186,7 +186,7 @@
       "sink": 3,
       "sourceCode": "S2",
       "sinkCode": "T1",
-      "alpha": 0,
+      "alpha": 0.0,
       "filename": "trace_S2_T1_a0.json",
       "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 0%",
       "isDefault": true
@@ -277,7 +277,7 @@
       "sink": 4,
       "sourceCode": "S2",
       "sinkCode": "T2",
-      "alpha": 0,
+      "alpha": 0.0,
       "filename": "trace_S2_T2_a0.json",
       "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 0%"
     },
