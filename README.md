@@ -81,14 +81,14 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 ├── config/settings.py          skenario dan algoritma default, folder output
 ├── core/                       model graf, runner simulasi, observer, gambar graf matplotlib
 ├── scripts/                    run_simulation.py dan run_benchmark.py
-├── tests/                      tes pytest untuk loader dan kontrak skenario
+├── tests/                      tes pytest untuk loader, kontrak skenario, dan event max flow
 ├── tracer/                     modul trace bawaan template, masih kosong
 ├── output/                     tempat trace JSON hasil runner
 ├── visualizer/                 aplikasi visualisasi Ford-Fulkerson (Vue 3 + Vite)
 ├── hitung-kendaraan/
 │   ├── video_counting/         rekam CCTV, kalibrasi garis, hitung, agregasi, validasi, beserta config dan tes
 │   ├── hasil_uji/              hasil uji CCTV 29 Oktober 2026 dan video demo
-│   └── hasil_hitung/           rekap kendaraan per jam dari rekaman HP 1 November 2026
+│   └── hasil_hitung/           rekap kendaraan per jam dari rekaman HP 1 November dan CCTV 14 dan 15 November 2026
 ├── graph/
 │   ├── index.html              Dashboard Peta, sekaligus sumber data GRAPH_DATA
 │   ├── cctv.html               halaman CCTV dan Video
@@ -207,3 +207,4 @@ Tiap anggota mengerjakan bagiannya di branch sendiri (contohnya `alifah`), lalu 
 - [`GLOSSARY.md`](GLOSSARY.md): panduan bahasa untuk `action_narrative`
 - [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md): program hitung kendaraan, alur pengambilan data, dan hasil uji
 - [Kolase rekaman HP di YouTube](https://youtu.be/rOYqXmBW57s)
+- [Kolase rekaman CCTV Minggu 15 November di YouTube](https://youtu.be/KW-fCy3HZwM)
