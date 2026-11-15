@@ -31,8 +31,9 @@ PAIRS: List[Dict[str, Any]] = [
     {"source": 2, "sink": 4, "sCode": "S2", "tCode": "T2", "label": "S2 (Dipatiukur) → T2 (Diponegoro)"},
 ]
 
-# Alpha observasi empiris pasar penuh
-OBSERVED_ALPHA = 0.5
+# Alpha observasi empiris pasar penuh: rekaman CCTV Minggu 15 Nov 2026 07.30-08.00 menunjukkan Jl. Gasibu Atas tertutup
+# penuh tenda lapak (0 kendaraan lewat), jadi penyempitannya 100% (hitung-kendaraan/hasil_hitung/cctv_15nov_minggu)
+OBSERVED_ALPHA = 1.0
 
 # Simpul dan busur khusus
 MARKET_EDGES: Set[Tuple[int, int]] = {(24, 25)}  # Jl. Gasibu Atas
@@ -440,12 +441,12 @@ def generate_all_traces(
     output_dir: Optional[Path] = None,
     alphas: Optional[List[float]] = None,
 ) -> Tuple[List[Path], Path]:
-    """Menghasilkan seluruh 40 kombinasi trace (4 pasangan x 10 nilai alpha) dan manifest.json."""
+    """Menghasilkan seluruh 44 kombinasi trace (4 pasangan x 11 nilai alpha) dan manifest.json."""
     out_dir = output_dir or VISUALIZER_DATA_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
 
     if alphas is None:
-        alphas = [round(k * 0.1, 1) for k in range(10)]  # 0.0, 0.1, ..., 0.9
+        alphas = [round(k * 0.1, 1) for k in range(11)]  # 0.0, 0.1, ..., 1.0 (1.0 = observasi CCTV)
 
     manifest_entries: List[Dict[str, Any]] = []
     step_counts: Dict[str, int] = {}
@@ -517,7 +518,7 @@ if __name__ == "__main__":
 
     print("\n1. Menjalankan Solver untuk 4 Pasangan Terminal S -> T:")
     print("-" * 70)
-    print(f"{'Pasangan':<35} | {'Alpha=0% (Normal)':<18} | {'Alpha=50% (Pasar)':<18}")
+    print(f"{'Pasangan':<35} | {'Alpha=0% (Normal)':<18} | {f'Alpha={OBSERVED_ALPHA:.0%} (Pasar)':<18}")
     print("-" * 70)
 
     for p in PAIRS:
@@ -526,7 +527,7 @@ if __name__ == "__main__":
         flow_normal = solver_normal.run(s, t, alpha=0.0)
 
         solver_pasar = FordFulkerson(model)
-        flow_pasar = solver_pasar.run(s, t, alpha=0.5)
+        flow_pasar = solver_pasar.run(s, t, alpha=OBSERVED_ALPHA)
 
         print(f"{p['label']:<35} | {flow_normal:>10.1f} kend/j | {flow_pasar:>10.1f} kend/j")
 
