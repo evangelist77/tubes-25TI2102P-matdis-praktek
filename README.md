@@ -45,10 +45,10 @@ Untuk pipeline Python, [`cases/scenarios/case_04_pasar_tumpah.yaml`](cases/scena
 
 Sesuai catatan dosen, perhitungan dibagi dua.
 
-1. **Ford-Fulkerson per pasangan** (S1-T1, S1-T2, S2-T1, S2-T2). Lapak pedagang dimodelkan sebagai faktor penyempitan α di ruas pasar, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas pasar mulai menjadi pembatas. Kode awalnya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp).
+1. **Ford-Fulkerson per pasangan** (S1-T1, S1-T2, S2-T1, S2-T2). Lapak pedagang dimodelkan sebagai faktor penyempitan α di ruas pasar, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas pasar mulai menjadi pembatas. Kodenya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp). Kelas `FordFulkerson` terdaftar di `AlgorithmRegistry` sebagai `maxflow`, menerima event `DYNAMIC_EDGE_CAPACITY` dari skenario, dan menulis trace tiap langkah untuk keempat pasangan dengan α dari 0 sampai 100%. Nilai α hasil pengamatan adalah 100%, karena rekaman CCTV Minggu 15 November menunjukkan Jl. Gasibu Atas tertutup penuh lapak.
 2. **Iterative Ford-Fulkerson** untuk semua pasangan sekaligus. Tiap ruas nantinya menampilkan arus maksimal, total arus yang lewat, dan kapasitas efektifnya.
 
-Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScript, Tailwind, Leaflet) menggambar augmenting path, sisa kapasitas, bottleneck, residual graph, dan min cut langkah demi langkah di atas peta, lengkap dengan perbandingan tanpa pasar dan pasar penuh serta analisis sensitivitas α dari 0 sampai 90%. Hasil build-nya ada di `graph/ff/` dan dibuka dari halaman Visualisasi.
+Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScript, Tailwind, Leaflet) menggambar augmenting path, sisa kapasitas, bottleneck, residual graph, dan min cut langkah demi langkah di atas peta, lengkap dengan perbandingan tanpa pasar dan pasar penuh serta analisis sensitivitas α dari 0 sampai 100%. Trace-nya dihasilkan algoritma di atas. Hasil build-nya ada di `graph/ff/` dan dibuka dari halaman Visualisasi.
 
 ### Data arus kendaraan
 
