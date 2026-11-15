@@ -240,14 +240,15 @@ execution_plan:
   start_node: 0
   goal_node: 27
   events:
-    # ASUMSI: nilai new_capacity di bawah masih placeholder (penyempitan 50% lalu 25%). Ganti dengan hasil hitungan CCTV/survei.
-    # new_weight diisi sama dengan new_capacity karena runner template dosen meneruskan nilai event lewat new_weight.
+    # Event 1 dari rekaman CCTV Minggu 15 Nov 2026 (hitung-kendaraan/hasil_hitung/cctv_15nov_minggu). Event 4 masih
+    # ASUMSI karena rekaman CCTV hanya 07.30-08.00. new_weight diisi sama dengan new_capacity karena runner template
+    # dosen meneruskan nilai event lewat new_weight.
     - step: 1
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
-      new_capacity: 900.0
-      new_weight: 900.0
-      description: "Pasar tumpah meluap di Jl. Gasibu Atas, kapasitas efektif ruas anjlok dari 1800 menjadi 900 kendaraan/jam (penyempitan 50%) [ASUMSI]."
+      new_capacity: 0.0
+      new_weight: 0.0
+      description: "Pasar tumpah menutup Jl. Gasibu Atas. Rekaman CCTV Minggu 15 November 07.30-08.00 menunjukkan badan jalan tertutup penuh tenda lapak dan tidak ada kendaraan yang lewat, jadi kapasitas efektif turun dari 1800 menjadi 0 kendaraan/jam."
     - step: 2
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [11, 12]
@@ -265,7 +266,7 @@ execution_plan:
       target_edge: [24, 25]
       new_capacity: 1350.0
       new_weight: 1350.0
-      description: "Pedagang mulai beres-beres, kapasitas Jl. Gasibu Atas pulih sebagian dari 900 menjadi 1350 kendaraan/jam (penyempitan 25%) [ASUMSI]."
+      description: "Pedagang mulai beres-beres, kapasitas Jl. Gasibu Atas pulih sebagian dari 0 menjadi 1350 kendaraan/jam (penyempitan 25%) [ASUMSI]."
 
 # CATATAN PERBAIKAN DARI GRAPH_SPEC_LLM.md (konfirmasi ke penyusun spec):
 #  FIX-1  S1->V_Sulanjana melewati V_Cikapayang (satu Jl. Tamansari). Dirantai S1->Cikapayang->Sulanjana.
