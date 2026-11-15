@@ -60,10 +60,10 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 
 ### Status
 
-- **Kapasitas belum final.** Belum ada data kapasitas kendaraan per jam yang terverifikasi untuk tiap ruas (lihat "Status data kapasitas" di bagian 3 `GRAPH_SPEC_LLM.md`). Lebar dan jumlah lajur tidak bisa langsung dianggap kapasitas. Angka kapasitas di YAML masih nilai relatif, dan trace di visualisasi Ford-Fulkerson masih contoh dari `visualizer/dev/sampleTrace.ts` dengan penyempitan pasar penuh 50% sebagai placeholder.
+- **Kapasitas belum final.** Belum ada data kapasitas kendaraan per jam yang terverifikasi untuk tiap ruas (lihat "Status data kapasitas" di bagian 3 `GRAPH_SPEC_LLM.md`). Lebar dan jumlah lajur tidak bisa langsung dianggap kapasitas. Angka kapasitas di YAML masih nilai relatif. Arus hasil hitung CCTV dan HP sudah tersedia per ruas, tapi belum dimasukkan sebagai kapasitas karena arus hanya batas bawah kapasitas dan tidak semua ruas terukur.
 - Program hitung mengukur arus, bukan kapasitas. Arus baru sama dengan kapasitas kalau di hulu ruas sedang ada antrean.
 - Algoritma Iterative Ford-Fulkerson dan visualisasinya sedang dikerjakan.
-- Pipeline Python template belum tersambung ke kasus ini. Kelas `FordFulkerson` belum didaftarkan ke `AlgorithmRegistry`, belum punya `handle_dynamic_event`, dan `run()` baru mengembalikan nilai max flow, padahal `SimulationRunner` menunggu pasangan rute dan nilai. `ScenarioLoader` juga baru meneruskan `weight` ke graf, belum `capacity`.
+- Pipeline Python template sudah tersambung. `run_simulation` menjalankan Ford-Fulkerson dan keempat event skenario: max flow 1000, turun ke 600 saat Gasibu Atas tertutup, lalu ke 350 saat Jl. Singaperbangsa juga ditutup. `ScenarioLoader` masih hanya meneruskan `weight`, jadi `FordFulkerson` membaca kapasitas dari `visualizer/public/data/topology.json`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu.
 
 ## Struktur Repo
 
@@ -132,7 +132,9 @@ python -m scripts.run_benchmark    # ringkasan langkah dan waktu per skenario
 
 Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
 
-Untuk sekarang tiga tes loader lulus, tetapi `test_scenario_pipeline_contract` gagal dan `run_simulation` serta `run_benchmark` berhenti dengan `KeyError: Algorithm 'maxflow' tidak terdaftar di registry`. Penyebabnya ada di bagian Status di atas.
+Kelima tes lulus. `run_simulation` membuka jendela gambar graf matplotlib dan menunggu jendela itu ditutup. Untuk menjalankannya tanpa jendela, pakai `MPLBACKEND=Agg python -m scripts.run_simulation`.
+
+Trace visualizer dibuat ulang dengan `python -m algorithms.maxflow.ford_fulkerson`, yang menulis 44 trace dan `manifest.json` ke `visualizer/public/data/`. Setelah itu jalankan `bash graph/bangun_ff.sh`.
 
 ### Visualizer Ford-Fulkerson
 
