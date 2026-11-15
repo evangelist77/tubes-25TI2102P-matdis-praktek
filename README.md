@@ -55,7 +55,8 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 - **CCTV Pelindung Bandung**: 12 titik pantau (27 kamera) yang dipetakan ke simpul graf, daftarnya di bagian 7.1 `GRAPH_SPEC_LLM.md`. Stream HLS-nya direkam langsung dengan ffmpeg.
 - **Rekaman HP**: 6 simpang yang tidak punya CCTV direkam anggota pada Minggu 1 November 2026, sekitar 15 menit per titik.
 - **Program hitung kendaraan** (Python, YOLO dari Ultralytics, OpenCV, ByteTrack) ada di [`hitung-kendaraan/`](hitung-kendaraan/). Program ini merekam stream CCTV, mendeteksi dan melacak kendaraan, lalu menghitung kendaraan yang melewati garis di tiap ruas menurut arah dan kelasnya. Untuk rekaman HP yang dipegang tangan, garis hitung ikut bergeser bersama gambar. Rekap rekaman HP ada di [`hitung-kendaraan/hasil_hitung/hp_1nov/`](hitung-kendaraan/hasil_hitung/hp_1nov/), dan kolase rekaman yang sudah diproses ada di [youtu.be/rOYqXmBW57s](https://youtu.be/rOYqXmBW57s).
-- Rekaman yang dihitung untuk graf dijadwalkan Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB.
+- **CCTV Sabtu dan Minggu**: kamera direkam Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB, lalu dihitung dan dicek per kamera. Hasilnya ada di [`hitung-kendaraan/hasil_hitung/`](hitung-kendaraan/hasil_hitung/) (`cctv_14nov_sabtu/`, `cctv_15nov_minggu/`, dan `banding_cctv_sabtu_minggu.csv`), dan kolase rekaman Minggu ada di [youtu.be/KW-fCy3HZwM](https://youtu.be/KW-fCy3HZwM). Temuan utamanya, Jl. Gasibu Atas tertutup penuh tenda lapak saat pasar sehingga tidak ada kendaraan yang lewat. Jl. Ir. H. Djuanda di Minggu pagi juga ditutup, tapi karena Car Free Day.
+- Arus juga dihitung dalam skr/jam dengan ekr dari tabel PKJI sesuai tipe jalan tiap titik. Tabel dan sumbernya ada di bagian "ekr" [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md).
 
 ### Status
 
