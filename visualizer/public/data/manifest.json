@@ -1,5 +1,5 @@
 {
-  "observedAlpha": 0.5,
+  "observedAlpha": 1.0,
   "runs": [
     {
       "source": 1,
@@ -93,6 +93,15 @@
     },
     {
       "source": 1,
+      "sink": 3,
+      "sourceCode": "S1",
+      "sinkCode": "T1",
+      "alpha": 1.0,
+      "filename": "trace_S1_T1_a100.json",
+      "label": "S1 (Pasupati) → T1 (PUSDAI) · penyempitan 100%"
+    },
+    {
+      "source": 1,
       "sink": 4,
       "sourceCode": "S1",
       "sinkCode": "T2",
@@ -180,6 +189,15 @@
       "alpha": 0.9,
       "filename": "trace_S1_T2_a90.json",
       "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 90%"
+    },
+    {
+      "source": 1,
+      "sink": 4,
+      "sourceCode": "S1",
+      "sinkCode": "T2",
+      "alpha": 1.0,
+      "filename": "trace_S1_T2_a100.json",
+      "label": "S1 (Pasupati) → T2 (Diponegoro) · penyempitan 100%"
     },
     {
       "source": 2,
@@ -274,6 +292,15 @@
     },
     {
       "source": 2,
+      "sink": 3,
+      "sourceCode": "S2",
+      "sinkCode": "T1",
+      "alpha": 1.0,
+      "filename": "trace_S2_T1_a100.json",
+      "label": "S2 (Dipatiukur) → T1 (PUSDAI) · penyempitan 100%"
+    },
+    {
+      "source": 2,
       "sink": 4,
       "sourceCode": "S2",
       "sinkCode": "T2",
@@ -361,6 +388,15 @@
       "alpha": 0.9,
       "filename": "trace_S2_T2_a90.json",
       "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 90%"
+    },
+    {
+      "source": 2,
+      "sink": 4,
+      "sourceCode": "S2",
+      "sinkCode": "T2",
+      "alpha": 1.0,
+      "filename": "trace_S2_T2_a100.json",
+      "label": "S2 (Dipatiukur) → T2 (Diponegoro) · penyempitan 100%"
     }
   ]
 }
