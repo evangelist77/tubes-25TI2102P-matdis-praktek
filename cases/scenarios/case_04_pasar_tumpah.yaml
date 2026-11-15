@@ -241,25 +241,30 @@ execution_plan:
   goal_node: 27
   events:
     # ASUMSI: nilai new_capacity di bawah masih placeholder (penyempitan 50% lalu 25%). Ganti dengan hasil hitungan CCTV/survei.
+    # new_weight diisi sama dengan new_capacity karena runner template dosen meneruskan nilai event lewat new_weight.
     - step: 1
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
       new_capacity: 900.0
+      new_weight: 900.0
       description: "Pasar tumpah meluap di Jl. Gasibu Atas, kapasitas efektif ruas anjlok dari 1800 menjadi 900 kendaraan/jam (penyempitan 50%) [ASUMSI]."
     - step: 2
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [11, 12]
       new_capacity: 0.0
+      new_weight: 0.0
       description: "Pagi hari pasar: Jl. Singaperbangsa ditutup, kapasitas turun dari 250 menjadi 0 kendaraan/jam sehingga jalur utara menuju PUSDAI terputus (skenario A)."
     - step: 3
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [11, 12]
       new_capacity: 250.0
+      new_weight: 250.0
       description: "Sekitar pukul 11.00-12.00 Jl. Singaperbangsa dibuka kembali, kapasitas pulih dari 0 menjadi 250 kendaraan/jam (skenario B)."
     - step: 4
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
       new_capacity: 1350.0
+      new_weight: 1350.0
       description: "Pedagang mulai beres-beres, kapasitas Jl. Gasibu Atas pulih sebagian dari 900 menjadi 1350 kendaraan/jam (penyempitan 25%) [ASUMSI]."
 
 # CATATAN PERBAIKAN DARI GRAPH_SPEC_LLM.md (konfirmasi ke penyusun spec):
