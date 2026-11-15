@@ -82,8 +82,9 @@ class _ResidualEdge:
 class FordFulkerson(BaseGraphAlgorithm):
     """Implementasi Algoritma Ford-Fulkerson dengan varian Edmonds-Karp (BFS)."""
 
-    # Event dinamis maxflow menggunakan DYNAMIC_EDGE_CAPACITY, bukan new_weight pathfinding.
-    SUPPORTED_EVENT_TYPES: Optional[frozenset] = frozenset()
+    # Event dinamis maxflow menggunakan DYNAMIC_EDGE_CAPACITY. Runner template mengirim nilainya lewat new_weight,
+    # jadi new_weight di event dibaca sebagai kapasitas baru.
+    SUPPORTED_EVENT_TYPES: Optional[frozenset] = frozenset({"DYNAMIC_EDGE_CAPACITY"})
 
     def __init__(self, model: SpatialGraphModel):
         super().__init__(model)
@@ -94,6 +95,8 @@ class FordFulkerson(BaseGraphAlgorithm):
         self._last_pasar_active: bool = False
         self._last_trace_data: Optional[Dict[str, Any]] = None
         self._initial_augmenting_path: List[int] = []
+        # kapasitas hasil event dinamis, (u, v) -> kapasitas baru. Dipakai run() di atas kapasitas topology.json.
+        self._capacity_override: Dict[Tuple[int, int], float] = {}
 
     def _load_topology(self) -> Optional[Dict[str, Any]]:
         """Memuat topology.json jika tersedia untuk sinkronisasi metadata visualizer."""
@@ -174,7 +177,7 @@ class FordFulkerson(BaseGraphAlgorithm):
             eid = int(e["id"])
             u = int(e["from"])
             v = int(e["to"])
-            raw_c = float(e.get("capacity", 1.0))
+            raw_c = self._capacity_override.get((u, v), float(e.get("capacity", 1.0)))
             is_m = bool(e.get("isMarket", False) or (u, v) in MARKET_EDGES)
             is_c = bool(e.get("closedInMorning", False) or (u, v) in CLOSED_MORNING_EDGES)
 
@@ -398,6 +401,7 @@ class FordFulkerson(BaseGraphAlgorithm):
             u, v = int(target[0]), int(target[1])
             if self.graph.has_edge(u, v):
                 self.graph[u][v]["capacity"] = new_cap
+                self._capacity_override[(u, v)] = new_cap
                 self.log_step(
                     event_type="DYNAMIC_EDGE_CAPACITY",
                     state_mutations={
@@ -407,7 +411,7 @@ class FordFulkerson(BaseGraphAlgorithm):
                     },
                 )
 
-        return self.run(start, goal)
+        return self.run(start, goal, alpha=self._last_alpha)
 
     def export_visualizer_trace(self, output_dir: Optional[Path] = None) -> Path:
         """Menuliskan berkas trace JSON sesuai kontrak yang dibaca oleh visualizer Vue."""
