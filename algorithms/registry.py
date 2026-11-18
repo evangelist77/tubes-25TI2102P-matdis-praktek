@@ -17,6 +17,11 @@ class AlgorithmRegistry:
 
     @classmethod
     def resolve(cls, key: str) -> str:
+        if not cls._algorithms:
+            try:
+                import algorithms  # noqa: F401
+            except ImportError:
+                pass
         if key in cls._algorithms:
             return key
         if key in cls._aliases:
@@ -33,6 +38,11 @@ class AlgorithmRegistry:
 
     @classmethod
     def available(cls) -> List[str]:
+        if not cls._algorithms:
+            try:
+                import algorithms  # noqa: F401
+            except ImportError:
+                pass
         return sorted(cls._algorithms.keys())
 
 

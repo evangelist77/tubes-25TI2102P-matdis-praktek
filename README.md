@@ -4,14 +4,14 @@
 
 Setiap Minggu pagi pedagang pasar tumpah memakai badan jalan di sekitar Lapangan Gasibu dan Monumen Perjuangan (Monju), Bandung, sehingga lebar efektif jalan berkurang dan arus kendaraan tertahan. Kami memodelkan jaringan jalan kawasan itu sebagai graf berarah dengan dua titik masuk dan dua titik keluar, lalu memakai Ford-Fulkerson untuk menghitung arus maksimum (max flow) dan mencari ruas pembatasnya (min cut), saat tidak ada pasar maupun saat pasar berlangsung.
 
-Situs: **https://tubes-25ti2102p-matdis-praktek.vercel.app**
+Situs: **https://maxflow-gasibu.vercel.app**
 
 | Halaman | Isi |
 |:---|:---|
-| [`/`](https://tubes-25ti2102p-matdis-praktek.vercel.app) | Landing berisi cerita masalah, cara kerja max flow pada graf contoh, tim, dan kliping berita |
-| [`/graph/`](https://tubes-25ti2102p-matdis-praktek.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
-| [`/graph/cctv`](https://tubes-25ti2102p-matdis-praktek.vercel.app/graph/cctv) | CCTV dan Video: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
-| [`/graph/visualisasi`](https://tubes-25ti2102p-matdis-praktek.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
+| [`/`](https://maxflow-gasibu.vercel.app) | Landing berisi cerita masalah, cara kerja max flow pada graf contoh, tim, dan kliping berita |
+| [`/graph/`](https://maxflow-gasibu.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
+| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | CCTV dan Video: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
+| [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
 
 ## Identitas Kelompok
 
@@ -45,24 +45,25 @@ Untuk pipeline Python, [`cases/scenarios/case_04_pasar_tumpah.yaml`](cases/scena
 
 Sesuai catatan dosen, perhitungan dibagi dua.
 
-1. **Ford-Fulkerson per pasangan** (S1-T1, S1-T2, S2-T1, S2-T2). Lapak pedagang dimodelkan sebagai faktor penyempitan α di ruas pasar, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas pasar mulai menjadi pembatas. Kode awalnya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp).
+1. **Ford-Fulkerson per pasangan** (S1-T1, S1-T2, S2-T1, S2-T2). Lapak pedagang dimodelkan sebagai faktor penyempitan α di ruas pasar, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas pasar mulai menjadi pembatas. Kodenya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp). Kelas `FordFulkerson` terdaftar di `AlgorithmRegistry` sebagai `maxflow`, menerima event `DYNAMIC_EDGE_CAPACITY` dari skenario, dan menulis trace tiap langkah untuk keempat pasangan dengan α dari 0 sampai 100%. Nilai α hasil pengamatan adalah 100%, karena rekaman CCTV Minggu 15 November menunjukkan Jl. Gasibu Atas tertutup penuh lapak.
 2. **Iterative Ford-Fulkerson** untuk semua pasangan sekaligus. Tiap ruas nantinya menampilkan arus maksimal, total arus yang lewat, dan kapasitas efektifnya.
 
-Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScript, Tailwind, Leaflet) menggambar augmenting path, sisa kapasitas, bottleneck, residual graph, dan min cut langkah demi langkah di atas peta, lengkap dengan perbandingan tanpa pasar dan pasar penuh serta analisis sensitivitas α dari 0 sampai 90%. Hasil build-nya ada di `graph/ff/` dan dibuka dari halaman Visualisasi.
+Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScript, Tailwind, Leaflet) menggambar augmenting path, sisa kapasitas, bottleneck, residual graph, dan min cut langkah demi langkah di atas peta, lengkap dengan perbandingan tanpa pasar dan pasar penuh serta analisis sensitivitas α dari 0 sampai 100%. Trace-nya dihasilkan algoritma di atas. Hasil build-nya ada di `graph/ff/` dan dibuka dari halaman Visualisasi.
 
 ### Data arus kendaraan
 
 - **CCTV Pelindung Bandung**: 12 titik pantau (27 kamera) yang dipetakan ke simpul graf, daftarnya di bagian 7.1 `GRAPH_SPEC_LLM.md`. Stream HLS-nya direkam langsung dengan ffmpeg.
 - **Rekaman HP**: 6 simpang yang tidak punya CCTV direkam anggota pada Minggu 1 November 2026, sekitar 15 menit per titik.
 - **Program hitung kendaraan** (Python, YOLO dari Ultralytics, OpenCV, ByteTrack) ada di [`hitung-kendaraan/`](hitung-kendaraan/). Program ini merekam stream CCTV, mendeteksi dan melacak kendaraan, lalu menghitung kendaraan yang melewati garis di tiap ruas menurut arah dan kelasnya. Untuk rekaman HP yang dipegang tangan, garis hitung ikut bergeser bersama gambar. Rekap rekaman HP ada di [`hitung-kendaraan/hasil_hitung/hp_1nov/`](hitung-kendaraan/hasil_hitung/hp_1nov/), dan kolase rekaman yang sudah diproses ada di [youtu.be/rOYqXmBW57s](https://youtu.be/rOYqXmBW57s).
-- Rekaman yang dihitung untuk graf dijadwalkan Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB.
+- **CCTV Sabtu dan Minggu**: kamera direkam Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB, lalu dihitung dan dicek per kamera. Hasilnya ada di [`hitung-kendaraan/hasil_hitung/`](hitung-kendaraan/hasil_hitung/) (`cctv_14nov_sabtu/`, `cctv_15nov_minggu/`, dan `banding_cctv_sabtu_minggu.csv`), dan kolase rekaman Minggu ada di [youtu.be/KW-fCy3HZwM](https://youtu.be/KW-fCy3HZwM). Temuan utamanya, Jl. Gasibu Atas tertutup penuh tenda lapak saat pasar sehingga tidak ada kendaraan yang lewat. Jl. Ir. H. Djuanda di Minggu pagi juga ditutup, tapi karena Car Free Day.
+- Arus juga dihitung dalam skr/jam dengan ekr dari tabel PKJI sesuai tipe jalan tiap titik. Tabel dan sumbernya ada di bagian "ekr" [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md).
 
 ### Status
 
-- **Kapasitas belum final.** Belum ada data kapasitas kendaraan per jam yang terverifikasi untuk tiap ruas (lihat "Status data kapasitas" di bagian 3 `GRAPH_SPEC_LLM.md`). Lebar dan jumlah lajur tidak bisa langsung dianggap kapasitas. Angka kapasitas di YAML masih nilai relatif, dan trace di visualisasi Ford-Fulkerson masih contoh dari `visualizer/dev/sampleTrace.ts` dengan penyempitan pasar penuh 50% sebagai placeholder.
+- **Kapasitas belum final.** Belum ada data kapasitas kendaraan per jam yang terverifikasi untuk tiap ruas (lihat "Status data kapasitas" di bagian 3 `GRAPH_SPEC_LLM.md`). Lebar dan jumlah lajur tidak bisa langsung dianggap kapasitas. Angka kapasitas di YAML masih nilai relatif. Arus hasil hitung CCTV dan HP sudah tersedia per ruas, tapi belum dimasukkan sebagai kapasitas karena arus hanya batas bawah kapasitas dan tidak semua ruas terukur.
 - Program hitung mengukur arus, bukan kapasitas. Arus baru sama dengan kapasitas kalau di hulu ruas sedang ada antrean.
 - Algoritma Iterative Ford-Fulkerson dan visualisasinya sedang dikerjakan.
-- Pipeline Python template belum tersambung ke kasus ini. Kelas `FordFulkerson` belum didaftarkan ke `AlgorithmRegistry`, belum punya `handle_dynamic_event`, dan `run()` baru mengembalikan nilai max flow, padahal `SimulationRunner` menunggu pasangan rute dan nilai. `ScenarioLoader` juga baru meneruskan `weight` ke graf, belum `capacity`.
+- Pipeline Python template sudah tersambung. `run_simulation` menjalankan Ford-Fulkerson dan keempat event skenario: max flow 1000, turun ke 600 saat Gasibu Atas tertutup, lalu ke 350 saat Jl. Singaperbangsa juga ditutup. `ScenarioLoader` masih hanya meneruskan `weight`, jadi `FordFulkerson` membaca kapasitas dari `visualizer/public/data/topology.json`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu.
 
 ## Struktur Repo
 
@@ -80,14 +81,14 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 ├── config/settings.py          skenario dan algoritma default, folder output
 ├── core/                       model graf, runner simulasi, observer, gambar graf matplotlib
 ├── scripts/                    run_simulation.py dan run_benchmark.py
-├── tests/                      tes pytest untuk loader dan kontrak skenario
+├── tests/                      tes pytest untuk loader, kontrak skenario, dan event max flow
 ├── tracer/                     modul trace bawaan template, masih kosong
 ├── output/                     tempat trace JSON hasil runner
 ├── visualizer/                 aplikasi visualisasi Ford-Fulkerson (Vue 3 + Vite)
 ├── hitung-kendaraan/
 │   ├── video_counting/         rekam CCTV, kalibrasi garis, hitung, agregasi, validasi, beserta config dan tes
 │   ├── hasil_uji/              hasil uji CCTV 29 Oktober 2026 dan video demo
-│   └── hasil_hitung/           rekap kendaraan per jam dari rekaman HP 1 November 2026
+│   └── hasil_hitung/           rekap kendaraan per jam dari rekaman HP 1 November dan CCTV 14 dan 15 November 2026
 ├── graph/
 │   ├── index.html              Dashboard Peta, sekaligus sumber data GRAPH_DATA
 │   ├── cctv.html               halaman CCTV dan Video
@@ -131,7 +132,9 @@ python -m scripts.run_benchmark    # ringkasan langkah dan waktu per skenario
 
 Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
 
-Untuk sekarang tiga tes loader lulus, tetapi `test_scenario_pipeline_contract` gagal dan `run_simulation` serta `run_benchmark` berhenti dengan `KeyError: Algorithm 'maxflow' tidak terdaftar di registry`. Penyebabnya ada di bagian Status di atas.
+Kelima tes lulus. `run_simulation` membuka jendela gambar graf matplotlib dan menunggu jendela itu ditutup. Untuk menjalankannya tanpa jendela, pakai `MPLBACKEND=Agg python -m scripts.run_simulation`.
+
+Trace visualizer dibuat ulang dengan `python -m algorithms.maxflow.ford_fulkerson`, yang menulis 44 trace dan `manifest.json` ke `visualizer/public/data/`. Setelah itu jalankan `bash graph/bangun_ff.sh`.
 
 ### Visualizer Ford-Fulkerson
 
@@ -204,3 +207,4 @@ Tiap anggota mengerjakan bagiannya di branch sendiri (contohnya `alifah`), lalu 
 - [`GLOSSARY.md`](GLOSSARY.md): panduan bahasa untuk `action_narrative`
 - [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md): program hitung kendaraan, alur pengambilan data, dan hasil uji
 - [Kolase rekaman HP di YouTube](https://youtu.be/rOYqXmBW57s)
+- [Kolase rekaman CCTV Minggu 15 November di YouTube](https://youtu.be/KW-fCy3HZwM)

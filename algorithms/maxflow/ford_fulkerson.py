@@ -1,7 +1,14 @@
 from collections import deque
-from pathlib import Path
 import json
-from typing import Any, Dict, List, Optional, Tuple
+import math
+from pathlib import Path
+import sys
+from typing import Any, Dict, List, Optional, Set, Tuple
+
+# Pastikan root proyek masuk ke sys.path untuk eksekusi langsung
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 import networkx as nx
 
@@ -9,60 +16,44 @@ from core.base_algorithm import BaseGraphAlgorithm
 from core.graph_model import SpatialGraphModel
 
 
-# Pasangan source → sink yang dianalisis (node id dari YAML)
-PAIRS: List[Tuple[int, int]] = [
-    (1, 3),  # S1 → T1
-    (1, 4),  # S1 → T2
-    (2, 3),  # S2 → T1
-    (2, 4),  # S2 → T2
+# Direktori data visualizer Vue
+VISUALIZER_DATA_DIR = Path(__file__).resolve().parents[2] / "visualizer" / "public" / "data"
+TOPOLOGY_FILE = VISUALIZER_DATA_DIR / "topology.json"
+SCENARIO_YAML_FILE = (
+    Path(__file__).resolve().parents[2] / "cases" / "scenarios" / "case_04_pasar_tumpah.yaml"
+)
+
+# 4 Pasangan Terminal Utama (Source -> Sink)
+PAIRS: List[Dict[str, Any]] = [
+    {"source": 1, "sink": 3, "sCode": "S1", "tCode": "T1", "label": "S1 (Pasupati) → T1 (PUSDAI)"},
+    {"source": 1, "sink": 4, "sCode": "S1", "tCode": "T2", "label": "S1 (Pasupati) → T2 (Diponegoro)"},
+    {"source": 2, "sink": 3, "sCode": "S2", "tCode": "T1", "label": "S2 (Dipatiukur) → T1 (PUSDAI)"},
+    {"source": 2, "sink": 4, "sCode": "S2", "tCode": "T2", "label": "S2 (Dipatiukur) → T2 (Diponegoro)"},
 ]
 
-# Ruas pasar tumpah (edge Gasibu Barat → Gasibu Timur, node 24→25 di YAML)
-MARKET_EDGES: List[Tuple[int, int]] = [(24, 25)]
+# Alpha observasi empiris pasar penuh: rekaman CCTV Minggu 15 Nov 2026 07.30-08.00 menunjukkan Jl. Gasibu Atas tertutup
+# penuh tenda lapak (0 kendaraan lewat), jadi penyempitannya 100% (hitung-kendaraan/hasil_hitung/cctv_15nov_minggu)
+OBSERVED_ALPHA = 1.0
 
-# Ruas yang ditutup pagi hari pasar (Jl. Singaperbangsa, node 11→12 di YAML)
-CLOSED_MORNING_EDGES: List[Tuple[int, int]] = [(11, 12)]
-
-# Folder output trace yang dibaca visualiser Vue
-VISUALIZER_DATA_DIR = Path(__file__).resolve().parents[2] / "visualizer" / "public" / "data"
-
-# Node virtual (S*=0, T*=27) tidak disertakan dalam run per-pasangan S→T.
-# Edge yang menghubungkan node virtual dibuang saat membangun residual graph,
-# sehingga validateTrace tidak gagal karena "konservasi aliran di S* / T*".
-_VIRTUAL_NODES = frozenset({0, 27})   # id S* dan T* di YAML
-
-
-def _load_topology_edge_map() -> Dict[Tuple[int, int], int]:
-    """Baca topology.json dan kembalikan peta (from, to) → edge.id.
-
-    Peta ini dipakai agar edge-id di trace sesuai dengan yang diharapkan
-    oleh visualiser Vue (validateTrace memakai topology.edges[i].id sebagai key).
-    Mengembalikan dict kosong jika topology.json belum ada.
-    """
-    topo_path = VISUALIZER_DATA_DIR / "topology.json"
-    if not topo_path.exists():
-        return {}
-    try:
-        data = json.loads(topo_path.read_text(encoding="utf-8"))
-        return {(e["from"], e["to"]): e["id"] for e in data.get("edges", [])}
-    except Exception:
-        return {}
+# Simpul dan busur khusus
+MARKET_EDGES: Set[Tuple[int, int]] = {(24, 25)}  # Jl. Gasibu Atas
+CLOSED_MORNING_EDGES: Set[Tuple[int, int]] = {(11, 12)}  # Jl. Singaperbangsa
+VIRTUAL_NODES: Set[int] = {0, 27}  # S* dan T*
 
 
 class FlowResult(float):
     """Wrapper float yang juga bisa di-unpack sebagai (path, max_flow).
 
-    Dibutuhkan untuk kompatibilitas dengan pipeline template dosen (SimulationRunner
-    dan pytest test_scenario_pipeline_contract) yang mengharapkan:
-        path, cost = solver.run(start, goal)
-    sekaligus tetap bertindak sebagai float murni untuk script visualizer:
-        flow = solver.run(start, goal)
+    Memenuhi kebutuhan ganda:
+    - Kontrak template dosen: `path, cost = solver.run(start, goal)`
+    - Script visualizer & analisis: `flow = solver.run(start, goal)`
     """
 
     def __new__(cls, value: float, path: Optional[List[int]] = None):
         instance = super().__new__(cls, value)
         instance.path = path or []
         instance.cost = float(value)
+        instance.max_flow = float(value)
         return instance
 
     def __iter__(self):
@@ -70,394 +61,478 @@ class FlowResult(float):
         yield float(self)
 
 
+class _ResidualEdge:
+    __slots__ = ("to", "capacity", "flow", "edge_id", "is_reverse", "rev_index")
+
+    def __init__(
+        self,
+        to: int,
+        capacity: float,
+        edge_id: int,
+        is_reverse: bool,
+        rev_index: int,
+    ):
+        self.to = to
+        self.capacity = capacity
+        self.flow = 0.0
+        self.edge_id = edge_id
+        self.is_reverse = is_reverse
+        self.rev_index = rev_index
+
+
 class FordFulkerson(BaseGraphAlgorithm):
-    """Algoritma Maximum Flow (Edmonds-Karp / BFS).
+    """Implementasi Algoritma Ford-Fulkerson dengan varian Edmonds-Karp (BFS)."""
 
-    Selain mengembalikan nilai max-flow, kelas ini mencatat:
-    - edgeFlows  : arus tiap ruas (edge) setelah setiap langkah augmentasi
-    - effectiveCapacity : kapasitas efektif tiap ruas pada run ini (sudah memperhitungkan α)
-
-    Setelah run() selesai, panggil export_visualizer_trace() untuk menulis
-    berkas trace_<src>_<sink>_a<alpha*100>.json yang dibaca oleh visualiser.
-    """
-
-    # Template dosen menguji event berformat pathfinding (new_weight).
-    # Diset frozenset() agar event dinamis khusus maxflow (DYNAMIC_EDGE_CAPACITY)
-    # tidak bentrok dengan parser new_weight bawaan template.
-    SUPPORTED_EVENT_TYPES = frozenset()
+    # Event dinamis maxflow menggunakan DYNAMIC_EDGE_CAPACITY. Runner template mengirim nilainya lewat new_weight,
+    # jadi new_weight di event dibaca sebagai kapasitas baru.
+    SUPPORTED_EVENT_TYPES: Optional[frozenset] = frozenset({"DYNAMIC_EDGE_CAPACITY"})
 
     def __init__(self, model: SpatialGraphModel):
         super().__init__(model)
-        self.residual = nx.DiGraph()
-        # Peta (from, to) → edge.id sesuai topology.json (sumber kebenaran untuk validateTrace)
-        self._topo_edge_map: Dict[Tuple[int, int], int] = _load_topology_edge_map()
-        # State yang diisi oleh run()
-        self._edge_flows: Dict[str, int] = {}   # "u-v" → flow akhir
-        self._eff_cap: Dict[str, float] = {}    # "u-v" → kapasitas efektif
-        self._steps_visualizer: List[Dict] = [] # format kontrak visualiser
-        self._max_flow: float = 0.0
-        self._source: Optional[int] = None
-        self._sink: Optional[int] = None
-        self._alpha: float = 0.0
-        self._pasar_active: bool = False
+        self.topology: Optional[Dict[str, Any]] = self._load_topology()
+        self._last_source: Optional[int] = None
+        self._last_sink: Optional[int] = None
+        self._last_alpha: float = 0.0
+        self._last_pasar_active: bool = False
+        self._last_trace_data: Optional[Dict[str, Any]] = None
+        self._initial_augmenting_path: List[int] = []
+        # kapasitas hasil event dinamis, (u, v) -> kapasitas baru. Dipakai run() di atas kapasitas topology.json.
+        self._capacity_override: Dict[Tuple[int, int], float] = {}
 
-    # ------------------------------------------------------------------
-    # Helper: konversi edge (u,v) ke string key dan id edge dari topology.json
-    # ------------------------------------------------------------------
-    def _ekey(self, u: int, v: int) -> str:
-        return f"{u}-{v}"
+    def _load_topology(self) -> Optional[Dict[str, Any]]:
+        """Memuat topology.json jika tersedia untuk sinkronisasi metadata visualizer."""
+        if TOPOLOGY_FILE.exists():
+            try:
+                with open(TOPOLOGY_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return None
 
-    def _edge_id(self, u: int, v: int) -> int:
-        """Kembalikan id edge sesuai topology.json (yang dibaca validateTrace).
+    def _get_effective_capacity(
+        self,
+        edge_id: int,
+        u: int,
+        v: int,
+        raw_cap: float,
+        alpha: float,
+        is_market: bool,
+        closed_in_morning: bool,
+    ) -> float:
+        """Menghitung kapasitas efektif setelah dipengaruhi faktor penyempitan alpha dan penutupan pagi."""
+        cap = float(raw_cap)
+        pasar_active = alpha > 0.0
 
-        Prioritas:
-        1. Peta dari topology.json (dibangun sekali di __init__ atau run()).
-        2. Fallback: urutan edge non-virtual di YAML (mulai 0).
-        """
-        topo_id = self._topo_edge_map.get((u, v))
-        if topo_id is not None:
-            return topo_id
-        # Fallback: hitung posisi urut edge non-virtual
-        idx = 0
-        for eu, ev, _ in self.graph.edges(data=True):
-            if eu in _VIRTUAL_NODES or ev in _VIRTUAL_NODES:
-                continue
-            if eu == u and ev == v:
-                return idx
-            idx += 1
-        return -1
+        if is_market:
+            cap = float(round(raw_cap * (1.0 - alpha)))
 
-    # ------------------------------------------------------------------
-    # BFS untuk mencari augmenting path
-    # ------------------------------------------------------------------
-    def _bfs(self, source: int, sink: int, parent: Dict) -> bool:
-        visited = {source}
-        queue = deque([source])
-        while queue:
-            u = queue.popleft()
-            for v in self.residual.neighbors(u):
-                cap = self.residual[u][v].get("capacity", 0.0)
-                if v not in visited and cap > 0:
-                    queue.append(v)
-                    visited.add(v)
-                    parent[v] = u
-                    if v == sink:
-                        return True
-        return False
+        if closed_in_morning and pasar_active:
+            cap = 0.0
 
-    # ------------------------------------------------------------------
-    # Min-cut: sisi S adalah semua node yang masih terjangkau dari source
-    # di residual graph setelah flow maksimum tercapai
-    # ------------------------------------------------------------------
-    def _find_min_cut(self, source: int) -> Tuple[List[int], List[int]]:
-        visited = set()
-        queue = deque([source])
-        while queue:
-            u = queue.popleft()
-            if u in visited:
-                continue
-            visited.add(u)
-            for v in self.residual.neighbors(u):
-                cap = self.residual[u][v].get("capacity", 0.0)
-                if v not in visited and cap > 0:
-                    queue.append(v)
-        source_side = sorted(visited)
-        all_nodes = set(self.residual.nodes())
-        sink_side = sorted(all_nodes - visited)
-        return source_side, sink_side
+        return max(0.0, cap)
 
-    def _build_min_cut_edges(self, source_side: List[int]) -> List[int]:
-        """Kembalikan daftar indeks edge yang menyeberangi potongan min-cut."""
-        source_set = set(source_side)
-        cut = []
-        for idx, (u, v, _) in enumerate(self.graph.edges(data=True)):
-            if u in source_set and v not in source_set:
-                cut.append(idx)
-        return cut
+    def run(
+        self,
+        start_node: int,
+        goal_node: int,
+        alpha: float = 0.0,
+        **kwargs,
+    ) -> FlowResult:
+        """Menghitung Maximum Flow dari start_node ke goal_node menggunakan BFS Edmonds-Karp."""
+        self._last_source = start_node
+        self._last_sink = goal_node
+        self._last_alpha = alpha
+        self._last_pasar_active = alpha > 0.0
 
-    # ------------------------------------------------------------------
-    # run(): jalankan Ford-Fulkerson untuk satu pasangan (source, sink)
-    # ------------------------------------------------------------------
-    def run(self, source_node: int, sink_node: int, alpha: float = 0.0) -> float:
-        """Jalankan Ford-Fulkerson (Edmonds-Karp) dan catat trace visualiser.
+        # Ambil metadata nodes & edges dari topology.json atau fallback ke self.graph
+        topo_nodes = (
+            self.topology.get("nodes", [])
+            if self.topology
+            else [{"id": n, "code": str(n), "label": str(n)} for n in self.graph.nodes()]
+        )
+        topo_edges = self.topology.get("edges", []) if self.topology else []
 
-        Args:
-            source_node: id node sumber (mis. 1 untuk S1, 2 untuk S2).
-            sink_node  : id node tujuan (mis. 3 untuk T1, 4 untuk T2).
-            alpha      : faktor penyempitan pasar (0.0 = tanpa pasar, 0.5 = 50%).
+        # Peta node id -> info
+        node_code_map = {n["id"]: n.get("code", f"V{n['id']}") for n in topo_nodes}
 
-        Returns:
-            Nilai max-flow (float).
-        """
-        self._source = source_node
-        self._sink = sink_node
-        self._alpha = alpha
-        self._pasar_active = alpha > 0.0
-        self._steps_visualizer = []
-        self._edge_flows = {}
-        self._eff_cap = {}
+        # Bangun daftar edge dengan id unik
+        edges_spec: List[Dict[str, Any]] = []
+        if topo_edges:
+            edges_spec = topo_edges
+        else:
+            for idx, (u, v, data) in enumerate(self.graph.edges(data=True)):
+                edges_spec.append({
+                    "id": idx,
+                    "from": u,
+                    "to": v,
+                    "capacity": float(data.get("capacity", data.get("weight", 1.0))),
+                    "road": f"Ruas {u} ke {v}",
+                    "isMarket": (u, v) in MARKET_EDGES,
+                    "closedInMorning": (u, v) in CLOSED_MORNING_EDGES,
+                    "isVirtual": u in VIRTUAL_NODES or v in VIRTUAL_NODES,
+                })
 
-        # --- Bangun residual graph dengan kapasitas efektif ---
-        self.residual.clear()
-        self.residual.add_nodes_from(self.graph.nodes())
+        # Hitung effectiveCapacity per edge
+        effective_capacity: Dict[int, float] = {}
+        for e in edges_spec:
+            eid = int(e["id"])
+            u = int(e["from"])
+            v = int(e["to"])
+            raw_c = self._capacity_override.get((u, v), float(e.get("capacity", 1.0)))
+            is_m = bool(e.get("isMarket", False) or (u, v) in MARKET_EDGES)
+            is_c = bool(e.get("closedInMorning", False) or (u, v) in CLOSED_MORNING_EDGES)
 
-        filter_virtual = (source_node not in _VIRTUAL_NODES and sink_node not in _VIRTUAL_NODES)
+            eff_c = self._get_effective_capacity(
+                eid, u, v, raw_c, alpha, is_m, is_c
+            )
+            effective_capacity[eid] = eff_c
 
-        for u, v, data in self.graph.edges(data=True):
-            # Lewati edge virtual (S* dan T*) jika sedang run per-pasangan
-            if filter_virtual and (u in _VIRTUAL_NODES or v in _VIRTUAL_NODES):
-                continue
-            base_cap = float(data.get("capacity", data.get("weight", 1.0)))
-            # Terapkan penyempitan α pada ruas pasar; bila pasar aktif tutup juga ruas pagi
-            if self._pasar_active and (u, v) in MARKET_EDGES:
-                eff_cap = base_cap * (1.0 - alpha)
-            elif self._pasar_active and (u, v) in CLOSED_MORNING_EDGES:
-                eff_cap = 0.0
-            else:
-                eff_cap = base_cap
+        # Bangun graf residual
+        # adj: node_id -> list of _ResidualEdge
+        adj: Dict[int, List[_ResidualEdge]] = {}
+        all_node_ids = {n["id"] for n in topo_nodes}
+        all_node_ids.update(self.graph.nodes())
+        all_node_ids.add(start_node)
+        all_node_ids.add(goal_node)
 
-            self._eff_cap[self._ekey(u, v)] = eff_cap
-            self.residual.add_edge(u, v, capacity=eff_cap)
-            if not self.residual.has_edge(v, u):
-                self.residual.add_edge(v, u, capacity=0.0)
+        for nid in all_node_ids:
+            adj[nid] = []
 
-        # Inisialisasi arus semua edge ke 0
-        for u, v, _ in self.graph.edges(data=True):
-            if filter_virtual and (u in _VIRTUAL_NODES or v in _VIRTUAL_NODES):
-                continue
-            self._edge_flows[self._ekey(u, v)] = 0.0
+        for e in edges_spec:
+            eid = int(e["id"])
+            u = int(e["from"])
+            v = int(e["to"])
+            cap = effective_capacity.get(eid, 0.0)
 
-        max_flow = 0.0
-        parent: Dict = {}
-        step_no = 0
-        first_path: List[int] = []
+            from_list = adj.setdefault(u, [])
+            to_list = adj.setdefault(v, [])
+
+            fwd_idx = len(from_list)
+            rev_idx = len(to_list)
+
+            from_list.append(_ResidualEdge(to=v, capacity=cap, edge_id=eid, is_reverse=False, rev_index=rev_idx))
+            to_list.append(_ResidualEdge(to=u, capacity=0.0, edge_id=eid, is_reverse=True, rev_index=fwd_idx))
+
+        steps: List[Dict[str, Any]] = []
+        total_flow = 0.0
+        step_index = 0
+        self._initial_augmenting_path = []
 
         self.log_step(
             event_type="INITIALIZATION",
             state_mutations={
-                "source": source_node,
-                "sink": sink_node,
+                "source": start_node,
+                "sink": goal_node,
                 "alpha": alpha,
-                "pasar_active": self._pasar_active,
                 "max_flow": 0.0,
             },
         )
 
-        while self._bfs(source_node, sink_node, parent):
-            # --- Cari bottleneck ---
-            path_flow = float("inf")
-            s = sink_node
-            while s != source_node:
-                path_flow = min(path_flow, self.residual[parent[s]][s]["capacity"])
-                s = parent[s]
+        # Edmonds-Karp BFS loop
+        while True:
+            # parent: child -> (parent_node, edge_index_in_parent_list)
+            parent: Dict[int, Tuple[int, int]] = {}
+            visited: Set[int] = {start_node}
+            queue = deque([start_node])
 
-            # --- Rekonstruksi jalur (node) ---
-            s = sink_node
-            path_nodes: List[int] = []
-            while s != source_node:
-                path_nodes.append(s)
-                s = parent[s]
-            path_nodes.append(source_node)
-            path_nodes.reverse()
+            while queue:
+                u = queue.popleft()
+                if u == goal_node:
+                    break
+                for idx, redge in enumerate(adj.get(u, [])):
+                    res_cap = redge.capacity - redge.flow
+                    if res_cap > 1e-9 and redge.to not in visited:
+                        visited.add(redge.to)
+                        parent[redge.to] = (u, idx)
+                        queue.append(redge.to)
 
-            if not first_path:
-                first_path = list(path_nodes)
+            if goal_node not in parent:
+                # Tidak ada lagi augmenting path
+                break
 
-            # --- Edge id (dari topology) pada augmenting path ---
+            # Hitung bottleneck
+            bottleneck = float("inf")
+            curr = goal_node
+            path_node_ids: List[int] = []
             path_edge_ids: List[int] = []
-            for i in range(len(path_nodes) - 1):
-                u, v = path_nodes[i], path_nodes[i + 1]
-                path_edge_ids.append(self._edge_id(u, v))
 
-            # --- Update residual dan catat arus ---
-            v = sink_node
-            while v != source_node:
-                u = parent[v]
-                self.residual[u][v]["capacity"] -= path_flow
-                self.residual[v][u]["capacity"] += path_flow
-                # Catat arus (hanya edge arah maju yang ada di graph asli)
-                key = self._ekey(u, v)
-                if key in self._edge_flows:
-                    self._edge_flows[key] += path_flow
-                v = parent[v]
+            while curr != start_node:
+                path_node_ids.append(curr)
+                p_node, edge_idx = parent[curr]
+                redge = adj[p_node][edge_idx]
+                bottleneck = min(bottleneck, redge.capacity - redge.flow)
+                curr = p_node
 
-            max_flow += path_flow
-            step_no += 1
+            path_node_ids.append(start_node)
+            path_node_ids.reverse()
 
-            # --- Simpan step ke format kontrak visualiser ---
-            # edgeFlows key = topology edge.id (integer, disimpan sebagai string di JSON)
-            edge_flows_by_id: Dict[str, float] = {}
-            for eu, ev, _ in self.graph.edges(data=True):
-                if eu in _VIRTUAL_NODES or ev in _VIRTUAL_NODES:
-                    continue
-                eid = self._edge_id(eu, ev)
-                edge_flows_by_id[str(eid)] = self._edge_flows.get(self._ekey(eu, ev), 0.0)
+            if not self._initial_augmenting_path:
+                self._initial_augmenting_path = list(path_node_ids)
 
-            self._steps_visualizer.append({
-                "step": step_no,
+            # Augmentasikan aliran
+            curr = goal_node
+            while curr != start_node:
+                p_node, edge_idx = parent[curr]
+                fwd = adj[p_node][edge_idx]
+                bwd = adj[fwd.to][fwd.rev_index]
+
+                fwd.flow += bottleneck
+                bwd.flow -= bottleneck
+
+                if not fwd.is_reverse:
+                    path_edge_ids.append(fwd.edge_id)
+                curr = p_node
+
+            path_edge_ids.reverse()
+            total_flow += bottleneck
+            step_index += 1
+
+            # Catat arus per edge
+            current_edge_flows: Dict[int, float] = {}
+            for e in edges_spec:
+                eid = int(e["id"])
+                u = int(e["from"])
+                f_edge = next((x for x in adj.get(u, []) if x.edge_id == eid and not x.is_reverse), None)
+                current_edge_flows[eid] = max(0.0, f_edge.flow if f_edge else 0.0)
+
+            # Buat narrative komunikatif
+            road_names = []
+            for peid in path_edge_ids:
+                matching_e = next((x for x in edges_spec if int(x["id"]) == peid), None)
+                road_names.append(matching_e.get("road", f"Ruas #{peid}") if matching_e else f"Ruas #{peid}")
+
+            path_roads_str = " → ".join(road_names) if road_names else "jalur langsung"
+            s_code = node_code_map.get(start_node, str(start_node))
+            t_code = node_code_map.get(goal_node, str(goal_node))
+            prev_total = total_flow - bottleneck
+
+            narrative = (
+                f"Langkah {step_index}: ditemukan jalur dari {s_code} ke {t_code} lewat {path_roads_str}. "
+                f"Ruas paling sempit menyisakan {bottleneck:.1f} kend/jam, sehingga dialirkan {bottleneck:.1f} kend/jam. "
+                f"Total arus {prev_total:.1f} + {bottleneck:.1f} = {total_flow:.1f} kend/jam."
+            )
+
+            steps.append({
+                "step": step_index,
                 "path": path_edge_ids,
-                "bottleneck": path_flow,
-                "totalFlow": max_flow,
-                "edgeFlows": edge_flows_by_id,
+                "bottleneck": round(bottleneck, 2),
+                "totalFlow": round(total_flow, 2),
+                "edgeFlows": {k: round(v, 2) for k, v in current_edge_flows.items()},
+                "narrative": narrative,
             })
 
             self.log_step(
                 event_type="AUGMENTING_PATH_FOUND",
                 state_mutations={
-                    "path_nodes": path_nodes,
-                    "path_edge_ids": path_edge_ids,
-                    "flow_added": path_flow,
-                    "current_max_flow": max_flow,
+                    "step": step_index,
+                    "path": path_node_ids,
+                    "bottleneck": bottleneck,
+                    "total_flow": total_flow,
                 },
             )
 
-        self._max_flow = max_flow
+        # Hitung Min-Cut (himpunan simpul yang dapat dijangkau dari start_node pada residual graph)
+        source_side_set: Set[int] = {start_node}
+        q_cut = deque([start_node])
 
-        # Log hasil akhir
-        source_side, sink_side = self._find_min_cut(source_node)
-        min_cut_edges = self._build_min_cut_edges(source_side)
+        while q_cut:
+            u = q_cut.popleft()
+            for redge in adj.get(u, []):
+                if (redge.capacity - redge.flow) > 1e-9 and redge.to not in source_side_set:
+                    source_side_set.add(redge.to)
+                    q_cut.append(redge.to)
+
+        min_cut_edges: List[int] = []
+        for e in edges_spec:
+            eid = int(e["id"])
+            u = int(e["from"])
+            v = int(e["to"])
+            if u in source_side_set and v not in source_side_set:
+                min_cut_edges.append(eid)
+
+        # Susun struktur trace final
+        case_id = (
+            self.topology.get("case_id", "case_04_pasar_tumpah")
+            if self.topology
+            else "case_04_pasar_tumpah"
+        )
+        self._last_trace_data = {
+            "meta": {
+                "caseId": case_id,
+                "source": start_node,
+                "sink": goal_node,
+                "alpha": round(alpha, 2),
+                "pasarActive": self._last_pasar_active,
+            },
+            "effectiveCapacity": {str(k): round(v, 2) for k, v in effective_capacity.items()},
+            "steps": steps,
+            "result": {
+                "maxFlow": round(total_flow, 2),
+                "minCut": sorted(min_cut_edges),
+                "sourceSide": sorted(list(source_side_set)),
+            },
+        }
+
         self.log_step(
-            event_type="MAX_FLOW_FOUND",
+            event_type="MAX_FLOW_REACHED",
             state_mutations={
-                "max_flow": max_flow,
-                "min_cut_edges": min_cut_edges,
-                "source_side": source_side,
+                "max_flow": total_flow,
+                "min_cut": min_cut_edges,
+                "source_side": sorted(list(source_side_set)),
             },
         )
 
-        representative_path = first_path or [source_node, sink_node]
-        return FlowResult(max_flow, path=representative_path)
+        # Rute representatif untuk kontrak test dosen
+        representative_path = (
+            self._initial_augmenting_path
+            if self._initial_augmenting_path
+            else [start_node, goal_node]
+        )
 
-    # ------------------------------------------------------------------
-    # handle_dynamic_event(): dipanggil oleh SimulationRunner saat ada event
-    # ------------------------------------------------------------------
-    def handle_dynamic_event(self, event_data: Dict[str, Any]) -> None:
-        """Tangani perubahan kapasitas edge secara dinamis.
+        return FlowResult(total_flow, path=representative_path)
 
-        Event yang didukung:
-        - DYNAMIC_EDGE_CAPACITY: ubah kapasitas edge di graph model.
-        """
-        event_type = event_data.get("type", "")
-        if event_type == "DYNAMIC_EDGE_CAPACITY":
-            target = event_data.get("target_edge", [])
-            new_cap = float(event_data.get("new_capacity", 0.0))
-            if len(target) == 2:
-                u, v = int(target[0]), int(target[1])
-                if self.graph.has_edge(u, v):
-                    self.graph[u][v]["capacity"] = new_cap
-                    self.log_step(
-                        event_type="DYNAMIC_EDGE_CAPACITY",
-                        state_mutations={
-                            "edge": [u, v],
-                            "new_capacity": new_cap,
-                            "description": event_data.get("description", ""),
-                        },
-                    )
+    def handle_dynamic_event(self, event_data: Dict[str, Any]) -> FlowResult:
+        """Menangani pembaruan kapasitas dinamis (DYNAMIC_EDGE_CAPACITY)."""
+        target = event_data.get("edge") or event_data.get("target_edge")
+        new_cap = float(event_data.get("new_capacity", event_data.get("new_weight", 0.0)))
+        start = event_data.get("start", self._last_source or 0)
+        goal = event_data.get("goal", self._last_sink or 27)
 
-    # ------------------------------------------------------------------
-    # export_visualizer_trace(): tulis JSON ke visualizer/public/data/
-    # ------------------------------------------------------------------
-    def export_visualizer_trace(
-        self,
-        output_dir: Optional[Path] = None,
-    ) -> Path:
-        """Tulis trace JSON dengan format kontrak visualiser Vue.
+        if target and len(target) == 2:
+            u, v = int(target[0]), int(target[1])
+            if self.graph.has_edge(u, v):
+                self.graph[u][v]["capacity"] = new_cap
+                self._capacity_override[(u, v)] = new_cap
+                self.log_step(
+                    event_type="DYNAMIC_EDGE_CAPACITY",
+                    state_mutations={
+                        "edge": [u, v],
+                        "new_capacity": new_cap,
+                        "description": event_data.get("description", ""),
+                    },
+                )
 
-        File ditulis ke:  trace_S<src>_T<sink>_a<alpha*100>.json
-        (mis.  trace_S1_T1_a0.json  atau  trace_S1_T2_a50.json)
+        return self.run(start, goal, alpha=self._last_alpha)
 
-        Returns:
-            Path berkas yang ditulis.
-        """
-        if self._source is None or self._sink is None:
-            raise RuntimeError("Jalankan run() terlebih dahulu sebelum export_visualizer_trace().")
+    def export_visualizer_trace(self, output_dir: Optional[Path] = None) -> Path:
+        """Menuliskan berkas trace JSON sesuai kontrak yang dibaca oleh visualizer Vue."""
+        if not self._last_trace_data:
+            raise RuntimeError("Eksekusi solver.run() terlebih dahulu sebelum export trace.")
 
         out_dir = output_dir or VISUALIZER_DATA_DIR
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        # Konversi node id ke label pendek (mis. 1 → "S1", 3 → "T1")
-        _label = {1: "S1", 2: "S2", 3: "T1", 4: "T2"}
-        src_label = _label.get(self._source, str(self._source))
-        sink_label = _label.get(self._sink, str(self._sink))
-        alpha_int = int(round(self._alpha * 100))
-        filename = f"trace_{src_label}_{sink_label}_a{alpha_int}.json"
+        label_map = {1: "S1", 2: "S2", 3: "T1", 4: "T2"}
+        s_code = label_map.get(self._last_source, f"N{self._last_source}")
+        t_code = label_map.get(self._last_sink, f"N{self._last_sink}")
+        alpha_int = int(round(self._last_alpha * 100))
 
-        # effectiveCapacity menggunakan indeks edge sebagai key (string).
-        # Edge virtual (S* / T*) dihilangkan — indeks dihitung ulang tanpa mereka.
-        eff_cap_by_idx: Dict[str, float] = {}
-        real_idx = 0
-        for u, v, _ in self.graph.edges(data=True):
-            if u in _VIRTUAL_NODES or v in _VIRTUAL_NODES:
-                continue
-            eff_cap_by_idx[str(real_idx)] = self._eff_cap.get(self._ekey(u, v), 0.0)
-            real_idx += 1
-
-        # Min-cut dari state residual terakhir
-        source_side, _ = self._find_min_cut(self._source)
-        min_cut_edges = self._build_min_cut_edges(source_side)
-
-        trace = {
-            "meta": {
-                "caseId": "case_04_pasar_tumpah",
-                "source": self._source,
-                "sink": self._sink,
-                "alpha": self._alpha,
-                "pasarActive": self._pasar_active,
-            },
-            "effectiveCapacity": eff_cap_by_idx,
-            "steps": self._steps_visualizer,
-            "result": {
-                "maxFlow": self._max_flow,
-                "minCut": min_cut_edges,
-                "sourceSide": source_side,
-            },
-        }
-
+        filename = f"trace_{s_code}_{t_code}_a{alpha_int}.json"
         out_path = out_dir / filename
-        with open(out_path, "w", encoding="utf-8") as f:
-            json.dump(trace, f, indent=2, ensure_ascii=False)
 
-        print(f"[FordFulkerson] Trace ditulis → {out_path}")
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(self._last_trace_data, f, indent=2, ensure_ascii=False)
+
         return out_path
 
-    # ------------------------------------------------------------------
-    # run_all_pairs(): helper untuk menjalankan semua 4 pasangan × 2 α
-    # ------------------------------------------------------------------
-    @classmethod
-    def run_all_pairs(
-        cls,
-        model: SpatialGraphModel,
-        alphas: Optional[List[float]] = None,
-        output_dir: Optional[Path] = None,
-    ) -> List[Path]:
-        """Jalankan Ford-Fulkerson untuk semua pasangan S-T dan nilai α.
 
-        Default alphas: [0.0, 0.5]  (tanpa pasar, pasar penuh 50%)
+def generate_all_traces(
+    model: SpatialGraphModel,
+    output_dir: Optional[Path] = None,
+    alphas: Optional[List[float]] = None,
+) -> Tuple[List[Path], Path]:
+    """Menghasilkan seluruh 44 kombinasi trace (4 pasangan x 11 nilai alpha) dan manifest.json."""
+    out_dir = output_dir or VISUALIZER_DATA_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-        Returns:
-            Daftar path berkas trace yang dihasilkan.
-        """
-        if alphas is None:
-            alphas = [0.0, 0.5]
+    if alphas is None:
+        alphas = [round(k * 0.1, 1) for k in range(11)]  # 0.0, 0.1, ..., 1.0 (1.0 = observasi CCTV)
 
-        written: List[Path] = []
-        for src, sink in PAIRS:
-            for alpha in alphas:
-                solver = cls(model)
-                flow = solver.run(src, sink, alpha=alpha)
-                _label = {1: "S1", 2: "S2", 3: "T1", 4: "T2"}
-                print(
-                    f"[FordFulkerson] {_label[src]}→{_label[sink]}"
-                    f"  α={alpha:.0%}  max-flow={flow:.1f}"
-                )
-                path = solver.export_visualizer_trace(output_dir=output_dir)
-                written.append(path)
-        return written
+    manifest_entries: List[Dict[str, Any]] = []
+    step_counts: Dict[str, int] = {}
+    written_files: List[Path] = []
+
+    for pair in PAIRS:
+        s = pair["source"]
+        t = pair["sink"]
+        s_code = pair["sCode"]
+        t_code = pair["tCode"]
+        label = pair["label"]
+
+        for alpha in alphas:
+            solver = FordFulkerson(model)
+            solver.run(s, t, alpha=alpha)
+            trace_path = solver.export_visualizer_trace(output_dir=out_dir)
+            written_files.append(trace_path)
+
+            alpha_int = int(round(alpha * 100))
+            fn = trace_path.name
+            step_count = len(solver._last_trace_data.get("steps", []))
+            step_counts[fn] = step_count
+
+            manifest_entries.append({
+                "source": s,
+                "sink": t,
+                "sourceCode": s_code,
+                "sinkCode": t_code,
+                "alpha": alpha,
+                "filename": fn,
+                "label": f"{label} · penyempitan {alpha_int}%",
+            })
+
+    # Tentukan default run (memilih run kondisi data-backed dengan langkah terbanyak)
+    data_backed = [m for m in manifest_entries if math.isclose(m["alpha"], 0.0) or math.isclose(m["alpha"], OBSERVED_ALPHA)]
+    if data_backed:
+        best_entry = max(data_backed, key=lambda m: step_counts.get(m["filename"], 0))
+        best_entry["isDefault"] = True
+
+    manifest_data = {
+        "observedAlpha": OBSERVED_ALPHA,
+        "runs": manifest_entries,
+    }
+    manifest_path = out_dir / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest_data, f, indent=2, ensure_ascii=False)
+
+    return written_files, manifest_path
 
 
-# Registrasi otomatis algoritma ke AlgorithmRegistry template dosen
+# Registrasi otomatis ke AlgorithmRegistry
 from algorithms.registry import AlgorithmRegistry
 
 AlgorithmRegistry.register("maxflow", FordFulkerson)
 AlgorithmRegistry.register_alias("ford_fulkerson", "maxflow")
 AlgorithmRegistry.register_alias("edmonds_karp", "maxflow")
+
+
+if __name__ == "__main__":
+    from cases.scenario_loader import ScenarioLoader
+
+    print("=" * 70)
+    print("  SIMULASI FORD-FULKERSON (EDMONDS-KARP) - KASUS 4 PASAR TUMPAH GASIBU")
+    print("  Penyusun: Elang Permadi Lau (251524042) - Kelompok 1 Kelas 2B-D4")
+    print("=" * 70)
+
+    loader = ScenarioLoader(SCENARIO_YAML_FILE)
+    model = loader.build_graph_model()
+
+    print("\n1. Menjalankan Solver untuk 4 Pasangan Terminal S -> T:")
+    print("-" * 70)
+    print(f"{'Pasangan':<35} | {'Alpha=0% (Normal)':<18} | {f'Alpha={OBSERVED_ALPHA:.0%} (Pasar)':<18}")
+    print("-" * 70)
+
+    for p in PAIRS:
+        s, t = p["source"], p["sink"]
+        solver_normal = FordFulkerson(model)
+        flow_normal = solver_normal.run(s, t, alpha=0.0)
+
+        solver_pasar = FordFulkerson(model)
+        flow_pasar = solver_pasar.run(s, t, alpha=OBSERVED_ALPHA)
+
+        print(f"{p['label']:<35} | {flow_normal:>10.1f} kend/j | {flow_pasar:>10.1f} kend/j")
+
+    print("-" * 70)
+    print("\n2. Mengekspor Seluruh Trace & Manifest ke Visualizer...")
+    traces, manifest = generate_all_traces(model)
+    print(f"✓ Berhasil menulis {len(traces)} berkas trace JSON dan manifest ke: {manifest.parent}")
+    print("=" * 70)

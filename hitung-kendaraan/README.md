@@ -61,8 +61,9 @@ Semua perintah dijalankan dari folder ini.
 4. **Uji 1 menit dulu**: `python video_counting/hitung.py --titik T1 --detik 60 --anotasi`, lalu tonton
    `data/lapangan/anotasi_*.mp4`.
 5. **Proses penuh**: `python video_counting/hitung.py`.
-6. **Isi ekr** SM dan KB tiap titik dari tabel ekr PKJI 2014 (wajib, jangan pakai angka dari chat AI), isi juga
-   catatan `antrean` dari lapangan, lalu `python video_counting/agregasi.py`.
+6. **Isi ekr** SM dan KB tiap titik dari tabel ekr PKJI (bagian "ekr" di bawah), sesuai tipe jalan, lebar jalur, dan
+   arus di titik itu. Kalau satu titik menghitung jalan dengan tipe berbeda, isi `ekr` di garisnya. Isi juga catatan
+   `antrean` dari lapangan, lalu `python video_counting/agregasi.py`.
 7. **Validasi**: potong 3 klip x 2 menit per titik (`python video_counting/potong_klip.py --titik T1 --mulai 600
    --durasi 120 --lambat 0.5`), dua orang menghitung manual, isi `data/lapangan/manual.csv` (format di
    `python video_counting/validasi.py -h`), lalu `python video_counting/validasi.py`. Target: error total
@@ -145,3 +146,59 @@ ada di `hasil_hitung/hp_1nov/cek_visual_ai_klip1.csv` dan `banding_visual_ai_kli
 Rekap dibuat ulang dengan `python video_counting/rekap_hp_1nov.py`. Kolom `dipakai_sebagai_arus_edge` menandai baris yang boleh
 dipakai sebagai arus edge graf. Template validasi hitung manual oleh dua orang ada di `data/lapangan/manual_template.csv` dengan
 panduannya di `data/lapangan/PANDUAN_VALIDASI.md`, sedangkan klip validasinya disimpan lokal karena besar.
+
+## Rekaman CCTV Sabtu 14 November 2026
+
+Sembilan kamera direkam bersamaan pukul 07.30 sampai 08.00 sebagai kondisi tanpa pasar tumpah, lalu dihitung dengan config
+`cctv_14nov_sabtu.yaml`. Sudut kesembilan kamera sama dengan 13 November sehingga garis hitung tidak diubah. Rekap ada di
+`hasil_hitung/cctv_14nov_sabtu/` dan bisa dibuat ulang dengan `python video_counting/rekap_cctv.py`.
+
+Yang layak dipakai sebagai arus edge baru empat, yaitu S2 ke V_Singaperbangsa sekitar 1.510 kend/jam, V_DU_Selatan ke
+V_Singaperbangsa sekitar 2.702 kend/jam, V_Djuanda_Hasanuddin ke V_Djuanda_Diponegoro sekitar 1.852 kend/jam, dan V_Sulanjana ke
+V_Djuanda_Diponegoro sekitar 720 kend/jam. Di lima kamera lain motor banyak tidak terhitung karena pagi itu berkabut dan nilai
+kepercayaan deteksi motor di bawah ambang pembuatan jejak ByteTrack, atau rekamannya rusak (Gasibu Barat). Arah kamera S1
+terhadap edge S1 ke V_Cikapayang juga perlu dicek ulang karena hampir semua kendaraan tercatat di arah lawan.
+
+## Rekaman CCTV Minggu 15 November 2026
+
+Kamera yang sama direkam lagi pukul 07.30 sampai 08.00 saat pasar tumpah berlangsung, lalu dihitung dengan config
+`cctv_15nov_minggu.yaml` (garis hitung sama dengan Sabtu). S2 tidak terekam karena stream CCTV-nya mengembalikan 404 sepanjang
+jam itu. Rekap ada di `hasil_hitung/cctv_15nov_minggu/`:
+
+```bash
+python video_counting/rekap_cctv.py video_counting/config/cctv_15nov_minggu.yaml data/lapangan/cctv_15nov_minggu hasil_hitung/cctv_15nov_minggu cctv_15nov_minggu
+```
+
+Dua hal yang terlihat jelas di video. Pertama, jalan di depan kamera Gasibu Timur tertutup penuh tenda lapak pasar, jadi
+arusnya 0 kend/jam dan kapasitas ruas itu saat pasar berlangsung bisa dianggap 0. Kedua, Jl. Ir. H. Djuanda ditutup untuk Car
+Free Day, jadi kamera Djuanda Hasanuddin cuma mencatat pejalan kaki dan sepeda, dan arus di persimpangan Cikapayang (DU Selatan)
+turun dari 2.702 ke 480 kend/jam. Penurunan di dua ruas Djuanda ini efek CFD, bukan efek pasar.
+
+Perbandingan Sabtu dan Minggu per ruas ada di `hasil_hitung/banding_cctv_sabtu_minggu.csv`. Ruas yang bisa dibandingkan
+langsung hanya Sulanjana (720 lawan 686 kend/jam, rasio 0,95). Gasibu Barat Minggu layak sebagai batas bawah (1.034 kend/jam)
+tapi rekaman Sabtunya rusak. S1, Surapati Merak, dan T1_T2 masih kurang hitung motor seperti Sabtu.
+
+## ekr
+
+Arus diubah ke skr/jam dengan ekr dari tabel ekr PKJI untuk jalan perkotaan. KR selalu 1,0. Sepeda (KTB) tidak ikut
+dihitung.
+
+| Tipe jalan | Arus | KB | SM (lebar jalur <= 6 m) | SM (lebar jalur > 6 m) |
+|---|---|---|---|---|
+| 2/2TT | < 1800 kend/jam dua arah | 1,3 | 0,5 | 0,40 |
+| 2/2TT | >= 1800 kend/jam dua arah | 1,2 | 0,35 | 0,25 |
+| 2/1 dan 4/2T | < 1050 kend/jam per lajur | 1,3 | 0,40 | 0,40 |
+| 2/1 dan 4/2T | >= 1050 kend/jam per lajur | 1,2 | 0,25 | 0,25 |
+| 3/1 dan 6/2T | < 1100 kend/jam per lajur | 1,3 | 0,40 | 0,40 |
+| 3/1 dan 6/2T | >= 1100 kend/jam per lajur | 1,2 | 0,25 | 0,25 |
+
+Dokumen resmi PKJI tidak bisa diunduh dari situs Bina Marga (yang terbuka hanya cuplikan 5 halaman), jadi angka di atas
+diambil dari dua skripsi yang mengutip tabel PKJI 2023 dengan angka yang sama persis (Tabel 2.9 dan 2.10 skripsi
+Mauliddyah Turrochmah, UM Surabaya; Tabel 2.23 dan 2.24 skripsi Arif Rachman, ITPLN). Kutipan tabel PKJI 2014 di sumber
+lain memberi angka yang sama, tapi batas arus 2/2TT di sana tertulis "< 3700" lalu ">= 1800". Batas yang dipakai di sini
+1800, sama dengan PKJI 2023. Di dua titik (S2 Sabtu 2.772 dan V_Singaperbangsa 2.377 kend/jam dua arah) pilihan ini
+mengubah ekr. Kalau ada yang memegang dokumen resmi PKJI, angka ini sebaiknya dicek ulang.
+
+Tipe jalan, lebar jalur, dan jumlah lajur tiap titik diambil dari OpenStreetMap (unduhan 19 Oktober 2026) dan
+`graph/data/graf.json`, lalu ditulis sebagai komentar di samping `tipe_jalan` di config. Jl. Gagak ditulis satu arah
+di graf.json tapi dua arah di OSM. Yang dipakai OSM, karena arah lawan juga terhitung di rekaman HP.
