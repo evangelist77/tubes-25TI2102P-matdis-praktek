@@ -192,20 +192,27 @@
 
   // ================= /graph/visualisasi =================
   function halamanVis() {
-    const wrap = $('#vis-ff'), f = $('#bingkai-ff');
-    // Mulai 1024 px aplikasi Alifah memakai tiga kolom 330 px, peta, 400 px. Supaya kolom petanya minimal 640 px, bingkai yang
-    // lebih sempit dari 1370 px merender iframe selebar 1370 px lalu memperkecilnya (ukuran berubah tidak memuat ulang iframe)
-    const skala = () => {
-      const w = wrap.clientWidth;
-      wrap.style.setProperty('--z', w >= 1024 && w < 1370 ? (w / 1370).toFixed(4) : '1');
-    };
-    skala();
-    addEventListener('resize', skala);
-    f.addEventListener('load', () => wrap.classList.add('siap'));
-    // src baru diisi setelah bingkai punya ukuran akhirnya, jadi fitBounds peta Alifah memakai ukuran yang benar
-    requestAnimationFrame(() => requestAnimationFrame(() => { f.src = '/graph/ff/'; }));
+    const wrapAlifah = $('#vis-ff'), frameAlifah = $('#bingkai-ff');
+    if (wrapAlifah && frameAlifah) {
+      const skala = () => {
+        const w = wrapAlifah.clientWidth;
+        wrapAlifah.style.setProperty('--z', w >= 1024 && w < 1370 ? (w / 1370).toFixed(4) : '1');
+      };
+      skala();
+      addEventListener('resize', skala);
+      frameAlifah.addEventListener('load', () => wrapAlifah.classList.add('siap'));
+      requestAnimationFrame(() => requestAnimationFrame(() => { frameAlifah.src = '/graph/ff/'; }));
+    }
+
+    const wrapGanesh = $('#vis-iter'), frameGanesh = $('#bingkai-iter');
+    if (wrapGanesh && frameGanesh) {
+      frameGanesh.addEventListener('load', () => wrapGanesh.classList.add('siap'));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        frameGanesh.src = `/graph/ff/?mode=embed&v=${Date.now()}`;
+      }));
+    }
   }
 
   if ($('#tabel-cctv')) halamanCctv();
-  if ($('#bingkai-ff')) halamanVis();
+  if ($('#bingkai-ff') || $('#bingkai-iter')) halamanVis();
 })();

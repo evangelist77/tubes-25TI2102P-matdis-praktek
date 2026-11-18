@@ -9,6 +9,10 @@
   background-color: #f8fafc;
 }
 
+.compact-map .leaflet-tile {
+  filter: grayscale(0.35) opacity(0.82);
+}
+
 /* Tooltip & Badge Kustom */
 .custom-node-tooltip {
   background-color: rgba(28, 25, 23, 0.9) !important;

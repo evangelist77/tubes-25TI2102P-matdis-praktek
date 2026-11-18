@@ -36,6 +36,7 @@ sub { font-size: 0.72em; vertical-align: -0.2em; line-height: 0; }
 [hidden] { display: none !important; }
 
 .hal-isi { position: relative; max-width: 1180px; margin: 0 auto; padding: 0 var(--pad) 120px; }
+.hal-visualisasi .hal-isi { max-width: 1440px; }
 
 /* ---------- kepala halaman ---------- */
 .hal-kepala { position: relative; padding: clamp(48px, 9vh, 110px) 0 36px; }
@@ -375,22 +376,20 @@ sub { font-size: 0.72em; vertical-align: -0.2em; line-height: 0; }
 }
 .vis-kepala { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
 .vis-kepala .romawi { display: grid; place-items: center; width: 48px; height: 48px; border: 1.5px solid var(--ink); border-radius: 53% 47% 56% 44% / 46% 55% 45% 54%; background: var(--butter); box-shadow: 3px 3px 0 var(--ink); rotate: -7deg; font: 700 19px/1 var(--serif); }
-.vis-kepala h2 { font: 700 clamp(30px, 3.6vw, 48px)/1 var(--serif); letter-spacing: -0.02em; }
+.vis-kepala h1, .vis-kepala h2 { font: 700 clamp(30px, 3.6vw, 48px)/1 var(--serif); letter-spacing: -0.02em; }
 .vis-kepala .oleh { font: 600 17px/1 var(--serif); color: var(--navy); }
 .vis-kartu > p { max-width: 62ch; margin: 14px 0 0; }
-/* Ford-Fulkerson Alifah: iframe selebar layar tepat di bawah navigasi, strip tipis di bawahnya masih terlihat di layar pertama.
-   --z dari halaman.js memperkecil iframe yang dirender 1370 px di layar 1024 sampai 1370 px */
-.vis-panggung { --strip: 66px; scroll-margin-top: calc(var(--nav-h, 56px) + env(safe-area-inset-top, 0px)); }
+.vis-kartu { margin-top: clamp(20px, 4vh, 48px); }
+.vis-kartu .vis-panggung { margin-top: 20px; overflow: hidden; border: 1.5px solid var(--ink); border-radius: 20px; box-shadow: 6px 6px 0 var(--ink); }
+.vis-kartu .vis-hp { display: block; max-width: 60ch; font-size: 15px; line-height: 1.4; }
+.vis-panggung { scroll-margin-top: calc(var(--nav-h, 56px) + env(safe-area-inset-top, 0px)); }
 .vis-bingkai {
-  --z: 1;
   position: relative;
-  height: calc(100vh - var(--nav-h, 56px) - env(safe-area-inset-top, 0px) - var(--strip));
-  height: calc(100dvh - var(--nav-h, 56px) - env(safe-area-inset-top, 0px) - var(--strip));
-  min-height: 420px;
+  height: clamp(390px, 44vw, 560px);
   overflow: hidden;
   background: var(--cream);
 }
-.vis-bingkai iframe { width: calc(100% / var(--z)); max-width: none; height: calc(100% / var(--z)); border: 0; background: #fffbeb; transform: scale(var(--z)); transform-origin: 0 0; }
+.vis-bingkai iframe { width: 100%; height: 100%; border: 0; background: #fbf7ed; }
 .vis-strip {
   display: flex;
   flex-wrap: wrap;
@@ -471,11 +470,10 @@ sub { font-size: 0.72em; vertical-align: -0.2em; line-height: 0; }
   .alur > li::before { width: 44px; height: 44px; font-size: 18px; }
   .alur > li::after { left: 21px; top: 44px; }
   .kode pre { font-size: 12.5px; }
-  /* HP: pemberitahuan dan tombol layar penuh di atas, iframe di bawahnya tidak setinggi layar supaya halaman tetap bisa digulir */
+  /* Tampilan ringkas tetap berada di dalam kartu dan dapat digulir pada layar kecil. */
   .vis-panggung { display: flex; flex-direction: column; }
-  .vis-strip { order: -1; flex-direction: column; align-items: flex-start; padding-block: 14px 18px; border-top: 0; }
-  .vis-hp { display: block; max-width: 44ch; font-size: 15.5px; line-height: 1.45; }
-  .vis-bingkai { height: 70svh; }
+  .vis-strip { flex-direction: column; align-items: flex-start; padding-block: 14px 18px; border-top: 1.5px solid var(--ink); }
+  .vis-bingkai { height: clamp(420px, 72svh, 560px); }
   .tombol { min-height: 48px; }
 }
 

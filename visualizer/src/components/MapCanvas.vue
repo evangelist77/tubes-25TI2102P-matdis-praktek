@@ -20,6 +20,7 @@ const props = withDefaults(
     edgeFlows?: Record<number, number>
     effectiveCapacities?: Record<number, number>
     activePath?: number[]
+    activePathReverse?: number[]
     minCutEdges?: number[]
     sourceSideNodes?: number[]
     sinkSideNodes?: number[]
@@ -34,12 +35,15 @@ const props = withDefaults(
     activeTerminals?: number[]
     /** false = pasar tidak aktif pada run ini: ruas pasar digambar seperti ruas biasa */
     marketActive?: boolean
+    /** gunakan peta tanpa tinggi minimum pada layout embed yang lebih pendek */
+    compact?: boolean
   }>(),
   {
     geometry: () => ({}),
     edgeFlows: () => ({}),
     effectiveCapacities: () => ({}),
     activePath: () => [],
+    activePathReverse: () => [],
     minCutEdges: () => [],
     sourceSideNodes: () => [],
     sinkSideNodes: () => [],
@@ -49,7 +53,8 @@ const props = withDefaults(
     visibleEdgeIds: null,
     halos: () => [],
     activeTerminals: () => [],
-    marketActive: true
+    marketActive: true,
+    compact: false
   }
 )
 
@@ -118,7 +123,7 @@ function initMap() {
   mapInstance = L.map(mapContainer.value, {
     center: [-6.8992, 107.6185],
     zoom: 15,
-    zoomControl: true,
+    zoomControl: !props.compact,
     attributionControl: false
   })
   tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -133,16 +138,22 @@ function initMap() {
 
   // peta harus dihitung ulang ukurannya saat tata letak berubah
   if (typeof ResizeObserver !== 'undefined') {
-    resizeObserver = new ResizeObserver(() => mapInstance?.invalidateSize())
+    resizeObserver = new ResizeObserver(() => {
+      if (!mapInstance) return
+      mapInstance.invalidateSize()
+      if (props.compact && props.topology) {
+        fitToVisible(new Map<number, NodeDef>(props.topology.nodes.map((node) => [node.id, node])), true)
+      }
+    })
     resizeObserver.observe(mapContainer.value)
   }
   renderGraph()
 }
 
-function fitToVisible(nodeMap: Map<number, NodeDef>) {
+function fitToVisible(nodeMap: Map<number, NodeDef>, force = false) {
   if (!mapInstance || !props.topology) return
   const key = props.visibleEdgeIds ? props.visibleEdgeIds.join(',') : 'all'
-  if (key === lastFitKey) return
+  if (!force && key === lastFitKey) return
   lastFitKey = key
   const pts: LonLat[] = []
   for (const edge of props.topology.edges) {
@@ -197,6 +208,7 @@ function renderEdges(nodeMap: Map<number, NodeDef>) {
     const latlngs = line.map(toLatLng)
     const isClosed = capacity === 0
     const isAugmenting = props.activePath.includes(edge.id)
+    const isAugmentingReverse = isAugmenting && props.activePathReverse.includes(edge.id)
     const isMinCut = props.minCutEdges.includes(edge.id)
     const isGhost = props.residualMode && !forwardResidualIds.has(edge.id)
     const baseWeight = strokeForCapacity(capacity || edge.capacity, maxCap)
@@ -249,7 +261,11 @@ function renderEdges(nodeMap: Map<number, NodeDef>) {
     // --- panah arah di 70% panjang ruas
     const arrow = pointAlong(line, 0.7)
     edgeLayer.addLayer(
-      L.marker([arrow.lat, arrow.lng], { icon: arrowIcon(arrow.angleDeg, color), interactive: false, keyboard: false })
+      L.marker([arrow.lat, arrow.lng], {
+        icon: arrowIcon(arrow.angleDeg + (isAugmentingReverse ? 180 : 0), color),
+        interactive: false,
+        keyboard: false
+      })
     )
 
     // --- label hanya untuk ruas yang relevan agar peta tidak penuh
@@ -373,6 +389,7 @@ watch(
     props.edgeFlows,
     props.effectiveCapacities,
     props.activePath,
+    props.activePathReverse,
     props.minCutEdges,
     props.sourceSideNodes,
     props.sinkSideNodes,
@@ -405,7 +422,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative w-full h-full min-h-[420px]" :class="showBaseMap ? '' : 'schematic-bg'">
+  <div class="relative w-full h-full" :class="[showBaseMap ? '' : 'schematic-bg', compact ? 'compact-map min-h-0' : 'min-h-[420px]']">
     <div ref="mapContainer" class="w-full h-full z-0"></div>
     <slot />
   </div>

@@ -4,8 +4,9 @@ Aplikasi web (Vue 3 + Vite + TypeScript + Tailwind + Leaflet) yang menunjukkan *
 Ford-Fulkerson bekerja** pada jaringan jalan kasus pasar tumpah: jalur augmentasi tiap langkah, sisa kapasitas
 tiap ruas, bottleneck, residual graph, min-cut, dan perbandingan kondisi tanpa pasar vs pasar penuh.
 
-Visualisasi ini **hanya membaca** hasil yang sudah dihitung (topologi + trace). Algoritma dijalankan di sisi Python
-(template dosen), bukan di browser.
+Mode Ford-Fulkerson per pasangan membaca trace hasil solver Python. Mode Iterative menghitung empat pasangan
+S→T secara berurutan di browser dengan Edmonds–Karp; setiap pasangan memakai solver baru sehingga arusnya
+direset, sementara cabang rute dalam pasangan tersebut berbagi kapasitas ruas.
 
 ## Menjalankan
 
@@ -34,8 +35,9 @@ Peta dasar memakai tile OpenStreetMap (butuh internet). Matikan "Peta dasar" unt
 
 1. **Pilih kondisi**: *Tanpa pasar* atau *Pasar penuh*. Hanya dua kondisi ini yang punya data pengamatan
    (CCTV / video manual).
-2. **Pilih rute**: pasangan S → T, lalu satu rute (tiap rute berwarna sendiri) atau *Semua rute*.
-   Memilih satu rute hanya menampilkan ruas rute itu.
+2. Pada mode **Iterative Jaringan**, pilih *Semua Pasangan* untuk melihat keempat perhitungan berurutan
+   (arus direset setiap berganti pasangan), atau pilih satu pasangan. Pilih satu rute (tiap rute berwarna sendiri)
+   atau *Semua Cabang Rute* untuk menyorot jaringan di peta.
 3. **Putar langkah**: panel kanan menjelaskan tiap langkah: jalur, sisa kapasitas tiap ruas
    (kapasitas − arus), ruas tersempit (bottleneck jalur), dan total arus. Di langkah terakhir muncul hasil akhir,
    min-cut, dan pengecekan Σ kapasitas potongan = max flow.
@@ -50,7 +52,7 @@ visualizer/
 ├─ scripts/              convert_yaml_to_topology.py, build_map_data.mjs
 ├─ dev/sampleTrace.ts    generator trace CONTOH (Edmonds-Karp), hanya untuk pengembangan
 └─ src/
-   ├─ core/              types, loader, validateTrace, selectors, residual, geometry (logika murni + tes)
+   ├─ core/              types, loader, validateTrace, selectors, residual, iterative, geometry (logika murni + tes)
    ├─ composables/       useReplay (pemutar langkah), useComparison (perbandingan α)
    ├─ components/        MapCanvas, StepPlayer, AlgorithmPanel, CutPanel, ConditionToggle, RoutePanel,
    │                     ConditionCompare, SensitivityPanel, InspectPanel, Legend
