@@ -193,3 +193,27 @@ export function solveMaxFlow(
     sourceSide: Array.from(reachable).sort((a, b) => a - b)
   }
 }
+
+// ringkasan yang dibandingkan: jalur ditulis sebagai id edge, edge balik diberi tanda minus
+function summarize(result: MaxFlowResult) {
+  return {
+    'kapasitas efektif': result.effectiveCapacity,
+    'max flow': result.maxFlow,
+    jalur: result.steps.map((step) =>
+      step.path.map((t) => `${t.isBackward ? '-' : ''}${t.edgeId}`).join(' ')
+    ),
+    'arus akhir': result.steps[result.steps.length - 1]?.edgeFlows ?? {},
+    'min-cut': [...result.minCut].sort((a, b) => a - b)
+  }
+}
+
+/** Membandingkan trace Python dengan hitungan browser. Hasil kosong berarti keduanya sama. */
+export function diffIterativeTrace(topology: Topology, trace: IterativeTrace): string[] {
+  return trace.pairs.flatMap((pair) => {
+    const fromTrace = summarize(pair)
+    const fromBrowser = summarize(solveMaxFlow(topology, pair.source, pair.sink, trace.alpha))
+    return (Object.keys(fromTrace) as (keyof typeof fromTrace)[])
+      .filter((key) => JSON.stringify(fromTrace[key]) !== JSON.stringify(fromBrowser[key]))
+      .map((key) => `${pair.pairId}: ${key} berbeda`)
+  })
+}
