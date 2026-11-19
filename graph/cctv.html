@@ -155,18 +155,6 @@ skr = sum(n[c] * ekr[c] for c in ("KR", "SM", "KB")) * per_jam if lengkap else N
       </li>
     </ol>
 
-    <h3 class="sub-judul">Hasil uji 29 Oktober 2026</h3>
-    <p class="ket">Uji dilakukan Kamis malam sekitar 18.40 sampai 18.48 WIB dengan tujuh CCTV, jadi kondisinya gelap dan hasilnya lebih menggambarkan kondisi terburuk daripada perkiraan akurasi Minggu pagi.</p>
-    <div class="stat">
-      <div><b>14 dari 14</b><span>kendaraan yang menghadap kamera di V<sub>Djuanda Hasanuddin</sub> arah selatan terhitung dengan kelas yang benar</span></div>
-      <div><b>45 frame/detik</b><span>kecepatan yolo26s dengan input 640 di MacBook M2 Pro, hampir dua kali lebih cepat dari video CCTV 25 fps</span></div>
-      <div><b>6 dari 10</b><span>CCTV usulan awal yang hidup saat dicek, keempat yang mati milik DPKP3 dan Dishub</span></div>
-    </div>
-    <ul class="daftar">
-      <li>Input 1280 dan model m atau l tidak lebih baik untuk CCTV 640 x 480, karena gambar yang diperbesar justru membuat kendaraan makin kabur.</li>
-      <li>Motor yang menjauhi kamera di malam hari hampir tidak terdeteksi karena pengendaranya terbaca sebagai person, sehingga uji siang hari masih diperlukan sebelum data dipakai.</li>
-      <li>Logika lintasan garis punya 20 tes di video_counting/tests/test_lintasan.py, dan laporan uji lengkapnya disimpan lokal oleh kelompok.</li>
-    </ul>
     <div class="tombol-baris">
       <a class="tombol" href="https://github.com/evangelist77/tubes-25TI2102P-matdis-praktek/tree/main/hitung-kendaraan" target="_blank" rel="noopener">Lihat kode di GitHub <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
