@@ -159,7 +159,7 @@ if __name__ == "__main__":
 
     model = ScenarioLoader(SCENARIO_YAML_FILE).build_graph_model()
 
-    print("Iterative Ford-Fulkerson, max flow tiap pasangan (kend/jam):")
+    print("Iterative Ford-Fulkerson, max flow tiap pasangan (skr/jam):")
     for alpha in (0.0, OBSERVED_ALPHA):
         hasil = IterativeFordFulkerson(model).run_all(alpha)
         ringkas = ", ".join(f"{r['pairId']} = {r['maxFlow']:.0f}" for r in hasil)
