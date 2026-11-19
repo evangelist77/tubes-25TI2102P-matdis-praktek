@@ -244,7 +244,7 @@ function olahData(g) {
   const n = {
     rute: g.paths.length, simpul: ids.length, simpang: ids.filter(i => g.nodes[i].type === 'junction').length, ruas: edges.length,
     cctv: (g.cctvPoints || []).length, hp: (g.manualSurveyPoints || []).length,
-    aman: st.filter(s => s === 'aman').length, mati: st.filter(s => s === 'tidak bisa dibuka' || s === 'tidak dipakai').length, baru: st.filter(s => s.startsWith('baru')).length,
+    aman: st.filter(s => s === 'aman').length, mati: st.filter(s => s === 'tidak bisa dibuka').length, baru: st.filter(s => s.startsWith('baru')).length,
     luar: g.paths.length - gasibu.length, gasibu: gasibu.length
   };
   n.pantau = n.cctv + n.hp; n.ruteKata = kapital(kata(n.rute));
@@ -1690,8 +1690,6 @@ const Data = {
       el.title = it.jenis === 'hp' ? `${it.judul} · ${it.simpul} · sekitar ${it.jam || '-'}` : `${it.judul} · ${it.simpul}`;
       /* kartu bercuplikan memakai video muted loop yang langsung berputar begitu kartunya mendarat (lihat vid) */
       el.innerHTML = (it.src ? `<video muted loop playsinline preload="none" data-poster="${esc(it.poster || '')}" data-src="${esc(it.src)}"></video>` : it.poster ? `<img alt="" decoding="async" data-src="${esc(it.poster)}">` : '<div class="kosong"><b>Tidak bisa dibuka</b></div>') + `<span>${esc(cap)}</span>`;
-      /* kamera yang datanya tidak dipakai tetap ditampilkan, tapi diberi cap supaya tidak dikira sumber data */
-      if (it.status === 'tidak dipakai') el.insertAdjacentHTML('beforeend', '<b class="salah">Tidak dipakai<br>salah ruas</b>');
       const im = el.querySelector('img,video');
       if (im) im.addEventListener('error', () => { const k = document.createElement('div'); k.className = 'kosong'; k.innerHTML = '<b>Gambar gagal dimuat</b>'; im.replaceWith(k); }, { once: true });
       el.addEventListener('click', () => Dlg.media(it, el));
