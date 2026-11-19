@@ -313,8 +313,8 @@ for (const [id, expectedWidth] of Object.entries({
   assert.equal(segments.find((seg) => seg.id === id)?.widthInfo, expectedWidth);
 }
 assert.doesNotMatch(specContent, /\d+\s*kend\/jam/, 'Spec tidak boleh memuat angka kapasitas tanpa data');
-assert.match(specContent, /Data kapasitas kendaraan \(kend\/jam\) belum tersedia/);
-assert.match(html, /Data kapasitas kendaraan \(kend\/jam\) belum tersedia/);
+assert.match(specContent, /dihitung dengan rumus PKJI jalan perkotaan/);
+assert.match(html, /dihitung dengan rumus PKJI jalan perkotaan/);
 
 // 10. Cek script Console pelindung-highlight.js untuk web pelindung.bandung.go.id
 const highlightScriptPath = new URL('./pelindung-highlight.js', import.meta.url);
