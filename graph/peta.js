@@ -29,7 +29,6 @@
   const status = (s) => {
     if (s === 'aman') return { k: 'aman', t: 'Aman' };
     if (s === 'tidak bisa dibuka') return { k: 'mati', t: 'Tidak bisa dibuka' };
-    if (s === 'tidak dipakai') return { k: 'mati', t: 'Tidak dipakai, salah ruas' };
     if (s && s.startsWith('baru')) return { k: 'baru', t: 'Baru, belum dicek' };
     return { k: 'belum', t: s || 'Belum ada data' };
   };
