@@ -418,7 +418,7 @@ const isMarketActive = computed(() =>
             <div class="font-mono text-xl font-extrabold text-stone-900 leading-tight">
               {{ viewMode === 'iterative' ? iterativeCurrentFlow : activeTrace.result.maxFlow }}
               <span class="text-xs font-semibold text-stone-500">
-                {{ viewMode === 'iterative' ? ` / ${iterativeTotalMaxFlow} kend/jam` : ' kend/jam' }}
+                {{ viewMode === 'iterative' ? ` / ${iterativeTotalMaxFlow} skr/jam` : ' skr/jam' }}
               </span>
             </div>
           </div>

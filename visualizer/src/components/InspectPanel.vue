@@ -73,19 +73,19 @@ const passingRoutes = computed(() => {
       <div class="grid grid-cols-2 gap-2 text-stone-600 text-xs">
         <div class="rounded-lg border border-stone-100 p-2">
           <span class="text-[11px] uppercase text-stone-400 block font-semibold">Arus saat ini</span>
-          <span class="font-mono font-extrabold text-sm text-orange-700">{{ currentFlow }} <small class="text-stone-500 font-normal">kend/jam</small></span>
+          <span class="font-mono font-extrabold text-sm text-orange-700">{{ currentFlow }} <small class="text-stone-500 font-normal">skr/jam</small></span>
         </div>
         <div class="rounded-lg border border-stone-100 p-2">
           <span class="text-[11px] uppercase text-stone-400 block font-semibold">Kapasitas efektif</span>
-          <span class="font-mono font-bold text-sm text-stone-900">{{ effectiveCap }} <small class="text-stone-500 font-normal">kend/jam</small></span>
+          <span class="font-mono font-bold text-sm text-stone-900">{{ effectiveCap }} <small class="text-stone-500 font-normal">skr/jam</small></span>
         </div>
         <div class="rounded-lg border border-stone-100 p-2">
           <span class="text-[11px] uppercase text-stone-400 block font-semibold">Kapasitas dasar</span>
-          <span class="font-bold text-stone-700">{{ edge.capacity }} kend/jam</span>
+          <span class="font-bold text-stone-700">{{ edge.capacity }} skr/jam</span>
         </div>
         <div class="rounded-lg border border-stone-100 p-2">
           <span class="text-[11px] uppercase text-stone-400 block font-semibold">Kapasitas sisa (residual)</span>
-          <span class="font-mono font-bold text-emerald-700">{{ residualCap }} kend/jam</span>
+          <span class="font-mono font-bold text-emerald-700">{{ residualCap }} skr/jam</span>
         </div>
       </div>
 

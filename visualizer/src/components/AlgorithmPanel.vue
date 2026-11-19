@@ -92,7 +92,7 @@ const isFinal = computed(() => props.stepIndex === total.value)
             <b class="text-amber-300 text-base font-mono">{{ detail.bottleneck }}</b>
           </div>
           <div class="text-[13px] leading-relaxed">
-            Alirkan <b class="text-amber-300">{{ detail.bottleneck }}</b> kend/jam di setiap ruas jalur.
+            Alirkan <b class="text-amber-300">{{ detail.bottleneck }}</b> skr/jam di setiap ruas jalur.
           </div>
           <div class="text-sm font-mono border-t border-stone-700 pt-1.5">
             Total arus: {{ detail.totalBefore }} + {{ detail.bottleneck }} =
@@ -102,7 +102,7 @@ const isFinal = computed(() => props.stepIndex === total.value)
 
         <p v-if="isFinal" class="text-[13px] text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
           Ini langkah terakhir: dari {{ sCode }} sudah tidak ada jalur lagi dengan sisa kapasitas ke {{ tCode }}.
-          Arus maksimum = <b>{{ trace.result.maxFlow }}</b> kend/jam.
+          Arus maksimum = <b>{{ trace.result.maxFlow }}</b> skr/jam.
         </p>
       </div>
     </div>

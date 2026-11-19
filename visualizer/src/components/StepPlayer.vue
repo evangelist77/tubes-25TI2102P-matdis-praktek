@@ -75,7 +75,7 @@ const btn =
       <span class="text-stone-500">
         Total arus
         <b class="font-mono text-base text-orange-700">{{ totalFlow }}</b>
-        <span class="text-stone-400"> / {{ maxFlow }} kend/jam</span>
+        <span class="text-stone-400"> / {{ maxFlow }} skr/jam</span>
       </span>
       <div class="flex items-center gap-1">
         <button

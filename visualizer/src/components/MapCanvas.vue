@@ -177,7 +177,7 @@ function tooltipHtml(edge: EdgeDef, from: NodeDef, to: NodeDef, flow: number, ca
   return `<div style="padding:2px 4px;max-width:260px">
       <div style="font-weight:700;font-size:13px">${tags} ${esc(edge.road)}</div>
       <div style="font-size:11px;color:#57534e;font-family:monospace;margin-top:2px">${esc(from.code)} → ${esc(to.code)}</div>
-      <div style="margin-top:4px;font-size:12px">Arus <b>${flow}</b> / kapasitas <b>${capacity}</b> kend/jam
+      <div style="margin-top:4px;font-size:12px">Arus <b>${flow}</b> / kapasitas <b>${capacity}</b> skr/jam
         <span style="margin-left:4px;padding:1px 6px;border-radius:4px;background:${color};color:#fff;font-weight:700;font-size:11px">${pct}%</span></div>
     </div>`
 }
@@ -297,7 +297,7 @@ function renderEdges(nodeMap: Map<number, NodeDef>) {
     const reversed = [...line].reverse()
     const color = themeTokens.colors.edges.residualBack
     const pl = L.polyline(reversed.map(toLatLng), { color, weight: 3, opacity: 0.9, dashArray: '6, 5' })
-    pl.bindTooltip(`<div style="padding:2px 4px"><b>Edge balik: ${esc(res.road)}</b><br/>Arus yang dapat dibatalkan: <b>${res.residualCapacity}</b> kend/jam</div>`, {
+    pl.bindTooltip(`<div style="padding:2px 4px"><b>Edge balik: ${esc(res.road)}</b><br/>Arus yang dapat dibatalkan: <b>${res.residualCapacity}</b> skr/jam</div>`, {
       className: 'custom-edge-tooltip',
       sticky: true
     })

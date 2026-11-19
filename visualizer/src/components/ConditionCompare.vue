@@ -27,7 +27,7 @@ const summary = computed(() => {
       : 'Arus maksimum sama, tetapi ruas pembatasnya berpindah.'
   }
   const pct = Math.round((drop / normal.value.maxFlow) * 100)
-  return `Pasar menurunkan arus maksimum ${drop} kend/jam (−${pct}%)${same ? '' : ', dan pembatasnya berpindah ruas'}.`
+  return `Pasar menurunkan arus maksimum ${drop} skr/jam (−${pct}%)${same ? '' : ', dan pembatasnya berpindah ruas'}.`
 })
 </script>
 
@@ -44,13 +44,13 @@ const summary = computed(() => {
         <div class="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3">
           <div class="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Tanpa pasar</div>
           <div class="mt-1 font-mono text-2xl font-extrabold text-stone-900">{{ normal.maxFlow }}</div>
-          <div class="text-[11px] text-stone-500">kend/jam</div>
+          <div class="text-[11px] text-stone-500">skr/jam</div>
           <div class="mt-2 text-xs text-stone-600 leading-snug">Pembatas: {{ names(normal) }}</div>
         </div>
         <div class="rounded-xl border border-orange-200 bg-orange-50/60 p-3">
           <div class="text-[11px] font-bold uppercase tracking-wide text-orange-700">Pasar penuh</div>
           <div class="mt-1 font-mono text-2xl font-extrabold text-stone-900">{{ pasar.maxFlow }}</div>
-          <div class="text-[11px] text-stone-500">kend/jam</div>
+          <div class="text-[11px] text-stone-500">skr/jam</div>
           <div class="mt-2 text-xs text-stone-600 leading-snug">Pembatas: {{ names(pasar) }}</div>
         </div>
       </div>

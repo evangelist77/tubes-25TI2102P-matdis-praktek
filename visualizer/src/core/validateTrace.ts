@@ -60,7 +60,7 @@ export function validateTrace(topology: Topology, trace: Trace): ValidationResul
     const net = nodeNetFlow[node.id]
     if (Math.abs(net) > 1e-4) {
       errors.push(
-        `Konservasi Aliran Gagal di simpul ${node.code} (ID: ${node.id}): net flow = ${net} kend/jam (arus masuk != arus keluar).`
+        `Konservasi Aliran Gagal di simpul ${node.code} (ID: ${node.id}): net flow = ${net} skr/jam (arus masuk != arus keluar).`
       )
     }
   }

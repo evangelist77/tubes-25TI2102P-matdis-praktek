@@ -15,7 +15,7 @@ const matches = computed(() => cutSum.value === props.trace.result.maxFlow)
     <div>
       <div class="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Hasil akhir</div>
       <div class="font-mono text-3xl font-extrabold text-emerald-900">
-        {{ trace.result.maxFlow }} <span class="text-base font-semibold">kend/jam</span>
+        {{ trace.result.maxFlow }} <span class="text-base font-semibold">skr/jam</span>
       </div>
       <div class="text-[13px] text-stone-600">arus maksimum dari titik masuk ke titik keluar</div>
     </div>

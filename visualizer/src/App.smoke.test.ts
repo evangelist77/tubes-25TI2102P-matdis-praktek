@@ -119,7 +119,7 @@ describe('App (smoke)', () => {
 
     const wrapper = await mountApp()
     const expected = solveMaxFlow(topology, id('S1'), id('T1'), alpha).maxFlow
-    expect(wrapper.find('header').text()).toContain(`/ ${expected} kend/jam`)
+    expect(wrapper.find('header').text()).toContain(`/ ${expected} skr/jam`)
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('dihitung di browser'))
 
     wrapper.unmount()
@@ -145,7 +145,7 @@ describe('App (smoke)', () => {
     window.history.replaceState(null, '', '/?mode=iterative')
 
     const wrapper = await mountApp()
-    expect(wrapper.find('header').text()).toContain('/ 12345 kend/jam')
+    expect(wrapper.find('header').text()).toContain('/ 12345 skr/jam')
     // angka palsu tadi harus terdeteksi oleh pembanding saat dev
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('beda dengan hitungan browser'), ['S1-T1: max flow berbeda'])
 
