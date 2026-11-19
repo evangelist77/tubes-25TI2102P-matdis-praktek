@@ -22,7 +22,7 @@
     <h1 class="hal-judul">Analisis</h1>
     <p class="hal-lede">Dari akar masalah kemacetan Gasibu sampai cara kami menghitung kapasitas tiap ruas, alur program dari berkas kasus sampai visualisasi, hasil uji banding Ford-Fulkerson dan Dinic saat jalan berubah, lalu temuan dan batasannya.</p>
     <nav class="lompat" aria-label="Bagian halaman">
-      <a href="#fishbone">Fishbone</a><a href="#bobot">Bobot PKJI</a><a href="#temuan">Temuan dan batasan</a>
+      <a href="#fishbone">Fishbone</a><a href="#bobot">Bobot PKJI</a><a href="#pipeline">Pipeline</a><a href="#temuan">Temuan dan batasan</a>
     </nav>
   </header>
 
@@ -134,6 +134,69 @@
     </ul>
   </section>
   <!--/S02-->
+
+  <!--S03-->
+  <section class="bagian" id="pipeline" aria-labelledby="judul-pipeline">
+    <div class="bagian-kepala">
+      <span class="no">03</span>
+      <h2 id="judul-pipeline">Pipeline input, proses, output</h2>
+      <p>Program kami memakai struktur template dosen (trisgelar/matdis-tubes-2026). Satu berkas kasus dibaca sekali, lalu Ford-Fulkerson, Dinic, dan Iterative Ford-Fulkerson berjalan di atas graf yang sama, dan hasilnya ditulis sebagai berkas trace yang dibaca visualisasi di situs ini.</p>
+    </div>
+    <div class="ipo">
+      <section class="ipo-kol" style="--w:#86c8e3">
+        <header><small>Input</small><h3>Berkas kasus</h3></header>
+        <ul>
+          <li><b>Kasus dalam YAML</b><code>cases/scenarios/case_04_pasar_tumpah.yaml</code></li>
+          <li><b>28 simpul</b>26 simpul jalan ditambah supersource S* dan supersink T*, supaya dua source dan dua sink bisa dihitung sekaligus.</li>
+          <li><b>35 edge berarah</b>31 ruas jalan dengan kapasitas PKJI dan 4 sisi bayangan dari S* dan ke T* dengan kapasitas sangat besar.</li>
+          <li><b>4 event dinamis</b>Perubahan kapasitas pada langkah waktu t1 sampai t4, tipe <code>DYNAMIC_EDGE_CAPACITY</code>.</li>
+          <li><b>Parameter α</b>Faktor penyempitan Gasibu Atas dari 0 sampai 1.</li>
+        </ul>
+      </section>
+      <div class="ipo-panah" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 20h24M22 11l10 9-10 9" fill="none" stroke="#151a4f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <section class="ipo-kol" style="--w:#f6d98c">
+        <header><small>Proses</small><h3>Algoritma</h3></header>
+        <ol>
+          <li><b>Muat graf</b>Simpul dan edge dibaca menjadi model graf berarah berbobot kapasitas.</li>
+          <li><b>Graf residual</b>Disimpan sebagai adjacency list. Setiap edge punya sisi maju berisi sisa kapasitas dan sisi balik berisi arus yang bisa dibatalkan.</li>
+          <li><b>Ford-Fulkerson (Edmonds-Karp)</b>Mencari jalur augmentasi terpendek dengan BFS sampai tidak ada jalur lagi, untuk tiap kondisi dan tiap pasangan.</li>
+          <li><b>Event t1 sampai t4</b>Kapasitas edge diubah. Ford-Fulkerson menghitung ulang dari nol, Dinic melanjutkan arus lama kalau masih layak.</li>
+          <li><b>Iterative Ford-Fulkerson</b>Empat pasangan S1-T1, S1-T2, S2-T1, dan S2-T2 dihitung bergantian di jaringan yang sama.</li>
+        </ol>
+      </section>
+      <div class="ipo-panah" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 20h24M22 11l10 9-10 9" fill="none" stroke="#151a4f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <section class="ipo-kol" style="--w:#a3d9bb">
+        <header><small>Output</small><h3>Hasil dan metrik</h3></header>
+        <ul>
+          <li><b>Nilai objektif</b>Max flow dalam skr/jam beserta min cut, yaitu ruas yang menjadi pembatas.</li>
+          <li><b>Metrik komputasi</b>Jumlah BFS, jumlah jalur augmentasi, sisi yang diperiksa, dan waktu eksekusi.<code>output/banding_ff_dinic.csv</code></li>
+          <li><b>Trace langkah</b>48 trace Ford-Fulkerson dan 12 trace Iterative untuk tiap pasangan dan α.<code>visualizer/public/data/</code></li>
+          <li><b>Visualisasi</b>Trace dibaca halaman <a href="/graph/visualisasi.html">Visualisasi</a>, jadi angka di peta sama dengan hasil program Python.</li>
+        </ul>
+      </section>
+    </div>
+    <div class="ipo-kaki">
+      <figure class="kode">
+        <figcaption><span>Contoh event di berkas kasus</span><span>case_04_pasar_tumpah.yaml</span></figcaption>
+        <pre><code>- step: 2
+  type: "DYNAMIC_EDGE_CAPACITY"
+  target_edge: [11, 12]      # Jl. Singaperbangsa
+  new_capacity: 0.0
+  description: "Pagi hari pasar, Jl. Singaperbangsa ditutup"</code></pre>
+      </figure>
+      <div>
+        <h3 class="sub-judul" style="margin-top:0">Cara menjalankan</h3>
+        <ul class="param">
+          <li><code>python -m scripts.run_simulation</code></li>
+          <li><code>python -m scripts.run_benchmark -a maxflow -a dinic</code></li>
+          <li><code>python -m scripts.banding_ff_dinic</code></li>
+          <li><code>python -m algorithms.maxflow.ford_fulkerson</code></li>
+        </ul>
+        <p style="margin-top:14px;max-width:52ch">Perintah pertama menjalankan skenario dengan keempat event, perintah kedua dan ketiga membuat tabel banding, dan perintah terakhir membuat ulang trace untuk visualisasi.</p>
+      </div>
+    </div>
+  </section>
+  <!--/S03-->
 
   <!--S05-->
   <section class="bagian" id="temuan" aria-labelledby="judul-temuan">

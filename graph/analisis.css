@@ -120,6 +120,29 @@ details.lipat > .tabel-wrap { margin-top: 18px; }
 
 /* ===== /S02 ===== */
 
+/* ===== S03 ===== */
+.ipo { display: grid; grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1.25fr) 46px minmax(0, 1fr); align-items: stretch; margin-top: 10px; }
+.ipo-kol { display: flex; flex-direction: column; background: var(--kertas); border: 1.5px solid var(--ink); border-radius: 18px; box-shadow: 6px 6px 0 var(--ink); overflow: hidden; }
+.ipo-kol header { padding: 14px 18px 12px; background: var(--w); border-bottom: 1.5px solid var(--ink); }
+.ipo-kol header small { display: block; font: 600 12px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.ipo-kol header h3 { margin-top: 2px; font: 700 clamp(24px, 2.4vw, 30px)/1.05 var(--serif); }
+.ipo-kol ol, .ipo-kol ul { display: grid; gap: 12px; padding: 16px 18px 18px; list-style: none; }
+.ipo-kol li { font-size: 15.5px; line-height: 1.45; }
+.ipo-kol li b { display: block; font: 700 16.5px/1.25 var(--serif); }
+.ipo-kol code { display: inline-block; margin-top: 3px; padding: 1px 6px; background: var(--paper); border-radius: 4px; font: 500 12.5px/1.45 var(--mono); word-break: break-all; }
+.ipo-kol ol { counter-reset: lgk; }
+.ipo-kol ol li { counter-increment: lgk; position: relative; padding-left: 34px; }
+.ipo-kol ol li::before { content: counter(lgk); position: absolute; left: 0; top: 1px; display: grid; place-items: center; width: 24px; height: 24px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--butter); font: 700 13px/1 var(--sans); }
+.ipo-panah { display: grid; place-items: center; }
+.ipo-panah svg { width: 40px; height: 40px; }
+@media (max-width: 980px) {
+  .ipo { grid-template-columns: minmax(0, 1fr); }
+  .ipo-panah svg { rotate: 90deg; }
+}
+.ipo-kaki { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; margin-top: 34px; align-items: start; }
+.ipo-kaki .kode { margin-top: 0; }
+/* ===== /S03 ===== */
+
 /* ===== S05 ===== */
 .temuan { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; margin-top: 10px; list-style: none; }
 .temuan li { position: relative; padding: 22px 20px 20px; background: var(--kertas); border: 1.5px solid var(--ink); border-radius: 18px; box-shadow: 6px 6px 0 var(--ink); }
