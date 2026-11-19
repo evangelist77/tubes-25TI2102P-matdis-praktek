@@ -22,7 +22,7 @@
     <p class="hal-lede">Arus kendaraan di simpul graf kami ukur dari CCTV Pelindung Bandung dan dari rekaman HP di simpang yang tidak punya CCTV, lalu kendaraannya dihitung dengan program YOLO yang cara kerjanya ada di bagian bawah halaman ini.</p>
     <ul class="ringkas" id="ringkas" aria-label="Ringkasan data lapangan"></ul>
     <nav class="lompat" aria-label="Bagian halaman">
-      <a href="#cctv">CCTV</a><a href="#hp">Rekaman HP</a><a href="#deteksi">Deteksi kendaraan</a><a href="#program">Program hitung</a><a href="#jadwal">Jadwal rekam</a>
+      <a href="#cctv">CCTV</a><a href="#hp">Rekaman HP</a><a href="#program">Program hitung</a><a href="#jadwal">Jadwal rekam</a>
     </nav>
   </header>
 
@@ -58,19 +58,9 @@
     <p class="catatan-kotak">Jam rekaman diambil dari metadata berkas di HP yang bisa berupa jam mulai atau jam selesai, makanya ditulis sekitar.</p>
   </section>
 
-  <section class="bagian" id="deteksi" aria-labelledby="judul-deteksi">
-    <div class="bagian-kepala">
-      <span class="no">03</span>
-      <h2 id="judul-deteksi">Deteksi kendaraan</h2>
-      <p>Program diuji pada Kamis malam 29 Oktober 2026 dengan rekaman CCTV, dan di video ini kotak menandai kendaraan yang terdeteksi sedangkan garis kuning adalah garis hitungnya.</p>
-    </div>
-    <div class="galeri" id="galeri-deteksi"></div>
-    <p class="catatan-kotak">Kendaraan yang menghadap kamera terhitung tepat (14 dari 14 di V<sub>Djuanda Hasanuddin</sub> arah selatan), tetapi motor yang menjauhi kamera di malam hari hampir tidak terdeteksi, jadi angka uji ini belum dipakai sebagai kapasitas dan rekaman pagi tetap dicek dulu sebelum dipakai.</p>
-  </section>
-
   <section class="bagian" id="program" aria-labelledby="judul-program">
     <div class="bagian-kepala">
-      <span class="no">04</span>
+      <span class="no">03</span>
       <h2 id="judul-program">Program hitung kendaraan</h2>
       <p>Programnya ditulis dengan Python di atas YOLO dari Ultralytics dan OpenCV, dan setiap tahap dijalankan dengan satu perintah dari folder hitung-kendaraan, mulai dari merekam stream sampai rekap per ruas seperti urutan di bawah ini.</p>
     </div>
@@ -184,7 +174,7 @@ skr = sum(n[c] * ekr[c] for c in ("KR", "SM", "KB")) * per_jam if lengkap else N
 
   <section class="bagian" id="jadwal" aria-labelledby="judul-jadwal">
     <div class="bagian-kepala">
-      <span class="no">05</span>
+      <span class="no">04</span>
       <h2 id="judul-jadwal">Jadwal rekam</h2>
       <p>Rekaman yang dihitung diambil dua kali di jam yang sama supaya kondisi tanpa pasar tumpah bisa dibandingkan dengan kondisi saat pasar tumpah.</p>
     </div>

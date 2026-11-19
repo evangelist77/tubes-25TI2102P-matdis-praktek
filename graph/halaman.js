@@ -172,7 +172,8 @@
     }).join('');
 
     // contoh deteksi YOLO
-    $('#galeri-deteksi').innerHTML = (M.deteksi || []).map((d) => {
+    const galDeteksi = $('#galeri-deteksi');  // bagian contoh deteksi malam 29 Okt sudah dihapus dari halaman
+    if (galDeteksi) galDeteksi.innerHTML = (M.deteksi || []).map((d) => {
       const m = /^(.*?)\s*\((V_[A-Za-z_]+|[ST]\d)\)\s*$/.exec(d.judul || '');
       const judul = m ? namaKamera(m[1]) : namaKamera(d.judul);
       return `<figure class="foto">

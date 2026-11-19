@@ -6,7 +6,7 @@
   const MENU = [
     { k: 'cerita', t: 'Cerita', sub: [['01', 'Max Flow', '/#mulai'], ['02', 'Masalah', '/#masalah'], ['03', 'Tim', '/#tim'], ['04', 'Rute', '/#rute'], ['05', 'Data lapangan', '/#data'], ['06', 'Algoritma', '/#aliran'], ['07', 'Akhir', '/#akhir']] },
     { k: 'dashboard', t: 'Dashboard Peta', href: '/graph/' },
-    { k: 'cctv', t: 'Data Lapangan', sub: [['', 'CCTV', '/graph/cctv.html#cctv'], ['', 'Rekaman HP', '/graph/cctv.html#hp'], ['', 'Deteksi kendaraan', '/graph/cctv.html#deteksi'], ['', 'Program hitung kendaraan', '/graph/cctv.html#program']] },
+    { k: 'cctv', t: 'Data Lapangan', sub: [['', 'CCTV', '/graph/cctv.html#cctv'], ['', 'Rekaman HP', '/graph/cctv.html#hp'], ['', 'Program hitung kendaraan', '/graph/cctv.html#program']] },
     { k: 'visualisasi', t: 'Visualisasi', sub: [['', 'Ford-Fulkerson', '/graph/visualisasi.html#ford-fulkerson'], ['', 'Iterative Ford-Fulkerson', '/graph/visualisasi.html#iterative']] },
     { k: 'tim', t: 'Tim', href: '/#tim' }
   ];
