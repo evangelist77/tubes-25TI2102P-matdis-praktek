@@ -77,6 +77,7 @@
 
     try {
       await loadData();
+      $('.iter-toggle-btn[data-kondisi="pasar"]').textContent = `Saat Pasar (α = ${Math.round(state.alphaPasar * 100)}%)`;
       initMap();
       initControls();
       render();
@@ -414,14 +415,16 @@
     }
 
     // 4. Status Pasar
+    const gasibu = Object.values(edgeMap).find((e) => e.isMarket);
+    const kapGasibu = gasibu ? gasibu.capacity.toLocaleString('id-ID') : '-';
     if (state.currentCondition === 'pasar') {
-      $('#iter-stat-market').textContent = 'Pasar Penuh (α = 50%)';
+      $('#iter-stat-market').textContent = `Saat Pasar (α = ${Math.round(state.alphaPasar * 100)}%)`;
       $('#iter-stat-market').style.color = '#c2410c';
-      $('#iter-stat-market-sub').textContent = 'Gasibu: 900 kend/jam | Singaperbangsa tutup';
+      $('#iter-stat-market-sub').textContent = `Gasibu Atas: ${kapGasibu} skr/jam | Singaperbangsa tutup`;
     } else {
       $('#iter-stat-market').textContent = 'Tanpa Pasar (Normal)';
       $('#iter-stat-market').style.color = '#15803d';
-      $('#iter-stat-market-sub').textContent = 'Gasibu: 1.800 kend/jam | Semua ruas buka';
+      $('#iter-stat-market-sub').textContent = `Gasibu Atas: ${kapGasibu} skr/jam | Semua ruas buka`;
     }
   }
 
