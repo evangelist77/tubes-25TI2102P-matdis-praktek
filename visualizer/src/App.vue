@@ -15,7 +15,7 @@ import SensitivityPanel from './components/SensitivityPanel.vue'
 import StepPlayer from './components/StepPlayer.vue'
 import { useComparison } from './composables/useComparison'
 import { useReplay } from './composables/useReplay'
-import { solveMaxFlow, type IterativeTrace, type MaxFlowResult, type TerminalPairId } from './core/iterative'
+import { diffIterativeTrace, solveMaxFlow, type IterativeTrace, type MaxFlowResult, type TerminalPairId } from './core/iterative'
 import { loadGeometry, loadIterativeTrace, loadManifest, loadRoutes, loadTopology, loadTrace } from './core/loader'
 import {
   describeCondition,
@@ -157,6 +157,11 @@ async function refreshIterative() {
     trace = await loadIterativeTrace(alpha)
   } catch {
     console.warn(`Trace iterative alpha ${alpha} belum ada, dihitung di browser.`)
+  }
+  // saat pengembangan, cocokkan trace Python dengan hitungan browser
+  if (trace && import.meta.env.DEV) {
+    const diffs = diffIterativeTrace(topo, trace)
+    if (diffs.length) console.warn(`Trace iterative alpha ${alpha} beda dengan hitungan browser:`, diffs)
   }
 
   const results = new Map<TerminalPairId, MaxFlowResult>()

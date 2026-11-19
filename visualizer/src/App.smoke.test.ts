@@ -136,13 +136,17 @@ describe('App (smoke)', () => {
       pairs[0].maxFlow = 12345 // penanda bahwa angka di layar diambil dari trace
       return { ok: true, status: 200, json: async () => ({ caseId: topology.case_id, alpha, pairs }) }
     })
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     window.history.replaceState(null, '', '/?mode=iterative')
 
     const wrapper = await mountApp()
     expect(wrapper.find('header').text()).toContain('/ 12345 kend/jam')
+    // angka palsu tadi harus terdeteksi oleh pembanding saat dev
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('beda dengan hitungan browser'), ['S1-T1: max flow berbeda'])
 
     wrapper.unmount()
     window.history.replaceState(null, '', '/')
+    warn.mockRestore()
     vi.stubGlobal('fetch', dataFetch)
   })
 })
