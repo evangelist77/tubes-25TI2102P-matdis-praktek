@@ -113,7 +113,7 @@ const currentRoundTitle = computed(() => {
         </div>
         <div class="font-bold text-stone-900 text-sm leading-snug">{{ currentRoundTitle }}</div>
         <p v-if="roundIndex === 0 && totalRounds === 0" class="text-xs leading-relaxed">
-          Tidak ada jalur augmentasi pada pasangan dan kondisi ini, sehingga arus maksimum 0 kend/jam dan tidak ada langkah untuk diputar.
+          Tidak ada jalur augmentasi pada pasangan dan kondisi ini, sehingga arus maksimum 0 skr/jam dan tidak ada langkah untuk diputar.
           Pilih pasangan lain atau kondisi normal untuk melihat jalur yang tersedia.
         </p>
         <p v-else-if="roundIndex === 0" class="text-xs leading-relaxed">
@@ -140,12 +140,12 @@ const currentRoundTitle = computed(() => {
             </li>
           </ol>
           <div class="border-t border-amber-200/70 pt-2 text-[12px] text-stone-700">
-            Bottleneck jalur: <b class="font-mono">{{ pathBottleneck }}</b> kend/jam · total arus:
-            <b class="font-mono">{{ totalFlow }}</b> kend/jam
+            Bottleneck jalur: <b class="font-mono">{{ pathBottleneck }}</b> skr/jam · total arus:
+            <b class="font-mono">{{ totalFlow }}</b> skr/jam
           </div>
         </template>
         <p v-else class="text-xs leading-relaxed">
-          Tidak ditemukan jalur augmentasi baru. Arus maksimum jaringan adalah {{ maxFlow }} kend/jam.
+          Tidak ditemukan jalur augmentasi baru. Arus maksimum jaringan adalah {{ maxFlow }} skr/jam.
         </p>
       </div>
 
@@ -167,8 +167,8 @@ const currentRoundTitle = computed(() => {
         </p>
         <div class="space-y-1.5 text-xs font-mono">
           <div class="flex justify-between text-stone-600">
-            <span>Arus lewat: <b class="text-stone-900">{{ marketFlow }} kend/jam</b></span>
-            <span>Kapasitas efektif: <b class="text-stone-900">{{ marketCap }} kend/jam</b></span>
+            <span>Arus lewat: <b class="text-stone-900">{{ marketFlow }} skr/jam</b></span>
+            <span>Kapasitas efektif: <b class="text-stone-900">{{ marketCap }} skr/jam</b></span>
           </div>
           <div class="h-2.5 w-full rounded-full bg-stone-200 overflow-hidden">
             <div
@@ -179,7 +179,7 @@ const currentRoundTitle = computed(() => {
           </div>
           <div class="flex justify-between text-[11px] text-stone-500">
             <span>0</span>
-            <span>Sisa: {{ Math.max(0, marketCap - marketFlow) }} kend/jam</span>
+            <span>Sisa: {{ Math.max(0, marketCap - marketFlow) }} skr/jam</span>
             <span>{{ marketCap }}</span>
           </div>
         </div>
@@ -240,7 +240,7 @@ const currentRoundTitle = computed(() => {
           <div>
             <span class="text-stone-400 block text-[11px]">Total Arus Optimal</span>
             <span class="text-lg font-extrabold text-emerald-400">{{ maxFlow }}</span>
-            <span class="text-[11px] text-stone-400"> kend/jam</span>
+            <span class="text-[11px] text-stone-400"> skr/jam</span>
           </div>
           <div>
             <span class="text-stone-400 block text-[11px]">Kondisi Simulasi</span>
@@ -256,7 +256,7 @@ const currentRoundTitle = computed(() => {
             <li v-for="id in minCutEdges" :key="id">{{ edgeById.get(id)?.road ?? `Ruas #${id}` }} · {{ effectiveCapacities[id] ?? 0 }}</li>
             <li v-if="!minCutEdges.length">Belum ada ruas potongan.</li>
           </ul>
-          <div class="mt-1 font-mono">Σ kapasitas min-cut = {{ cutCapacity }} kend/jam</div>
+          <div class="mt-1 font-mono">Σ kapasitas min-cut = {{ cutCapacity }} skr/jam</div>
         </div>
       </div>
     </div>

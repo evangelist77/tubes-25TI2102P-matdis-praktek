@@ -118,7 +118,7 @@ const btnClass =
       <span class="text-stone-600">
         Arus pasangan:
         <b class="font-mono text-base text-orange-700 font-extrabold">{{ totalFlow }}</b>
-        <span class="text-stone-400 font-mono"> / {{ maxFlow }} kend/jam</span>
+        <span class="text-stone-400 font-mono"> / {{ maxFlow }} skr/jam</span>
       </span>
 
       <!-- Kecepatan Putar -->

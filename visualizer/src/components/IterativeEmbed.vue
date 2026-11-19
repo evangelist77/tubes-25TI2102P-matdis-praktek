@@ -206,11 +206,11 @@ function togglePanel(panel: 'flow' | 'legend') {
         <button type="button" class="rounded px-1 text-base leading-none text-slate-500 hover:bg-slate-100" aria-label="Tutup informasi arus" @click="openPanel = null">×</button>
       </div>
       <p class="mt-2 font-mono text-xl font-black text-slate-950">
-        {{ totalFlow }} <span class="text-sm font-bold text-slate-500">/ {{ maxFlow }} kend/jam</span>
+        {{ totalFlow }} <span class="text-sm font-bold text-slate-500">/ {{ maxFlow }} skr/jam</span>
       </p>
       <p v-if="currentPath.length" class="mt-1 leading-relaxed">
         {{ pathSummary }}<br>
-        Bottleneck <b>{{ bottleneck }}</b> kend/jam
+        Bottleneck <b>{{ bottleneck }}</b> skr/jam
       </p>
       <p v-else-if="noAugmentingPath" class="mt-1 leading-relaxed">
         Tidak ada jalur augmentasi pada pasangan dan kondisi ini.
