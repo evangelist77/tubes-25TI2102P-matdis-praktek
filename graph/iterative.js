@@ -48,8 +48,9 @@
     topology: null,
     geometry: null,
     routes: [],
-    traces: {}, // key: "S1_T1_a0", "S1_T1_a50", dst.
-    currentCondition: 'normal', // 'normal' (a0) | 'pasar' (a50)
+    iter: {}, // trace iterative Python: { normal: iterative_a0.json, pasar: iterative_a<alpha pasar>.json }
+    alphaPasar: 0,
+    currentCondition: 'normal', // 'normal' | 'pasar'
     currentPair: 'all',         // 'all' | 'S1-T1' | 'S1-T2' | 'S2-T1' | 'S2-T2'
     currentRoute: 'all',        // 'all' | 'S1-T1' | 'S1-T2' | ... (8 rute)
     selectedEdgeId: null,
@@ -102,23 +103,15 @@
     state.geometry = geomRes;
     state.routes = routesRes.routes || [];
 
-    // Muat trace untuk semua pasangan S-T pada a0 dan a50
-    const tracePromises = [];
-    for (const p of PAIR_KEYS) {
-      for (const a of [0, 50]) {
-        const key = `${p.src}_${p.sink}_a${a}`;
-        const url = `/graph/ff/data/trace_${p.src}_${p.sink}_a${a}.json`;
-        tracePromises.push(
-          fetch(url)
-            .then((r) => (r.ok ? r.json() : null))
-            .then((data) => {
-              if (data) state.traces[key] = data;
-            })
-            .catch(() => {})
-        );
-      }
-    }
-    await Promise.all(tracePromises);
+    // Trace dari algoritma Iterative Ford-Fulkerson Python (algorithms/maxflow/iterative_ford_fulkerson.py).
+    // Kondisi pasar memakai alpha terukur di manifest, sama dengan visualisasi Ford-Fulkerson.
+    const manifest = await fetch('/graph/ff/data/manifest.json').then((r) => r.json());
+    state.alphaPasar = manifest.observedAlpha;
+    const [normal, pasar] = await Promise.all([0, manifest.observedAlpha].map((a) =>
+      fetch(`/graph/ff/data/iterative_a${Math.round(a * 100)}.json`).then((r) => (r.ok ? r.json() : null))
+    ));
+    if (!normal || !pasar) throw new Error('trace iterative belum dibuat');
+    state.iter = { normal, pasar };
   }
 
   // --- Inisialisasi Peta Leaflet ---
@@ -220,19 +213,15 @@
 
   // --- Kalkulasi Aliran (Iterative Ford-Fulkerson) ---
   function computeEdgeData() {
-    const isPasar = state.currentCondition === 'pasar';
-    const alphaCode = isPasar ? 'a50' : 'a0';
+    const trace = state.iter[state.currentCondition];
+    // kapasitas efektif sama untuk keempat pasangan, diambil dari hasil algoritma
+    const kapasitas = trace.pairs[0].effectiveCapacity;
     const edgeMap = {};
 
     // Inisialisasi semua edge dari topologi
     for (const edge of state.topology.edges) {
-      // Hitung kapasitas efektif pada kondisi saat ini
-      let effectiveCap = edge.capacity;
-      if (isPasar && edge.isMarket) {
-        effectiveCap = edge.capacity * 0.5; // penyempitan 50%
-      } else if (isPasar && edge.closedInMorning) {
-        effectiveCap = 0; // ditutup saat pagi pasar
-      }
+      // Kapasitas efektif pada kondisi saat ini (Gasibu Atas menyempit, Singaperbangsa 0 saat pasar)
+      const effectiveCap = kapasitas[edge.id] ?? edge.capacity;
 
       edgeMap[edge.id] = {
         id: edge.id,
@@ -260,25 +249,24 @@
     let calculatedMaxFlow = 0;
 
     for (const p of activePairs) {
-      const traceKey = `${p.src}_${p.sink}_${alphaCode}`;
-      const trace = state.traces[traceKey];
-      if (!trace) continue;
+      const hasil = trace.pairs.find((x) => x.pairId === `${p.src}-${p.sink}`);
+      if (!hasil) continue;
 
-      calculatedMaxFlow += trace.result?.maxFlow || 0;
+      calculatedMaxFlow += hasil.maxFlow;
 
       // Ambil step terakhir untuk melihat arus tiap edge
-      const finalStep = trace.steps[trace.steps.length - 1];
+      const finalStep = hasil.steps[hasil.steps.length - 1];
       if (finalStep && finalStep.edgeFlows) {
         for (const [eid, flow] of Object.entries(finalStep.edgeFlows)) {
           const numId = Number(eid);
           if (edgeMap[numId]) {
-            edgeMap[numId].flow += flow;
+            edgeMap[numId].flow = Math.round((edgeMap[numId].flow + flow) * 10) / 10;
           }
         }
       }
     }
 
-    return { edgeMap, calculatedMaxFlow };
+    return { edgeMap, calculatedMaxFlow: Math.round(calculatedMaxFlow * 10) / 10 };
   }
 
   // --- Render Visualisasi ---
