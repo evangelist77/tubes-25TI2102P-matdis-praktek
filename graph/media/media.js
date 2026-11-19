@@ -18,7 +18,7 @@ window.MEDIA_DATA = {
     },
     cctv_tamansari_ws: {
       status: "aman",
-      catatan: "Kamera bisa dibuka. Masih dicek apakah titik ini masuk lingkup graf.",
+      catatan: "Kamera bisa dibuka dan dipakai untuk arus Jl. Sulanjana. Arus ini juga dipakai bersama CCTV Dago 2 - SMA 1 untuk menghitung arus Simpang Sulanjana yang CCTV-nya tidak bisa dibuka.",
       kamera: "CCTV Taman Sari - WS 01 (arah Sulanjana)",
       klip: { src: "media/cctv/V_Sulanjana.mp4", poster: "media/cctv/V_Sulanjana.jpg", direkam: "2026-11-13T16:02:13+07:00", durasi_detik: 18.5 }
     },
