@@ -11,8 +11,11 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const aset = (s) => (s ? '/graph/' + String(s).replace(/^\.?\//, '') : '');
   const bersih = (t) => String(t || '').replace(/\s*[\u2013\u2014]\s*/g, ' - ');
+  // nama simpang dari graf.json (diisi setelah data dimuat), kode V_ hanya cadangan kalau namanya tidak ada
+  let NAMA_SIMPUL = {};
   const simpul = (id) => {
     if (/^[ST][12]$/.test(id)) return `${id[0]}<sub>${id[1]}</sub>`;
+    if (NAMA_SIMPUL[id]) return esc(bersih(NAMA_SIMPUL[id]).replace(/^Simpang\s+/, ''));
     if (/^V_/.test(id)) return `V<sub>${id.slice(2).replace(/_/g, ' ')}</sub>`;
     return esc(id);
   };
@@ -104,6 +107,7 @@
     try {
       const r = await fetch('/graph/data/graf.json');
       D = await r.json();
+      NAMA_SIMPUL = Object.fromEntries(Object.values(D.nodes).map((n) => [n.id, n.label]));
     } catch (err) {
       $('#tabel-cctv tbody').innerHTML = '<tr><td colspan="4">Data graf tidak bisa dimuat.</td></tr>';
       return;
