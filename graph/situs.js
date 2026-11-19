@@ -8,7 +8,7 @@
     { k: 'dashboard', t: 'Dashboard Peta', href: '/graph/' },
     { k: 'cctv', t: 'Data Lapangan', sub: [['', 'CCTV', '/graph/cctv.html#cctv'], ['', 'Rekaman HP', '/graph/cctv.html#hp'], ['', 'Program hitung kendaraan', '/graph/cctv.html#program'], ['', 'Hasil akhir', '/graph/cctv.html#hasil']] },
     { k: 'visualisasi', t: 'Visualisasi', sub: [['', 'Ford-Fulkerson', '/graph/visualisasi.html#ford-fulkerson'], ['', 'Iterative Ford-Fulkerson', '/graph/visualisasi.html#iterative']] },
-    { k: 'analisis', t: 'Analisis', sub: [['01', 'Akar masalah', '/graph/analisis.html#fishbone'], ['02', 'Bobot PKJI', '/graph/analisis.html#bobot'], ['03', 'Pipeline', '/graph/analisis.html#pipeline'], ['04', 'Eksperimen', '/graph/analisis.html#eksperimen'], ['05', 'Temuan dan batasan', '/graph/analisis.html#temuan']] },
+    { k: 'analisis', t: 'Analisis', sub: [['', 'Alur metodologi', '/graph/analisis.html#metodologi'], ['01', 'Akar masalah', '/graph/analisis.html#fishbone'], ['02', 'Bobot PKJI', '/graph/analisis.html#bobot'], ['03', 'Pipeline', '/graph/analisis.html#pipeline'], ['04', 'Eksperimen', '/graph/analisis.html#eksperimen'], ['05', 'Temuan dan batasan', '/graph/analisis.html#temuan']] },
     { k: 'tim', t: 'Tim', href: '/#tim' }
   ];
   // warna 8 rute (urutan GRAPH_DATA.paths), dipakai bersama landing dan dashboard supaya sama

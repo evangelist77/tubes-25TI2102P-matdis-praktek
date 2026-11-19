@@ -22,9 +22,26 @@
     <h1 class="hal-judul">Analisis</h1>
     <p class="hal-lede">Dari akar masalah kemacetan Gasibu sampai cara kami menghitung kapasitas tiap ruas, alur program dari berkas kasus sampai visualisasi, hasil uji banding Ford-Fulkerson dan Dinic saat jalan berubah, lalu temuan dan batasannya.</p>
     <nav class="lompat" aria-label="Bagian halaman">
-      <a href="#fishbone">Fishbone</a><a href="#bobot">Bobot PKJI</a><a href="#pipeline">Pipeline</a><a href="#eksperimen">Eksperimen</a><a href="#temuan">Temuan dan batasan</a>
+      <a href="#metodologi">Alur metodologi</a><a href="#fishbone">Fishbone</a><a href="#bobot">Bobot PKJI</a><a href="#pipeline">Pipeline</a><a href="#eksperimen">Eksperimen</a><a href="#temuan">Temuan dan batasan</a>
     </nav>
   </header>
+
+  <!--S00-->
+  <section class="metode" id="metodologi" aria-labelledby="judul-metode">
+    <h2 id="judul-metode">Alur metodologi</h2>
+    <p>Tujuh tahap yang kami lalui dari masalah di lapangan sampai kesimpulan. Klik tiap tahap untuk membuka bagiannya.</p>
+    <ol class="alur-metode">
+      <li style="--w:#f2a7b8"><a href="#fishbone"><b>Isu dan akar masalah</b><span>Berita, urgensi, dan diagram fishbone</span></a></li>
+      <li style="--w:#86c8e3"><a href="/graph/"><b>Model graf</b><span>26 simpul, 31 ruas berarah, dan 8 rute dari OpenStreetMap</span></a></li>
+      <li style="--w:#f6d98c"><a href="#bobot"><b>Bobot kapasitas</b><span>Kapasitas tiap ruas dari rumus PKJI 2014</span></a></li>
+      <li style="--w:#a3d9bb"><a href="/graph/cctv.html"><b>Data lapangan</b><span>11 CCTV dan 6 rekaman HP dihitung YOLO untuk mengecek kapasitas</span></a></li>
+      <li style="--w:#b9a2e6"><a href="#pipeline"><b>Algoritma</b><span>Ford-Fulkerson, Dinic, dan Iterative di template dosen</span></a></li>
+      <li style="--w:#f6c08f"><a href="#eksperimen"><b>Eksperimen</b><span>Benchmark, graf dinamis, dan sensitivitas α</span></a></li>
+      <li style="--w:#e8737a"><a href="#temuan"><b>Temuan dan batasan</b><span>Hasil dikembalikan ke masalah awal</span></a></li>
+    </ol>
+    <p class="metode-catatan">Data lapangan tidak dijadikan bobot langsung. Arus terukur dipakai untuk mengecek bahwa kapasitas dari rumus PKJI masuk akal, lalu hasil eksperimen dibawa kembali ke isu di tahap pertama.</p>
+  </section>
+  <!--/S00-->
 
   <!--S01-->
   <section class="bagian" id="fishbone" aria-labelledby="judul-fishbone">
