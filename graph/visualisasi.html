@@ -31,13 +31,8 @@
     <svg class="blob blob-a" viewBox="0 0 400 300" aria-hidden="true"><path d="M60 40c60-50 190-40 260 10s90 140 30 190-200 70-270 20S0 90 60 40z" fill="#b9a2e6" stroke="#151a4f" stroke-width="1.5"/><path d="M120 90c40-30 130-25 170 10s40 100-10 120-150 20-180-20-20-80 20-110z" fill="#f6d98c" stroke="#151a4f" stroke-width="1.5"/></svg>
     <span class="tag">Visualisasi</span>
     <h1 class="hal-judul">Visualisasi algoritma</h1>
-<<<<<<< HEAD
     <p class="hal-lede">Ada dua visualisasi max flow untuk graf ini, yaitu Ford-Fulkerson buatan Alifah yang menunjukkan langkah per langkah di atas, dan Iterative Ford-Fulkerson buatan Ganesh di bawah ini untuk optimasi seluruh jaringan.</p>
     <p class="catatan-kotak">Di visualisasi Alifah augmenting path, residual graph, dan min cut digambar langkah demi langkah di atas peta. Di visualisasi Ganesh di bawah, seluruh pasangan S<sub>1</sub>, S<sub>2</sub> ke T<sub>1</sub>, T<sub>2</sub> serta 8 cabang rute dianalisis kapasitas efektif dan tingkat kepenuhannya secara interaktif.</p>
-=======
-    <p class="hal-lede">Ada dua visualisasi max flow untuk graf ini, yaitu Ford-Fulkerson buatan Alifah yang sudah bisa dicoba langsung di atas dan Iterative Ford-Fulkerson buatan Ganesh.</p>
-    <p class="catatan-kotak">Di visualisasi Alifah augmenting path, residual graph, dan min cut digambar langkah demi langkah di atas peta, tetapi trace dan penyempitan 50% di sana masih contoh sampai kapasitas dari data lapangan selesai dihitung.</p>
->>>>>>> c46587db44326c69789bf75321208eb27b49f53e
     <nav class="lompat" aria-label="Bagian halaman">
       <a href="#ford-fulkerson">Ford-Fulkerson</a><a href="#iterative">Iterative Ford-Fulkerson</a>
     </nav>
@@ -48,7 +43,6 @@
       <span class="romawi" aria-hidden="true">II</span>
       <h1 id="judul-iter">Iterative Ford-Fulkerson</h1>
       <span class="oleh">oleh Ganesh</span>
-<<<<<<< HEAD
       <span class="pill st-aman">Siap Digunakan</span>
     </div>
     <p>Semua pasangan S<sub>1</sub>, S<sub>2</sub> ke T<sub>1</sub>, T<sub>2</sub> dihitung sekaligus untuk optimasi jaringan dan total flow. Di tiap ruas untuk pasangan S<sub>x</sub>, T<sub>x</sub>: nilai maksimal arus, total arus yang lewat, kapasitas efektif, dan gradasi warna makin mendekati kapasitas, untuk setiap cabang rute.</p>
@@ -177,20 +171,6 @@
             </tbody>
           </table>
         </div>
-=======
-      <span class="pill st-aman">4 pasangan S–T</span>
-    </div>
-    <p>Setiap pasangan dijalankan dengan solver baru. Arus direset saat pasangan berganti, sedangkan ruas jalan berbagi kapasitas di dalam satu perhitungan. Pilih pasangan dan ikuti jalur augmentasinya.</p>
-
-    <div class="vis-panggung">
-      <div class="vis-bingkai" id="vis-iter">
-        <iframe id="bingkai-iter" title="Visualisasi interaktif Iterative Ford-Fulkerson"></iframe>
-        <div class="vis-muat" role="status"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 1 1-9.5 9.5M12 7a5 5 0 1 1-5 5"/></svg>Memuat visualisasi</div></div>
-      </div>
-      <div class="vis-strip">
-        <p class="vis-hp">Tampilan ringkas dirancang agar tetap nyaman di dalam kotak. Buka peta penuh untuk inspeksi jalan, kapasitas, dan potongan minimum.</p>
-        <a class="tombol" href="/graph/ff/?mode=iterative" target="_blank" rel="noopener">Buka layar penuh <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10 10 4M5 4h5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
->>>>>>> c46587db44326c69789bf75321208eb27b49f53e
       </div>
     </div>
   </section>
@@ -204,12 +184,8 @@
     </div>
   </section>
 </main>
-<<<<<<< HEAD
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="/graph/halaman.js"></script>
-<script src="/graph/iterative.js"></script>
-=======
-<script src="/graph/halaman.js?v=20261118"></script>
->>>>>>> c46587db44326c69789bf75321208eb27b49f53e
+<script src="/graph/halaman.js?v=20261120"></script>
+<script src="/graph/iterative.js?v=20261120"></script>
 </body>
 </html>
