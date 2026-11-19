@@ -2,7 +2,9 @@
 
 Keempat pasangan S -> T (S1-T1, S1-T2, S2-T1, S2-T2) dihitung berurutan. Setiap pasangan mulai lagi
 dari arus nol, lalu augmenting path dicari dengan Edmonds-Karp milik FordFulkerson (ford_fulkerson.py),
-jadi angka per pasangan sama dengan trace_<S>_<T>_a<alpha>.json.
+jadi angka per pasangan sama dengan trace_<S>_<T>_a<alpha>.json. Tambahan di sini: arah tiap ruas pada
+augmenting path (maju atau edge balik) dan sisa kapasitasnya sebelum dialiri, supaya visualisasi
+iterative cukup membaca trace tanpa menghitung sendiri.
 """
 
 from pathlib import Path
@@ -56,6 +58,40 @@ class IterativeFordFulkerson(BaseGraphAlgorithm):
         trace = self.ff._last_trace_data
         source, sink = trace["meta"]["source"], trace["meta"]["sink"]
         codes = {n["id"]: n.get("code", str(n["id"])) for n in self.ff.topology["nodes"]}
+        edges = {int(e["id"]): e for e in self.ff.topology["edges"]}
+        cap = {int(k): v for k, v in trace["effectiveCapacity"].items()}
+
+        steps: List[Dict[str, Any]] = []
+        prev = {eid: 0.0 for eid in cap}
+        for st in trace["steps"]:
+            flows = {int(k): v for k, v in st["edgeFlows"].items()}
+            # arus naik = ruas dilewati maju, arus turun = lewat edge balik (arus lama dibatalkan)
+            hop: Dict[int, Dict[str, Any]] = {}
+            for eid, f in flows.items():
+                u, v = edges[eid]["from"], edges[eid]["to"]
+                if f > prev[eid]:
+                    hop[u] = {"edgeId": eid, "from": u, "to": v, "isBackward": False,
+                              "residualBefore": round(cap[eid] - prev[eid], 2)}
+                elif f < prev[eid]:
+                    hop[v] = {"edgeId": eid, "from": v, "to": u, "isBackward": True,
+                              "residualBefore": prev[eid]}
+
+            # susun lintasan dari source sampai sink, tiap simpul cuma dilewati sekali
+            path: List[Dict[str, Any]] = []
+            node = source
+            while node != sink:
+                path.append(hop[node])
+                node = hop[node]["to"]
+
+            steps.append({
+                "step": st["step"],
+                "path": path,
+                "pathNodes": [source] + [t["to"] for t in path],
+                "bottleneck": st["bottleneck"],
+                "totalFlow": st["totalFlow"],
+                "edgeFlows": st["edgeFlows"],
+            })
+            prev = flows
 
         result = {
             "pairId": f"{codes[source]}-{codes[sink]}",
@@ -63,7 +99,7 @@ class IterativeFordFulkerson(BaseGraphAlgorithm):
             "sink": sink,
             "alpha": trace["meta"]["alpha"],
             "effectiveCapacity": trace["effectiveCapacity"],
-            "steps": trace["steps"],
+            "steps": steps,
             "maxFlow": trace["result"]["maxFlow"],
             "minCut": trace["result"]["minCut"],
             "sourceSide": trace["result"]["sourceSide"],
