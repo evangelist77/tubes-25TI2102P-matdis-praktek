@@ -212,6 +212,13 @@
     }
   }
 
+  // Nama simpang dari topology tanpa awalan "Simpang", source dan sink cukup kodenya
+  function namaSimpul(id) {
+    const n = state.topology.nodes.find((x) => x.id === id);
+    if (!n) return String(id);
+    return /^[ST]\d$/.test(n.code) ? n.code : n.label.replace(/^Simpang\s+/, '');
+  }
+
   // --- Kalkulasi Aliran (Iterative Ford-Fulkerson) ---
   function computeEdgeData() {
     const trace = state.iter[state.currentCondition];
@@ -472,7 +479,7 @@
         </div>
       </div>
       <div style="margin-top: 10px; font-size: 12px; color: #57534e; line-height: 1.4;">
-        <b>Kode Ruas:</b> <code>${edge.code}</code> (ID: ${edge.id})<br>
+        <b>Simpang:</b> ${namaSimpul(edge.from)} → ${namaSimpul(edge.to)}<br>
         ${edge.isMarket ? '<span style="color:#c2410c; font-weight:700;">★ Ruas Jl. Gasibu Atas: kapasitas menyempit saat pasar karena hambatan samping naik.</span><br>' : ''}
         ${edge.closedInMorning ? '<span style="color:#b91c1c; font-weight:600;">✕ Ruas Ditutup Pagi: Kapasitas menjadi 0 saat pasar tumpah pagi hari.</span>' : ''}
       </div>
@@ -509,7 +516,7 @@
             <b>${edge.road}</b>
             ${edge.isMarket ? '<span style="color:#ea580c; font-weight:700; font-size:11px;"> [terdampak pasar]</span>' : ''}
           </td>
-          <td><code style="font-size:11.5px;">${edge.code}</code></td>
+          <td style="font-size:12.5px;">${namaSimpul(edge.from)} → ${namaSimpul(edge.to)}</td>
           <td style="font-family: var(--mono); font-weight:700; color: ${color};">
             ${edge.flow.toLocaleString('id-ID')}
           </td>
