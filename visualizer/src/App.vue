@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, shallowRef, watch } from 'vue'
 import AlgorithmPanel from './components/AlgorithmPanel.vue'
 import ConditionCompare from './components/ConditionCompare.vue'
 import ConditionToggle from './components/ConditionToggle.vue'
@@ -15,8 +15,8 @@ import SensitivityPanel from './components/SensitivityPanel.vue'
 import StepPlayer from './components/StepPlayer.vue'
 import { useComparison } from './composables/useComparison'
 import { useReplay } from './composables/useReplay'
-import { solveMaxFlow, type TerminalPairId } from './core/iterative'
-import { loadGeometry, loadManifest, loadRoutes, loadTopology, loadTrace } from './core/loader'
+import { solveMaxFlow, type IterativeTrace, type MaxFlowResult, type TerminalPairId } from './core/iterative'
+import { loadGeometry, loadIterativeTrace, loadManifest, loadRoutes, loadTopology, loadTrace } from './core/loader'
 import {
   describeCondition,
   findDefaultRun,
@@ -143,20 +143,41 @@ function choosePair(sourceCode: string, sinkCode: string) {
   if (run) selectRun(run)
 }
 
-const iterativePairResults = computed(() => {
-  const results = new Map<TerminalPairId, ReturnType<typeof solveMaxFlow>>()
-  if (!topology.value) return results
+// Hasil iterative dibaca dari trace Python (iterative_a<alpha>.json). Bila berkasnya belum ada,
+// keempat pasangan dihitung di browser sebagai cadangan.
+const iterativePairResults = shallowRef(new Map<TerminalPairId, MaxFlowResult>())
 
+async function refreshIterative() {
+  const topo = topology.value
+  const alpha = selectedRun.value?.alpha ?? 0
+  if (!topo || viewMode.value !== 'iterative') return
+
+  let trace: IterativeTrace | null = null
+  try {
+    trace = await loadIterativeTrace(alpha)
+  } catch {
+    console.warn(`Trace iterative alpha ${alpha} belum ada, dihitung di browser.`)
+  }
+
+  const results = new Map<TerminalPairId, MaxFlowResult>()
   for (const pair of terminalPairs) {
-    const source = topology.value.nodes.find((node) => node.code === pair.sourceCode)?.id
-    const sink = topology.value.nodes.find((node) => node.code === pair.sinkCode)?.id
+    const source = topo.nodes.find((node) => node.code === pair.sourceCode)?.id
+    const sink = topo.nodes.find((node) => node.code === pair.sinkCode)?.id
     if (source === undefined || sink === undefined) {
       throw new Error(`Topologi tidak memiliki pasangan ${pair.sourceCode} → ${pair.sinkCode}.`)
     }
-    results.set(pair.id, solveMaxFlow(topology.value, source, sink, selectedRun.value?.alpha ?? 0))
+    results.set(pair.id, trace?.pairs.find((p) => p.pairId === pair.id) ?? solveMaxFlow(topo, source, sink, alpha))
   }
-  return results
-})
+
+  // hasil yang datang terlambat diabaikan bila kondisi sudah diganti
+  if (topo === topology.value && alpha === (selectedRun.value?.alpha ?? 0)) iterativePairResults.value = results
+}
+
+watch([topology, () => selectedRun.value?.alpha, viewMode], () =>
+  refreshIterative().catch((err) => {
+    errorMessage.value = err instanceof Error ? err.message : 'Gagal menyiapkan data iterative.'
+  })
+)
 
 const iterativeTimeline = computed<IterativeRound[]>(() => {
   const timeline: IterativeRound[] = []
@@ -319,7 +340,7 @@ const isMarketActive = computed(() =>
 
 <template>
   <main v-if="isEmbedMode" class="h-screen w-screen overflow-hidden">
-    <div v-if="isLoading" class="grid h-full place-items-center bg-[#fbf7ed] text-sm font-semibold text-slate-600">
+    <div v-if="isLoading || (!errorMessage && !iterativeResult)" class="grid h-full place-items-center bg-[#fbf7ed] text-sm font-semibold text-slate-600">
       Memuat visualisasi jaringan...
     </div>
     <div v-else-if="errorMessage || !topology || !iterativeResult" class="grid h-full place-items-center bg-red-50 p-5 text-center text-sm text-red-800">
