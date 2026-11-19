@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="theme-color" content="#fbf3e4">
+<title>Analisis · Max Flow Gasibu</title>
+<meta name="description" content="Fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen Ford-Fulkerson dan Dinic pada graf dinamis, serta temuan dan batasan tubes Kasus 4 pasar tumpah Gasibu.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2715%27 fill=%27%23e0492f%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/graph/situs.css">
+<link rel="stylesheet" href="/graph/halaman.css">
+<link rel="stylesheet" href="/graph/analisis.css?v=20261120">
+</head>
+<body class="hal analisis">
+<script src="/graph/situs.js"></script>
+<main class="hal-isi">
+  <header class="hal-kepala">
+    <svg class="blob blob-a" viewBox="0 0 400 300" aria-hidden="true"><path d="M70 30c70-40 200-20 255 40s60 150-5 190-210 50-265-10S-10 80 70 30z" fill="#b9a2e6" stroke="#151a4f" stroke-width="1.5"/><path d="M130 85c45-25 125-15 160 20s25 95-25 115-140 15-170-25 0-90 35-110z" fill="#86c8e3" stroke="#151a4f" stroke-width="1.5"/><path d="M175 130c22-10 60-4 70 18s-6 46-34 50-58-8-60-30 4-30 24-38z" fill="#f6d98c" stroke="#151a4f" stroke-width="1.5"/></svg>
+    <svg class="blob blob-b" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 6c18 0 30 16 44 26s12 34 2 50-30 32-50 30S16 96 10 78 6 40 20 24 42 6 60 6z" fill="#a3d9bb" stroke="#151a4f" stroke-width="1.5"/></svg>
+    <span class="tag">Analisis</span>
+    <h1 class="hal-judul">Analisis</h1>
+    <p class="hal-lede">Dari akar masalah kemacetan Gasibu sampai cara kami menghitung kapasitas tiap ruas, alur program dari berkas kasus sampai visualisasi, hasil uji banding Ford-Fulkerson dan Dinic saat jalan berubah, lalu temuan dan batasannya.</p>
+    <nav class="lompat" aria-label="Bagian halaman">
+      <a href="#fishbone">Fishbone</a><a href="#temuan">Temuan dan batasan</a>
+    </nav>
+  </header>
+
+  <!--S01-->
+  <section class="bagian" id="fishbone" aria-labelledby="judul-fishbone">
+    <div class="bagian-kepala">
+      <span class="no">01</span>
+      <h2 id="judul-fishbone">Akar masalah</h2>
+      <p>Kemacetan di Gasibu setiap Minggu pagi punya banyak penyebab. Kami memetakannya dengan diagram fishbone supaya kelihatan mana penyebab yang bisa dimodelkan dengan graf aliran dan mana yang berada di luar model.</p>
+    </div>
+    <div class="stat urgensi">
+      <div><b>5 <small>jam</small></b><span>Pasar buka setiap Minggu pukul 06.00 sampai 11.00, macetnya paling terasa pukul 07.00 sampai 10.00.</span></div>
+      <div><b>15 <small>tahun</small></b><span>Berita Gasibu macet karena badan jalan dipakai parkir sudah ada sejak April 2011, dan pasarnya tetap kembali.</span></div>
+      <div><b>12,6<small>%</small></b><span>Arus maksimum jaringan turun dari 2.668,6 menjadi 2.331,9 skr/jam saat pasar menurut model kami.</span></div>
+      <div><b>1 <small>jalur hilang</small></b><span>Jl. Diponegoro ruas Gedung Sate sampai Gasibu ditutup permanen sejak 10 Juli 2026.</span></div>
+    </div>
+    <figure class="tulang">
+      <svg viewBox="0 0 1180 620" role="img" aria-labelledby="fb-judul fb-isi"><title id="fb-judul">Diagram fishbone kemacetan kawasan Gasibu saat pasar tumpah</title><desc id="fb-isi">Lima kategori penyebab, yaitu manusia, metode, lingkungan, infrastruktur, dan material, menuju masalah arus kendaraan di sekitar Gasibu tertahan setiap Minggu pagi. Penyebab yang ditandai merah adalah akar masalah yang dimodelkan.</desc><path d="M14 262 L46 310 L14 358" class="duri"/><line x1="46" y1="310" x2="930" y2="310" class="tulang-utama"/><path d="M930 226 Q1100 214 1166 310 Q1100 406 930 394 Z" fill="#e0492f" stroke="#151a4f" stroke-width="2.5"/><text x="1030" y="272" text-anchor="middle" class="kepala-teks">Arus kendaraan</text><text x="1030" y="297" text-anchor="middle" class="kepala-teks">di sekitar Gasibu</text><text x="1030" y="322" text-anchor="middle" class="kepala-teks">tertahan setiap</text><text x="1030" y="347" text-anchor="middle" class="kepala-teks">Minggu pagi</text><line x1="340" y1="310" x2="170" y2="80" class="duri"/><rect x="78" y="30" width="184" height="40" rx="6" fill="#f2a7b8" stroke="#151a4f" stroke-width="1.5" transform="rotate(-2 170 50)"/><text x="170" y="57" text-anchor="middle" class="label-kat">Manusia</text><line x1="26.4" y1="132" x2="208.4" y2="132" class="ranting akar"/><text x="189.6" y="125" text-anchor="end" class="sebab akar">Pengunjung menyeberang</text><line x1="63.4" y1="182" x2="245.4" y2="182" class="ranting akar"/><text x="226.5" y="175" text-anchor="end" class="sebab akar">Parkir di pinggir jalan</text><line x1="100.3" y1="232" x2="282.3" y2="232" class="ranting akar"/><text x="263.5" y="225" text-anchor="end" class="sebab akar">Angkot berhenti lama</text><line x1="134.3" y1="278" x2="316.3" y2="278" class="ranting"/><text x="297.5" y="271" text-anchor="end" class="sebab">Pedagang selalu kembali</text><line x1="600" y1="310" x2="430" y2="80" class="duri"/><rect x="338" y="30" width="184" height="40" rx="6" fill="#86c8e3" stroke="#151a4f" stroke-width="1.5" transform="rotate(-2 430 50)"/><text x="430" y="57" text-anchor="middle" class="label-kat">Metode</text><line x1="286.4" y1="132" x2="468.4" y2="132" class="ranting"/><text x="449.6" y="125" text-anchor="end" class="sebab">Ditertibkan sejak 2011</text><line x1="323.4" y1="182" x2="505.4" y2="182" class="ranting"/><text x="486.5" y="175" text-anchor="end" class="sebab">Ditata ulang 2022</text><line x1="360.3" y1="232" x2="542.3" y2="232" class="ranting"/><text x="523.5" y="225" text-anchor="end" class="sebab">Belum ada rekayasa lalin</text><line x1="394.3" y1="278" x2="576.3" y2="278" class="ranting akar"/><text x="557.5" y="271" text-anchor="end" class="sebab akar">Jl. Japati ditutup lapak</text><line x1="860" y1="310" x2="690" y2="80" class="duri"/><rect x="598" y="30" width="184" height="40" rx="6" fill="#a3d9bb" stroke="#151a4f" stroke-width="1.5" transform="rotate(-2 690 50)"/><text x="690" y="57" text-anchor="middle" class="label-kat">Lingkungan</text><line x1="546.4" y1="132" x2="728.4" y2="132" class="ranting"/><text x="709.6" y="125" text-anchor="end" class="sebab">Olahraga Minggu pagi</text><line x1="583.4" y1="182" x2="765.4" y2="182" class="ranting"/><text x="746.5" y="175" text-anchor="end" class="sebab">Puncak macet 07.00-10.00</text><line x1="620.3" y1="232" x2="802.3" y2="232" class="ranting"/><text x="783.5" y="225" text-anchor="end" class="sebab">Dekat Gedung Sate, Monju</text><line x1="654.3" y1="278" x2="836.3" y2="278" class="ranting"/><text x="817.5" y="271" text-anchor="end" class="sebab">Pusat keramaian kota</text><line x1="470" y1="310" x2="300" y2="540" class="duri"/><rect x="208" y="550" width="184" height="40" rx="6" fill="#f6d98c" stroke="#151a4f" stroke-width="1.5" transform="rotate(2 300 570)"/><text x="300" y="577" text-anchor="middle" class="label-kat">Infrastruktur</text><line x1="252.5" y1="358" x2="434.5" y2="358" class="ranting akar"/><text x="424.5" y="351" text-anchor="end" class="sebab akar">Jl. Diponegoro ditutup</text><line x1="218.5" y1="404" x2="400.5" y2="404" class="ranting"/><text x="390.5" y="397" text-anchor="end" class="sebab">Jalan lingkungan < 5 m</text><line x1="184.5" y1="450" x2="366.5" y2="450" class="ranting akar"/><text x="356.5" y="443" text-anchor="end" class="sebab akar">Jalur ke timur sedikit</text><line x1="150.5" y1="496" x2="332.5" y2="496" class="ranting"/><text x="322.5" y="489" text-anchor="end" class="sebab">Beban pindah ke Surapati</text><line x1="730" y1="310" x2="560" y2="540" class="duri"/><rect x="468" y="550" width="184" height="40" rx="6" fill="#b9a2e6" stroke="#151a4f" stroke-width="1.5" transform="rotate(2 560 570)"/><text x="560" y="577" text-anchor="middle" class="label-kat">Material</text><line x1="512.5" y1="358" x2="694.5" y2="358" class="ranting"/><text x="684.5" y="351" text-anchor="end" class="sebab">Lapak dan tenda pedagang</text><line x1="478.5" y1="404" x2="660.5" y2="404" class="ranting"/><text x="650.5" y="397" text-anchor="end" class="sebab">Dagangan di trotoar</text><line x1="444.5" y1="450" x2="626.5" y2="450" class="ranting akar"/><text x="616.5" y="443" text-anchor="end" class="sebab akar">Mobil pengunjung parkir</text></svg><div class="tulang-hp"><div class="kepala-hp">Arus kendaraan di sekitar Gasibu tertahan setiap Minggu pagi</div><section style="border-top:6px solid #f2a7b8"><h3>Manusia</h3><ul><li class=akar>Pengunjung menyeberang</li><li class=akar>Parkir di pinggir jalan</li><li class=akar>Angkot berhenti lama</li><li>Pedagang selalu kembali</li></ul></section><section style="border-top:6px solid #86c8e3"><h3>Metode</h3><ul><li>Ditertibkan sejak 2011</li><li>Ditata ulang 2022</li><li>Belum ada rekayasa lalin</li><li class=akar>Jl. Japati ditutup lapak</li></ul></section><section style="border-top:6px solid #a3d9bb"><h3>Lingkungan</h3><ul><li>Olahraga Minggu pagi</li><li>Puncak macet 07.00-10.00</li><li>Dekat Gedung Sate, Monju</li><li>Pusat keramaian kota</li></ul></section><section style="border-top:6px solid #f6d98c"><h3>Infrastruktur</h3><ul><li class=akar>Jl. Diponegoro ditutup</li><li>Jalan lingkungan < 5 m</li><li class=akar>Jalur ke timur sedikit</li><li>Beban pindah ke Surapati</li></ul></section><section style="border-top:6px solid #b9a2e6"><h3>Material</h3><ul><li>Lapak dan tenda pedagang</li><li>Dagangan di trotoar</li><li class=akar>Mobil pengunjung parkir</li></ul></section></div>
+      <figcaption><span><i></i>Penyebab berwarna merah adalah akar masalah yang kami masukkan ke model graf.</span><span>Kategori mengikuti 5M, yaitu Man, Method, Machine, Material, dan Environment.</span></figcaption>
+    </figure>
+    <h3 class="sub-judul">Dari akar masalah ke graf</h3>
+    <ul class="akar-model">
+      <li><div class="dari"><small>Akar masalah</small><b>Hambatan samping naik di Jl. Gasibu Atas</b><p>Pengunjung menyeberang, parkir di pinggir jalan, dan angkot berhenti lama membuat lajur yang bisa dipakai kendaraan berkurang.</p></div><span class="panah" aria-hidden="true">↓</span><div class="ke"><small>Di model</small><b>Kapasitas edge dikali (1 − α)</b><p>α adalah faktor penyempitan. Sementara diambil dari perubahan faktor hambatan samping PKJI, sekitar 11%, lalu diganti hasil kamera Gasibu_02.</p></div></li>
+      <li><div class="dari"><small>Akar masalah</small><b>Ruas ditutup saat pasar</b><p>Jl. Japati dipakai lapak dan tidak bisa dilewati kendaraan, sehingga arus harus mencari jalan lain di sekitarnya.</p></div><span class="panah" aria-hidden="true">↓</span><div class="ke"><small>Di model</small><b>Kapasitas edge menjadi 0</b><p>Di skenario kami ruas yang ditutup saat pagi hari pasar adalah Jl. Singaperbangsa, lalu dibuka lagi sekitar pukul 11.00 sampai 12.00.</p></div></li>
+      <li><div class="dari"><small>Akar masalah</small><b>Jalur keluar kawasan terbatas</b><p>Sejak Jl. Diponegoro ditutup permanen, kendaraan ke arah timur menumpuk di Jl. Surapati dan jalan lingkungan yang sempit.</p></div><span class="panah" aria-hidden="true">↓</span><div class="ke"><small>Di model</small><b>Struktur graf dan min cut</b><p>Graf 26 simpul dengan 8 rute dan 2 sink menunjukkan berapa arus yang masih bisa lewat dan ruas mana yang menjadi pembatasnya.</p></div></li>
+    </ul>
+    <p class="catatan-kotak">Penyebab seperti olahraga Minggu pagi dan riwayat penertiban tidak kami masukkan ke model karena bukan sifat ruas jalan. Penyebab itu tetap penting untuk kebijakan, tetapi graf aliran hanya bisa menjawab berapa kendaraan yang bisa lewat dan di ruas mana arusnya tertahan.</p>
+  </section>
+  <!--/S01-->
+
+  <!--S05-->
+  <section class="bagian" id="temuan" aria-labelledby="judul-temuan">
+    <div class="bagian-kepala">
+      <span class="no">05</span>
+      <h2 id="judul-temuan">Temuan, batasan, dan langkah lanjut</h2>
+      <p>Hasil hitungan kami kembalikan ke masalah awal, lalu kami tulis apa saja yang belum bisa dijawab model ini dan apa yang perlu diperbaiki kalau penelitian ini dilanjutkan.</p>
+    </div>
+    <ul class="temuan">
+      <li><b>2.668,6 <small>skr/jam</small></b><h3>Pembatasnya ada di jalan masuk</h3><p>Tanpa pasar, arus maksimum dibatasi Jl. Tamansari (1.247) dan Jl. Dipatiukur (1.421,6). Kapasitas kawasan Gasibu lebih ditentukan oleh pintu masuknya daripada oleh Gasibu Atas.</p></li>
+      <li><b>−12,6<small>%</small></b><h3>Penutupan ruas lebih berpengaruh</h3><p>Saat pasar arus maksimum turun menjadi 2.331,9 skr/jam. Penyebabnya penutupan Jl. Singaperbangsa, karena arus dari Dipatiukur tinggal bisa lewat Jl. Hasanuddin dengan kapasitas 1.084,9.</p></li>
+      <li><b>&gt; 70<small>%</small></b><h3>Gasibu Atas punya cadangan besar</h3><p>Penyempitan Gasibu Atas baru menurunkan arus jaringan kalau kapasitasnya hilang lebih dari 70%. Menertibkan lapak di Gasibu Atas saja belum tentu menaikkan arus kawasan kalau ruas di sekitarnya tetap ditutup.</p></li>
+    </ul>
+    <h3 class="sub-judul">Batasan model</h3>
+    <ul class="daftar batasan">
+      <li>Kapasitas dianggap tetap dalam satu jam, belum berubah menit ke menit.</li>
+      <li>Hambatan samping hari biasa dianggap sedang untuk semua ruas.</li>
+      <li>Lebar dan lajur dari OpenStreetMap, belum diukur langsung. Jalan di bawah 5 m memakai nilai 5 m, jadi kapasitasnya batas atas.</li>
+      <li>Penyempitan Gasibu Atas sekitar 11% masih dari tabel hambatan samping PKJI sampai hasil kamera Gasibu_02 keluar.</li>
+      <li>Penutupan Jl. Singaperbangsa saat pagi hari pasar adalah asumsi skenario.</li>
+      <li>Simpang dianggap tidak membatasi arus, padahal lampu lalu lintas dan antrean belok juga mengurangi kapasitas.</li>
+      <li>Hitungan YOLO baru dicek visual di satu klip HP. Program kurang hitung sekitar 7 sampai 10%, terutama motor, dan hitung manual belum dilakukan.</li>
+      <li>Tiga CCTV di jalur graf tidak bisa dibuka, dan cuaca serta arus pejalan kaki belum dimodelkan.</li>
+    </ul>
+    <h3 class="sub-judul">Kalau dilanjutkan</h3>
+    <div class="lanjut">
+      <section><h3>Data</h3><ul class="daftar"><li>Merekam CCTV Pelindung otomatis setiap Sabtu dan Minggu selama beberapa pekan supaya α dan arus punya sebaran, bukan satu sampel.</li><li>Hitung manual di beberapa klip untuk mengukur galat program YOLO.</li><li>Mengukur lebar jalan langsung di lapangan untuk ruas yang paling menentukan.</li></ul></section>
+      <section><h3>Model dan algoritma</h3><ul class="daftar"><li>Menghitung kapasitas simpang bersinyal dengan PKJI dan memasukkannya sebagai batas di simpul.</li><li>Graf berbasis waktu supaya arus per 15 menit bisa dibandingkan sepanjang pagi.</li><li>Mencoba Push-Relabel atau max flow inkremental untuk perubahan yang sering.</li></ul></section>
+    </div>
+    <p class="catatan-kotak">Kalau proyek ini dijadikan PKM atau tugas akhir, yang paling mendesak adalah data, yaitu rekaman otomatis yang panjang dan validasi hitung manual. Angka penyempitan saat pasar dan penutupan ruas paling banyak memengaruhi kesimpulan, jadi dua hal itu yang perlu dipastikan dulu sebelum algoritmanya dikembangkan.</p>
+  </section>
+  <!--/S05-->
+
+  <section class="hal-akhir" aria-label="Halaman lain">
+    <h2>Lihat juga</h2>
+    <div class="tombol-baris">
+      <a class="tombol" href="/graph/visualisasi.html">Visualisasi</a>
+      <a class="tombol alt" href="/graph/cctv.html">Data Lapangan</a>
+      <a class="tombol alt" href="/#akhir">Kembali ke cerita</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>
