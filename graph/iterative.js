@@ -355,7 +355,7 @@
       line.bindTooltip(`
         <div style="font-size:12px; font-family: sans-serif; line-height:1.4;">
           <b>${edge.road}</b><br>
-          Arus: <b>${edge.flow.toLocaleString('id-ID')}</b> / ${edge.capacity.toLocaleString('id-ID')} kend/jam (${pct}%)
+          Arus: <b>${edge.flow.toLocaleString('id-ID')}</b> / ${edge.capacity.toLocaleString('id-ID')} skr/jam (${pct}%)
           ${edge.isMarket ? '<br><span style="color:#ea580c; font-weight:700;">★ Ruas Pasar Tumpah</span>' : ''}
           ${edge.closedInMorning && state.currentCondition === 'pasar' ? '<br><span style="color:#dc2626;">✕ Ditutup Pagi</span>' : ''}
         </div>
@@ -402,13 +402,13 @@
       }
     }
 
-    $('#iter-stat-totalflow').textContent = `${totalNetworkFlow.toLocaleString('id-ID')} kend`;
+    $('#iter-stat-totalflow').textContent = `${totalNetworkFlow.toLocaleString('id-ID')} skr`;
 
     // 3. Bottleneck
     if (worstEdge) {
       const pct = Math.round(maxRatio * 100);
       $('#iter-stat-bottleneck').textContent = worstEdge.road;
-      $('#iter-stat-bottleneck-sub').textContent = `Kepenuhan ${pct}% (${worstEdge.flow}/${worstEdge.capacity} kend/jam)`;
+      $('#iter-stat-bottleneck-sub').textContent = `Kepenuhan ${pct}% (${worstEdge.flow}/${worstEdge.capacity} skr/jam)`;
     } else {
       $('#iter-stat-bottleneck').textContent = 'Tidak Ada';
       $('#iter-stat-bottleneck-sub').textContent = 'seluruh ruas lancar';
@@ -445,17 +445,17 @@
         <div class="iter-metric-box">
           <span class="iter-metric-label">Total Arus Lewat</span>
           <span class="iter-metric-val" style="color: ${color};">${edge.flow.toLocaleString('id-ID')}</span>
-          <span style="font-size:11px; color:#78716c;">kendaraan / jam</span>
+          <span style="font-size:11px; color:#78716c;">skr / jam</span>
         </div>
         <div class="iter-metric-box">
           <span class="iter-metric-label">Kapasitas Efektif</span>
           <span class="iter-metric-val">${edge.capacity.toLocaleString('id-ID')}</span>
-          <span style="font-size:11px; color:#78716c;">kendaraan / jam</span>
+          <span style="font-size:11px; color:#78716c;">skr / jam</span>
         </div>
         <div class="iter-metric-box">
           <span class="iter-metric-label">Sisa Kapasitas</span>
           <span class="iter-metric-val">${sisa.toLocaleString('id-ID')}</span>
-          <span style="font-size:11px; color:#78716c;">kend/jam tersisa</span>
+          <span style="font-size:11px; color:#78716c;">skr/jam tersisa</span>
         </div>
         <div class="iter-metric-box">
           <span class="iter-metric-label">Kepenuhan Ruas</span>
