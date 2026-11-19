@@ -105,6 +105,41 @@ Rincian tiap langkah di panel (sisa kapasitas, ruas tersempit, edge balik) **dit
 `validateTrace()` memeriksa arus ≤ kapasitas, konservasi arus, dan Σ kapasitas min-cut = max flow.
 `npm test` memeriksa semua trace di `public/data/`.
 
+### Format trace iterative
+
+Dibuat dari root repo dengan `python3 algorithms/maxflow/iterative_ford_fulkerson.py`, yang menulis
+`iterative_a<alpha>.json` ke `public/data/`, satu berkas per nilai α (0, 10, ..., 100 persen, sama dengan
+trace Ford-Fulkerson). Isinya hasil keempat pasangan sesuai urutan iterasi:
+
+```ts
+interface IterativeTrace {
+  caseId: string
+  alpha: number
+  pairs: Array<{                              // urutan: S1-T1, S1-T2, S2-T1, S2-T2
+    pairId: 'S1-T1' | 'S1-T2' | 'S2-T1' | 'S2-T2'
+    source: number
+    sink: number
+    alpha: number
+    effectiveCapacity: Record<number, number>
+    steps: Array<{
+      step: number
+      path: Array<{ edgeId: number; from: number; to: number; isBackward: boolean; residualBefore: number }>
+      pathNodes: number[]                     // simpul dari source sampai sink
+      bottleneck: number
+      totalFlow: number
+      edgeFlows: Record<number, number>
+    }>
+    maxFlow: number
+    minCut: number[]
+    sourceSide: number[]
+  }>
+}
+```
+
+Tiap pasangan dihitung dari arus nol dengan Edmonds-Karp milik `FordFulkerson`, jadi angkanya sama dengan
+`trace_<S>_<T>_a<alpha>.json`. `isBackward: true` berarti ruas dilewati lewat edge balik (arus lama
+dibatalkan), `residualBefore` adalah sisa kapasitas ruas sebelum langkah itu.
+
 ## Mengganti trace contoh dengan keluaran asli
 
 1. Minta solver (Python) menulis trace dengan format di atas, satu berkas per pasangan S→T dan nilai α
