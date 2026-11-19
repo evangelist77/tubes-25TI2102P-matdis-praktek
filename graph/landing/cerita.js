@@ -1691,7 +1691,7 @@ const Data = {
       /* kartu bercuplikan memakai video muted loop yang langsung berputar begitu kartunya mendarat (lihat vid) */
       el.innerHTML = (it.src ? `<video muted loop playsinline preload="none" data-poster="${esc(it.poster || '')}" data-src="${esc(it.src)}"></video>` : it.poster ? `<img alt="" decoding="async" data-src="${esc(it.poster)}">` : '<div class="kosong"><b>Tidak bisa dibuka</b></div>') + `<span>${esc(cap)}</span>`;
       /* kamera yang datanya tidak dipakai tetap ditampilkan, tapi diberi cap supaya tidak dikira sumber data */
-      if (it.status === 'tidak dipakai') el.insertAdjacentHTML('beforeend', '<b class="salah">Tidak dipakai · salah ruas</b>');
+      if (it.status === 'tidak dipakai') el.insertAdjacentHTML('beforeend', '<b class="salah">Tidak dipakai<br>salah ruas</b>');
       const im = el.querySelector('img,video');
       if (im) im.addEventListener('error', () => { const k = document.createElement('div'); k.className = 'kosong'; k.innerHTML = '<b>Gambar gagal dimuat</b>'; im.replaceWith(k); }, { once: true });
       el.addEventListener('click', () => Dlg.media(it, el));
