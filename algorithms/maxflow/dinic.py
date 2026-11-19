@@ -99,20 +99,47 @@ class Dinic(BaseGraphAlgorithm):
         self.bfs_phases += 1
         return level
 
-    def _cari_jalur(self, s: int, t: int, level: Dict[int, int]) -> List[_ResidualEdge]:
-        """DFS dari s ke t yang hanya lewat sisi level graph (level naik satu). Kosong kalau tidak ada jalur."""
-        tumpukan = [(s, [])]
-        dikunjungi = {s}
-        while tumpukan:
-            u, jalur = tumpukan.pop()
+    def _blocking_flow(self, s: int, t: int, level: Dict[int, int]) -> None:
+        """Blocking flow di level graph dengan DFS. it[u] = indeks sisi berikutnya yang dicoba dari u, jadi sisi
+        yang sudah jenuh atau buntu tidak diperiksa lagi dalam fase yang sama."""
+        adj = self._adj
+        it = dict.fromkeys(adj, 0)
+        simpul = [s]  # simpul di jalur DFS sekarang
+        jalur: List[_ResidualEdge] = []  # sisi residual di jalur DFS sekarang
+        diperiksa = 0
+
+        while True:
+            u = simpul[-1]
             if u == t:
-                return jalur
-            for e in self._adj[u]:
-                self.edges_scanned += 1
-                if e.to not in dikunjungi and level.get(e.to) == level[u] + 1 and e.capacity - e.flow > EPS:
-                    dikunjungi.add(e.to)
-                    tumpukan.append((e.to, jalur + [e]))
-        return []
+                self._dorong(jalur, simpul)
+                # mundur ke sisi pertama yang jenuh, bagian jalur sebelum sisi itu masih bisa dipakai lagi
+                k = next(i for i, e in enumerate(jalur) if e.capacity - e.flow <= EPS)
+                del jalur[k:]
+                del simpul[k + 1:]
+                continue
+
+            sisi = adj[u]
+            i = it[u]
+            while i < len(sisi):
+                e = sisi[i]
+                diperiksa += 1
+                if level.get(e.to) == level[u] + 1 and e.capacity - e.flow > EPS:
+                    break
+                i += 1
+            it[u] = i
+
+            if i < len(sisi):
+                jalur.append(sisi[i])
+                simpul.append(sisi[i].to)
+            elif u == s:
+                break
+            else:
+                # u buntu, keluarkan dari jalur lalu lewati sisi yang menuju u
+                jalur.pop()
+                simpul.pop()
+                it[simpul[-1]] += 1
+
+        self.edges_scanned += diperiksa
 
     def _dorong(self, jalur: List[_ResidualEdge], simpul: List[int]) -> None:
         """Alirkan bottleneck di sepanjang jalur s -> t yang ditemukan DFS."""
@@ -160,11 +187,7 @@ class Dinic(BaseGraphAlgorithm):
                 event_type="LEVEL_GRAPH",
                 state_mutations={"phase": self.bfs_phases, "sink_level": level[t]},
             )
-            while True:
-                jalur = self._cari_jalur(s, t, level)
-                if not jalur:
-                    break
-                self._dorong(jalur, [s] + [e.to for e in jalur])
+            self._blocking_flow(s, t, level)
 
         # BFS terakhir tidak sampai ke t, jadi simpul yang terjangkau = sisi s dari min cut
         source_side = set(level)
