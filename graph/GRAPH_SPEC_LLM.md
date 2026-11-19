@@ -78,7 +78,7 @@ $$\text{MaxFlow}(S^* \to T^*) = \sum_{e \in \text{out}(S^*)} f(e) = \sum_{e \in 
 
 ## 3. Rincian 8 Path Aliran Terarah (Directed Flow Paths)
 
-**Status data kapasitas:** Data kapasitas kendaraan (kend/jam) belum tersedia. Belum ada data survei atau sumber perhitungan terverifikasi yang mendukung angka kapasitas tiap ruas. Lebar jalan dan jumlah lajur tidak dapat langsung dianggap sebagai kapasitas kendaraan per jam; nilai tersebut perlu ditentukan melalui survei atau perhitungan yang terdokumentasi sebelum analisis Maximum Flow numerik.
+**Status data kapasitas (diperbarui 19 November 2026):** Kapasitas tiap ruas sekarang dihitung dengan rumus PKJI jalan perkotaan (C = C0 x FCLJ x FCPA x FCHS x FCUK, satuan skr/jam per arah) dari lebar dan jumlah lajur di dokumen ini. Tabelnya ada di `hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv` dan skripnya `hitung-kendaraan/video_counting/kapasitas_pkji.py`. Arus hasil hitung CCTV dan rekaman HP dipakai untuk mengecek bahwa tidak ada arus yang melebihi kapasitas.
 
 ### Metodologi Penentuan Lebar Jalan dan Arah Lalu Lintas (Berdasarkan OpenStreetMap)
 Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komunitas OSM #133623):
