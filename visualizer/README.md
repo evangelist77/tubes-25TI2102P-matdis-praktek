@@ -42,7 +42,7 @@ Peta dasar memakai tile OpenStreetMap (butuh internet). Matikan "Peta dasar" unt
    (kapasitas − arus), ruas tersempit (bottleneck jalur), dan total arus. Di langkah terakhir muncul hasil akhir,
    min-cut, dan pengecekan Σ kapasitas potongan = max flow.
 4. **Mode residual** menampilkan kapasitas sisa dan edge balik. **Analisis sensitivitas** (dilipat) adalah
-   simulasi penyempitan 0–90% dari catatan dosen; bukan data pengamatan.
+   simulasi penyempitan 0 sampai 100% di ruas Jl. Gasibu Atas sesuai catatan dosen, bukan data pengamatan.
 
 ## Struktur
 
@@ -70,12 +70,13 @@ Tidak ada warna atau angka literal di komponen; semuanya dari token atau data.
 ```
 cases/scenarios/case_04_pasar_tumpah.yaml ─(convert:yaml + labels.json)─▶ topology.json
 graph/index.html (web tim) ─(build:map)─▶ geometry.json (bentuk jalan) + routes.json (8 rute)
-topology.json ─(gen:traces, DEV-ONLY)─▶ trace_*.json + manifest.json   ◀── nanti: keluaran solver Python (Elang)
+topology.json ─(python -m algorithms.maxflow.ford_fulkerson)─▶ trace_*.json + manifest.json   (solver Python Elang)
 ```
 
-- **Kondisi.** `manifest.json` memuat `observedAlpha` = penyempitan ruas pasar saat *pasar penuh*. Nilainya
-  **placeholder (50%)** sampai data CCTV/video manual selesai dihitung. Ganti konstanta `OBSERVED_ALPHA` di
-  `dev/sampleTrace.ts` (atau `observedAlpha` di manifest dari solver asli).
+- **Kondisi.** `manifest.json` memuat `observedAlpha` = penyempitan ruas Jl. Gasibu Atas saat *pasar penuh*. Sekarang
+  nilainya 11% dari hambatan samping PKJI, dan diganti hasil perbandingan kamera Gasibu_02 21 dan 22 November. Nilainya
+  diatur lewat `OBSERVED_ALPHA` di `algorithms/maxflow/ford_fulkerson.py`. Kapasitas di `topology.json` sudah dari rumus
+  PKJI (`hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv`).
 - **Ruas pasar dan ruas tutup** dibaca dari penanda `isMarket` / `closedInMorning` di `labels.json`, bukan
   dari nomor edge. Ruas yang ditandai `closedInMorning` ditutup (kapasitas 0) selama pasar aktif; informasi
   penutupan itu berasal dari tim, bukan dari spek.
