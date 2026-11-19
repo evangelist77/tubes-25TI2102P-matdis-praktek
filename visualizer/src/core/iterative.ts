@@ -194,15 +194,19 @@ export function solveMaxFlow(
   }
 }
 
+// angka dibulatkan 2 desimal seperti trace Python, supaya 1084.9 dan 1084.8999999999999 tidak dianggap beda
+const bulat = (v: number) => Math.round(v * 100) / 100
+const bulatSemua = (o: Record<number, number>) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, bulat(v)]))
+
 // ringkasan yang dibandingkan: jalur ditulis sebagai id edge, edge balik diberi tanda minus
 function summarize(result: MaxFlowResult) {
   return {
-    'kapasitas efektif': result.effectiveCapacity,
-    'max flow': result.maxFlow,
+    'kapasitas efektif': bulatSemua(result.effectiveCapacity),
+    'max flow': bulat(result.maxFlow),
     jalur: result.steps.map((step) =>
       step.path.map((t) => `${t.isBackward ? '-' : ''}${t.edgeId}`).join(' ')
     ),
-    'arus akhir': result.steps[result.steps.length - 1]?.edgeFlows ?? {},
+    'arus akhir': bulatSemua(result.steps[result.steps.length - 1]?.edgeFlows ?? {}),
     'min-cut': [...result.minCut].sort((a, b) => a - b)
   }
 }
