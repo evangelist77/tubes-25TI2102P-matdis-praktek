@@ -772,6 +772,7 @@
           ],
           nodeIds: [
             'S1',
+            'V_Cikapayang',
             'V_Sulanjana',
             'V_Djuanda_Diponegoro',
             'V_AriaJipang',
@@ -833,7 +834,7 @@
             'Jl. Surapati',
             'PUSDAI'
           ],
-          nodeIds: ['S2', 'V_Singaperbangsa', 'V_Titiran', 'V_Merak', 'V_Surapati_Merak', 'T1'],
+          nodeIds: ['S2', 'V_Hasanuddin', 'V_Singaperbangsa', 'V_Titiran', 'V_Merak', 'V_Surapati_Merak', 'V_Surapati_Gagak', 'T1'],
           coords: [
             [-6.89190, 107.61758],
             [-6.89231, 107.61778],
@@ -889,6 +890,7 @@
             'S2',
             'V_Hasanuddin',
             'V_Djuanda_Hasanuddin',
+            'V_DU_Selatan',
             'V_Djuanda_Diponegoro',
             'V_AriaJipang',
             'V_Cilamaya',
@@ -1192,14 +1194,11 @@
         {
           id: 'seg_S2_singaperbangsa',
           name: 'Jalan Dipati Ukur (Utara)',
-          fromNode: 'S2',
+          fromNode: 'V_Hasanuddin',
           toNode: 'V_Singaperbangsa',
           widthInfo: '~8 meter (2 lajur, Secondary)',
           osmType: 'secondary',
           coords: [
-            [-6.89190, 107.61758],
-            [-6.89231, 107.61778],
-            [-6.89350, 107.61802],
             [-6.89474, 107.61743],
             [-6.89559, 107.61688]
           ]
@@ -1255,17 +1254,13 @@
           id: 'seg_surapati_pusdai',
           name: 'Jalan Surapati (Arteri Timur)',
           fromNode: 'V_Surapati_Merak',
-          toNode: 'T1',
+          toNode: 'V_Surapati_Gagak',
           widthInfo: '~11 meter (3 lajur oneway, Trunk)',
           osmType: 'trunk',
           coords: [
             [-6.89928, 107.62032],
             [-6.89924, 107.62235],
-            [-6.89923, 107.62373],
-            [-6.89924, 107.62491],
-            [-6.89926, 107.62614],
-            [-6.89946, 107.62702],
-            [-6.89955, 107.62709]
+            [-6.89923, 107.62373]
           ]
         },
         {
@@ -1300,14 +1295,12 @@
         {
           id: 'seg_djuanda_diponegoro',
           name: 'Jalan Ir. H. Djuanda (Dago)',
-          fromNode: 'V_Djuanda_Hasanuddin',
+          fromNode: 'V_DU_Selatan',
           toNode: 'V_Djuanda_Diponegoro',
           widthInfo: '~6 meter (1-2 lajur independen, Primary)',
           osmType: 'primary',
           coords: [
-            [-6.89492, 107.61321],
-            [-6.89650, 107.61305],
-            [-6.89810, 107.61290],
+            [-6.89885, 107.61283],
             [-6.90025, 107.61262]
           ]
         },
@@ -1504,13 +1497,12 @@
         {
           id: 'seg_S1_sulanjana',
           name: 'Jalan Tamansari (Menuju Sulanjana)',
-          fromNode: 'S1',
+          fromNode: 'V_Cikapayang',
           toNode: 'V_Sulanjana',
           widthInfo: '~7-8 meter (2 lajur, Secondary)',
           osmType: 'secondary',
           coords: [
-            [-6.89550, 107.60870],
-            [-6.89660, 107.60915],
+            [-6.89806, 107.60967],
             [-6.89828, 107.60954],
             [-6.89950, 107.60997]
           ]
