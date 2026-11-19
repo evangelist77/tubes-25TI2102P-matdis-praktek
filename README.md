@@ -10,8 +10,9 @@ Situs: **https://maxflow-gasibu.vercel.app**
 |:---|:---|
 | [`/`](https://maxflow-gasibu.vercel.app) | Landing berisi cerita masalah, cara kerja max flow pada graf contoh, tim, dan kliping berita |
 | [`/graph/`](https://maxflow-gasibu.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
-| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | CCTV dan Video: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
+| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | Data Lapangan: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
 | [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
+| [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen Ford-Fulkerson dan Dinic pada graf dinamis, serta temuan dan batasan |
 
 ## Identitas Kelompok
 
@@ -96,6 +97,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   ├── index.html              Dashboard Peta, sekaligus sumber data GRAPH_DATA
 │   ├── cctv.html               halaman CCTV dan Video
 │   ├── visualisasi.html        halaman Visualisasi
+│   ├── analisis.html, analisis.css  halaman Analisis
 │   ├── ff/                     hasil build visualizer, dibuka di /graph/ff/
 │   ├── data/                   graf.json (salinan GRAPH_DATA) dan contoh_graf.json (graf contoh di landing)
 │   ├── landing/                skrip, gaya, dan gambar peta untuk landing
@@ -194,7 +196,7 @@ Situs di-deploy oleh Vercel secara otomatis setiap ada push ke branch `main`. Is
 
 ## Alur Kerja
 
-Repo ini memakai satu branch utama, yaitu `main`. Sebagian besar perubahan langsung di-commit ke `main`, dengan satu commit untuk satu perubahan supaya riwayatnya mudah dibaca. Ada dua branch lain yang pernah dipakai dan sekarang isinya sudah ada semua di `main`, yaitu `alifah` untuk template dan visualisasi Ford-Fulkerson yang digabung lewat pull request #1 pada 11 November 2026, dan `ganesh` untuk visualisasi Iterative yang digabung pada 18 November 2026. Sebelum commit ke `main`, jalankan pemeriksaan yang sesuai dengan bagian yang diubah: `python -m pytest` untuk kode Python, `npm test` di `visualizer/`, dan `node graph/verify-map.mjs` untuk Dashboard Peta. Kalau `GRAPH_DATA` atau `visualizer/` berubah, jalankan juga `ekstrak_graf.mjs` atau `bangun_ff.sh` dan commit hasilnya.
+Sejak 20 November 2026 tiap anggota punya branch sendiri, yaitu `alifah`, `elang`, `ganesh`, `hafiz`, dan `ghaisan`. Perubahan dikerjakan di branch masing-masing dengan satu commit untuk satu perubahan, lalu digabung ke `main` dengan merge commit. Sebelum tanggal itu sebagian besar perubahan langsung di-commit ke `main`, kecuali template dan visualisasi Ford-Fulkerson dari branch `alifah` yang digabung lewat pull request #1 pada 11 November 2026 dan visualisasi Iterative dari branch `ganesh` yang digabung pada 18 November 2026. Sebelum menggabungkan ke `main`, jalankan pemeriksaan yang sesuai dengan bagian yang diubah: `python -m pytest` untuk kode Python, `npm test` di `visualizer/`, dan `node graph/verify-map.mjs` untuk Dashboard Peta. Kalau `GRAPH_DATA` atau `visualizer/` berubah, jalankan juga `ekstrak_graf.mjs` atau `bangun_ff.sh` dan commit hasilnya.
 
 ## Sumber Data dan Atribusi
 
