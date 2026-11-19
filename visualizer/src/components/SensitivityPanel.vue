@@ -33,7 +33,7 @@ const selectedRow = computed(() => props.rows.find((r) => r.run.filename === pro
 
     <div class="px-4 pb-4 space-y-2">
       <p class="text-[13px] text-stone-600 leading-relaxed">
-        Seberapa jauh penyempitan ruas pasar harus naik sebelum arus maksimum benar-benar turun?
+        Seberapa jauh penyempitan ruas Gasibu Atas harus naik sebelum arus maksimum benar-benar turun?
         Klik batang untuk menampilkan simulasinya.
       </p>
       <svg :viewBox="`0 0 ${W} ${H + 28}`" class="w-full" role="img" aria-label="Arus maksimum menurut penyempitan pasar">
@@ -56,7 +56,7 @@ const selectedRow = computed(() => props.rows.find((r) => r.run.filename === pro
             {{ Math.round(r.run.alpha * 100) }}%
           </text>
         </g>
-        <text :x="W / 2" :y="H + 25" text-anchor="middle" font-size="9" fill="#a8a29e">penyempitan ruas pasar (α)</text>
+        <text :x="W / 2" :y="H + 25" text-anchor="middle" font-size="9" fill="#a8a29e">penyempitan Gasibu Atas (α)</text>
       </svg>
 
       <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-stone-500">

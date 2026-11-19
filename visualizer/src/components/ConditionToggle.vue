@@ -35,7 +35,7 @@ const options = [
       bukan data hasil pengamatan.
     </p>
     <p v-else-if="current?.key === 'pasar'" class="text-xs text-stone-500 px-1">
-      Penyempitan ruas pasar: <b>{{ Math.round(manifest.observedAlpha * 100) }}%</b>
+      Penyempitan Gasibu Atas: <b>{{ Math.round(manifest.observedAlpha * 100) }}%</b>
       <span class="text-amber-700">&nbsp;(placeholder, diganti dari data CCTV/video manual)</span>
     </p>
     <p v-else class="text-xs text-stone-500 px-1">Kapasitas ruas = nilai dasar dari spek.</p>
