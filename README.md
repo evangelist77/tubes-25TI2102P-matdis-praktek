@@ -2,7 +2,7 @@
 
 ## Kasus 4: Pasar Tumpah (Maximum Flow)
 
-Setiap Minggu pagi pedagang pasar tumpah memakai badan jalan di sekitar Lapangan Gasibu dan Monumen Perjuangan (Monju), Bandung, sehingga lebar efektif jalan berkurang dan arus kendaraan tertahan. Kami memodelkan jaringan jalan kawasan itu sebagai graf berarah dengan dua titik masuk dan dua titik keluar, lalu memakai Ford-Fulkerson untuk menghitung arus maksimum (max flow) dan mencari ruas pembatasnya (min cut), saat tidak ada pasar maupun saat pasar berlangsung.
+Setiap Minggu pagi pedagang pasar tumpah memakai badan jalan di sekitar Lapangan Gasibu dan Monumen Perjuangan (Monju), Bandung, sehingga lebar efektif jalan berkurang dan arus kendaraan tertahan. Kami memodelkan jaringan jalan kawasan itu sebagai graf berarah dengan dua titik masuk dan dua titik keluar, lalu memakai Ford-Fulkerson (Edmonds-Karp) sebagai algoritma dasar dan Dinic sebagai algoritma lanjut untuk menghitung arus maksimum (max flow) dan mencari ruas pembatasnya (min cut), saat tidak ada pasar maupun saat pasar berlangsung.
 
 Situs: **https://maxflow-gasibu.vercel.app**
 
@@ -30,7 +30,7 @@ Situs: **https://maxflow-gasibu.vercel.app**
 | 2 | 251524042 | Elang Permadi Lau | Algoritma Ford-Fulkerson |
 | 3 | 251524046 | Ganesh Diyan Khansa Khairunnisa | Visualisasi Iterative Ford-Fulkerson |
 | 4 | 251524048 | Ghaisan Khoirul Badruzaman | Data CCTV dan rekaman HP, program hitung kendaraan, situs presentasi |
-| 5 | 251524049 | Hafiz Fauzan Syafrudin | Algoritma Iterative Ford-Fulkerson, graf 8 rute dan spesifikasi jalan, pengelolaan repo |
+| 5 | 251524049 | Hafiz Fauzan Syafrudin | Algoritma Iterative Ford-Fulkerson dan Dinic, graf 8 rute dan spesifikasi jalan, pengelolaan repo |
 
 ## Tutorial Penggunaan Aplikasi
 
@@ -79,11 +79,21 @@ Hasil Iterative bisa dilihat dengan dua cara.
 
 **Langkah per pasangan** di tab **Iterative Jaringan (Ganesh)** pada [`/graph/ff/?mode=iterative`](https://maxflow-gasibu.vercel.app/graph/ff/?mode=iterative). Pilih pasangan di Pilih Pasangan S → T, lalu pakai Maju, Mundur, atau Putar seperti pada Ford-Fulkerson untuk melihat keempat pasangan dihitung bergantian.
 
+### 5. Data Lapangan
+
+- Tabel CCTV menunjukkan status tiap kamera dan simpul yang dipantaunya.
+- Cuplikan CCTV dan rekaman HP berputar sendiri saat halaman digulir sampai ke kartunya.
+- Bagian Program hitung kendaraan menjelaskan cara program YOLO menghitung kendaraan, dan bagian Hasil akhir membandingkan arus terukur dengan kapasitas PKJI.
+
+### 6. Analisis
+
+Halaman ini berisi fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen graf dinamis, serta temuan dan batasan. Klik **Tabel kapasitas 31 ruas** untuk membuka kapasitas semua ruas, dan pakai menu Analisis untuk langsung loncat ke bagian tertentu.
+
 ## Pendekatan
 
 ### Graf jaringan jalan
 
-Graf punya 26 simpul dengan koordinat dari OpenStreetMap: dua titik masuk S1 (turun Pasupati, Jl. Tamansari) dan S2 (Jl. Dipatiukur depan kampus Unpad), dua titik keluar T1 (PUSDAI, Jl. Surapati Timur) dan T2 (Jl. Diponegoro Timur), serta 22 persimpangan. Dari S1 dan S2 ke T1 dan T2 ada 8 rute. Empat lewat koridor luar (P1 sampai P4) dan empat lewat Jalan Gasibu Atas (P5 sampai P8). Ruas Gasibu Atas (`V_Gasibu_Barat` ke `V_Gasibu_Timur`) dilalui keempat rute terakhir dan dipakai sebagai ruas pasar.
+Graf punya 26 simpul dengan koordinat dari OpenStreetMap: dua titik masuk S1 (turun Pasupati, Jl. Tamansari) dan S2 (Jl. Dipatiukur depan kampus Unpad), dua titik keluar T1 (PUSDAI, Jl. Surapati Timur) dan T2 (Jl. Diponegoro Timur), serta 22 persimpangan. Dari S1 dan S2 ke T1 dan T2 ada 8 rute. Empat lewat koridor luar (P1 sampai P4) dan empat lewat Jalan Gasibu Atas (P5 sampai P8). Ruas Gasibu Atas (`V_Gasibu_Barat` ke `V_Gasibu_Timur`) dilalui keempat rute terakhir dan menjadi ruas yang terdampak pasar.
 
 Arah dan lebar tiap ruas diambil dari tag OSM (`oneway`, `lanes`, `width`). Jalan berjalur ganda yang dipisah median, seperti Jl. Ir. H. Djuanda dan Jl. Diponegoro Barat, dihitung setengah lebarnya karena graf hanya memakai satu arah. Rinciannya ada di [`graph/GRAPH_SPEC_LLM.md`](graph/GRAPH_SPEC_LLM.md).
 
@@ -102,7 +112,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 
 ### Data arus kendaraan
 
-- **CCTV Pelindung Bandung**: 12 titik pantau (27 kamera) yang dipetakan ke simpul graf, daftarnya di bagian 7.1 `GRAPH_SPEC_LLM.md`. Stream HLS-nya direkam langsung dengan ffmpeg.
+- **CCTV Pelindung Bandung**: 11 titik pantau yang dipetakan ke simpul graf, 8 bisa dipakai dan 3 tidak bisa dibuka. Daftarnya ada di bagian 7.1 `GRAPH_SPEC_LLM.md`. Stream HLS-nya direkam langsung dengan ffmpeg.
 - **Rekaman HP**: 6 simpang yang tidak punya CCTV direkam anggota pada Minggu 1 November 2026, sekitar 15 menit per titik.
 - **Program hitung kendaraan** (Python, YOLO dari Ultralytics, OpenCV, ByteTrack) ada di [`hitung-kendaraan/`](hitung-kendaraan/). Program ini merekam stream CCTV, mendeteksi dan melacak kendaraan, lalu menghitung kendaraan yang melewati garis di tiap ruas menurut arah dan kelasnya. Untuk rekaman HP yang dipegang tangan, garis hitung ikut bergeser bersama gambar. Rekap rekaman HP ada di [`hitung-kendaraan/hasil_hitung/hp_1nov/`](hitung-kendaraan/hasil_hitung/hp_1nov/), dan kolase rekaman yang sudah diproses ada di [youtu.be/rOYqXmBW57s](https://youtu.be/rOYqXmBW57s).
 - **CCTV Sabtu dan Minggu**: kamera direkam Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB, lalu dihitung dan dicek per kamera. Hasilnya ada di [`hitung-kendaraan/hasil_hitung/`](hitung-kendaraan/hasil_hitung/) (`cctv_14nov_sabtu/`, `cctv_15nov_minggu/`, dan `banding_cctv_sabtu_minggu.csv`), dan kolase rekaman Minggu ada di [youtu.be/KW-fCy3HZwM](https://youtu.be/KW-fCy3HZwM). Kamera CCTV Lapang Gasibu 02 ternyata menghadap Jl. Japati, jalan pasar yang ditutup saat Minggu pagi, jadi datanya tidak dipakai untuk Jl. Gasibu Atas. Gantinya kamera CCTV Gasibu_02 direkam Sabtu 21 dan Minggu 22 November. Jl. Ir. H. Djuanda di Minggu pagi juga ditutup karena Car Free Day.
@@ -124,11 +134,11 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 ├── vercel.json                 konfigurasi deploy Vercel
 ├── requirements.txt            paket Python untuk template dosen
 ├── .python-version             versi Python acuan (3.12)
-├── algorithms/                 solver: maxflow/ford_fulkerson.py, maxflow/dinic.py, dan registry.py
+├── algorithms/                 solver: maxflow/ford_fulkerson.py, maxflow/dinic.py, maxflow/iterative_ford_fulkerson.py, dan registry.py
 ├── cases/
 │   ├── scenario_loader.py      pembaca YAML menjadi SpatialGraphModel
 │   └── scenarios/
-│       └── case_04_pasar_tumpah.yaml   graf kasus 4, kapasitas relatif, event penyempitan
+│       └── case_04_pasar_tumpah.yaml   graf kasus 4, kapasitas PKJI, event penyempitan dan penutupan ruas
 ├── config/settings.py          skenario dan algoritma default, folder output
 ├── core/                       model graf, runner simulasi, observer, gambar graf matplotlib
 ├── scripts/                    run_simulation.py, run_benchmark.py, dan banding_ff_dinic.py
@@ -142,7 +152,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   └── hasil_hitung/           rekap kendaraan per jam dari rekaman HP 1 November dan CCTV 14 dan 15 November 2026
 ├── graph/
 │   ├── index.html              Dashboard Peta, sekaligus sumber data GRAPH_DATA
-│   ├── cctv.html               halaman CCTV dan Video
+│   ├── cctv.html               halaman Data Lapangan
 │   ├── visualisasi.html        halaman Visualisasi
 │   ├── analisis.html, analisis.css  halaman Analisis
 │   ├── ff/                     hasil build visualizer, dibuka di /graph/ff/
@@ -150,8 +160,9 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   ├── landing/                skrip, gaya, dan gambar peta untuk landing
 │   ├── media/                  cuplikan video cctv/, hp/, deteksi/ dan media.js (daftar video)
 │   ├── assets/                 foto tim, kliping berita, diagram fishbone
-│   ├── peta.js                 tambahan Dashboard Peta (pin, popup video, ruas pasar)
-│   ├── halaman.js, halaman.css isi dan gaya halaman CCTV dan Visualisasi
+│   ├── peta.js                 tambahan Dashboard Peta (pin, popup video, ruas Gasibu Atas)
+│   ├── halaman.js, halaman.css isi dan gaya halaman Data Lapangan dan Visualisasi
+│   ├── iterative.js, iterative.css  dashboard Iterative di halaman Visualisasi
 │   ├── situs.js, situs.css     navigasi bersama untuk semua halaman
 │   ├── pelindung-highlight.js  skrip Console untuk menandai kamera di situs Pelindung Bandung
 │   ├── GRAPH_SPEC_LLM.md       spesifikasi simpul, 8 rute, lebar dan arah ruas, titik CCTV dan survei
@@ -223,7 +234,7 @@ Alurnya rekam (`rekam_cctv.py`), pasang garis hitung (`kalibrasi.py`), hitung (`
 python3 -m http.server 8000
 ```
 
-Jalankan dari akar repo, lalu buka `http://localhost:8000/` untuk landing dan `http://localhost:8000/graph/` untuk Dashboard Peta. Di server lokal tidak ada `cleanUrls`, jadi halaman lain dibuka lewat `/graph/cctv.html` dan `/graph/visualisasi.html`. Peta dasar butuh internet karena tile diambil dari OpenStreetMap.
+Jalankan dari akar repo, lalu buka `http://localhost:8000/` untuk landing dan `http://localhost:8000/graph/` untuk Dashboard Peta. Di server lokal tidak ada `cleanUrls`, jadi halaman lain dibuka lewat `/graph/cctv.html`, `/graph/visualisasi.html`, dan `/graph/analisis.html`. Peta dasar butuh internet karena tile diambil dari OpenStreetMap.
 
 ### Memeriksa dan membangun ulang data
 
