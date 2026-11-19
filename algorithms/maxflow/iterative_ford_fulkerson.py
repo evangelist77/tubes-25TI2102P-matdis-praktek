@@ -7,18 +7,29 @@ augmenting path (maju atau edge balik) dan sisa kapasitasnya sebelum dialiri, su
 iterative cukup membaca trace tanpa menghitung sendiri.
 """
 
+import json
 from pathlib import Path
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # Pastikan root proyek masuk ke sys.path untuk eksekusi langsung
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from algorithms.maxflow.ford_fulkerson import PAIRS, FlowResult, FordFulkerson
+from algorithms.maxflow.ford_fulkerson import (
+    OBSERVED_ALPHA,
+    PAIRS,
+    SCENARIO_YAML_FILE,
+    VISUALIZER_DATA_DIR,
+    FlowResult,
+    FordFulkerson,
+)
 from core.base_algorithm import BaseGraphAlgorithm
 from core.graph_model import SpatialGraphModel
+
+# Nilai alpha sama dengan generate_all_traces di ford_fulkerson.py (0%, 10%, ..., 100%)
+ALPHAS: List[float] = [round(k * 0.1, 1) for k in range(11)]
 
 
 class IterativeFordFulkerson(BaseGraphAlgorithm):
@@ -111,7 +122,47 @@ class IterativeFordFulkerson(BaseGraphAlgorithm):
         )
 
 
+def generate_iterative_traces(
+    model: SpatialGraphModel,
+    output_dir: Optional[Path] = None,
+    alphas: Optional[List[float]] = None,
+) -> List[Path]:
+    """Menulis iterative_a<alpha>.json, satu berkas per alpha berisi hasil keempat pasangan."""
+    out_dir = output_dir or VISUALIZER_DATA_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    written: List[Path] = []
+    for alpha in alphas or ALPHAS:
+        solver = IterativeFordFulkerson(model)
+        data = {
+            "caseId": solver.ff.topology.get("case_id", "case_04_pasar_tumpah"),
+            "alpha": alpha,
+            "pairs": solver.run_all(alpha),
+        }
+        out_path = out_dir / f"iterative_a{int(round(alpha * 100))}.json"
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        written.append(out_path)
+
+    return written
+
+
 # Registrasi otomatis ke AlgorithmRegistry
 from algorithms.registry import AlgorithmRegistry
 
 AlgorithmRegistry.register("iterative_ford_fulkerson", IterativeFordFulkerson)
+
+
+if __name__ == "__main__":
+    from cases.scenario_loader import ScenarioLoader
+
+    model = ScenarioLoader(SCENARIO_YAML_FILE).build_graph_model()
+
+    print("Iterative Ford-Fulkerson, max flow tiap pasangan (kend/jam):")
+    for alpha in (0.0, OBSERVED_ALPHA):
+        hasil = IterativeFordFulkerson(model).run_all(alpha)
+        ringkas = ", ".join(f"{r['pairId']} = {r['maxFlow']:.0f}" for r in hasil)
+        print(f"  alpha {alpha:.0%}: {ringkas}")
+
+    files = generate_iterative_traces(model)
+    print(f"{len(files)} trace iterative ditulis ke {files[0].parent}")
