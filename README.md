@@ -134,11 +134,11 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 ├── vercel.json                 konfigurasi deploy Vercel
 ├── requirements.txt            paket Python untuk template dosen
 ├── .python-version             versi Python acuan (3.12)
-├── algorithms/                 solver: maxflow/ford_fulkerson.py, maxflow/dinic.py, dan registry.py
+├── algorithms/                 solver: maxflow/ford_fulkerson.py, maxflow/dinic.py, maxflow/iterative_ford_fulkerson.py, dan registry.py
 ├── cases/
 │   ├── scenario_loader.py      pembaca YAML menjadi SpatialGraphModel
 │   └── scenarios/
-│       └── case_04_pasar_tumpah.yaml   graf kasus 4, kapasitas relatif, event penyempitan
+│       └── case_04_pasar_tumpah.yaml   graf kasus 4, kapasitas PKJI, event penyempitan dan penutupan ruas
 ├── config/settings.py          skenario dan algoritma default, folder output
 ├── core/                       model graf, runner simulasi, observer, gambar graf matplotlib
 ├── scripts/                    run_simulation.py, run_benchmark.py, dan banding_ff_dinic.py
@@ -152,7 +152,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   └── hasil_hitung/           rekap kendaraan per jam dari rekaman HP 1 November dan CCTV 14 dan 15 November 2026
 ├── graph/
 │   ├── index.html              Dashboard Peta, sekaligus sumber data GRAPH_DATA
-│   ├── cctv.html               halaman CCTV dan Video
+│   ├── cctv.html               halaman Data Lapangan
 │   ├── visualisasi.html        halaman Visualisasi
 │   ├── analisis.html, analisis.css  halaman Analisis
 │   ├── ff/                     hasil build visualizer, dibuka di /graph/ff/
@@ -160,8 +160,9 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   ├── landing/                skrip, gaya, dan gambar peta untuk landing
 │   ├── media/                  cuplikan video cctv/, hp/, deteksi/ dan media.js (daftar video)
 │   ├── assets/                 foto tim, kliping berita, diagram fishbone
-│   ├── peta.js                 tambahan Dashboard Peta (pin, popup video, ruas pasar)
-│   ├── halaman.js, halaman.css isi dan gaya halaman CCTV dan Visualisasi
+│   ├── peta.js                 tambahan Dashboard Peta (pin, popup video, ruas Gasibu Atas)
+│   ├── halaman.js, halaman.css isi dan gaya halaman Data Lapangan dan Visualisasi
+│   ├── iterative.js, iterative.css  dashboard Iterative di halaman Visualisasi
 │   ├── situs.js, situs.css     navigasi bersama untuk semua halaman
 │   ├── pelindung-highlight.js  skrip Console untuk menandai kamera di situs Pelindung Bandung
 │   ├── GRAPH_SPEC_LLM.md       spesifikasi simpul, 8 rute, lebar dan arah ruas, titik CCTV dan survei
@@ -233,7 +234,7 @@ Alurnya rekam (`rekam_cctv.py`), pasang garis hitung (`kalibrasi.py`), hitung (`
 python3 -m http.server 8000
 ```
 
-Jalankan dari akar repo, lalu buka `http://localhost:8000/` untuk landing dan `http://localhost:8000/graph/` untuk Dashboard Peta. Di server lokal tidak ada `cleanUrls`, jadi halaman lain dibuka lewat `/graph/cctv.html` dan `/graph/visualisasi.html`. Peta dasar butuh internet karena tile diambil dari OpenStreetMap.
+Jalankan dari akar repo, lalu buka `http://localhost:8000/` untuk landing dan `http://localhost:8000/graph/` untuk Dashboard Peta. Di server lokal tidak ada `cleanUrls`, jadi halaman lain dibuka lewat `/graph/cctv.html`, `/graph/visualisasi.html`, dan `/graph/analisis.html`. Peta dasar butuh internet karena tile diambil dari OpenStreetMap.
 
 ### Memeriksa dan membangun ulang data
 
