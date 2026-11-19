@@ -10,7 +10,8 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import App from './App.vue'
 import MapCanvas from './components/MapCanvas.vue'
 import StepPlayer from './components/StepPlayer.vue'
-import type { RoutesFile } from './core/types'
+import { solveMaxFlow } from './core/iterative'
+import type { Manifest, RoutesFile, Topology } from './core/types'
 
 const dataDir = path.resolve(__dirname, '../public/data')
 const routes = JSON.parse(fs.readFileSync(path.join(dataDir, 'routes.json'), 'utf-8')) as RoutesFile
@@ -101,5 +102,47 @@ describe('App (smoke)', () => {
     await wrapper.find('input[type="checkbox"]').setValue(true)
     expect(wrapper.text()).toContain('Edge balik (↩)')
     wrapper.unmount()
+  })
+
+  const topology = JSON.parse(fs.readFileSync(path.join(dataDir, 'topology.json'), 'utf-8')) as Topology
+  const id = (code: string) => topology.nodes.find((n) => n.code === code)!.id
+
+  it('mode iterative tetap jalan tanpa trace iterative, dihitung di browser', async () => {
+    const manifest = JSON.parse(fs.readFileSync(path.join(dataDir, 'manifest.json'), 'utf-8')) as Manifest
+    const alpha = manifest.runs.find((r) => r.isDefault)!.alpha
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    window.history.replaceState(null, '', '/?mode=iterative')
+
+    const wrapper = await mountApp()
+    const expected = solveMaxFlow(topology, id('S1'), id('T1'), alpha).maxFlow
+    expect(wrapper.find('header').text()).toContain(`/ ${expected} kend/jam`)
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('dihitung di browser'))
+
+    wrapper.unmount()
+    window.history.replaceState(null, '', '/')
+    warn.mockRestore()
+  })
+
+  it('mode iterative memakai angka dari trace iterative_a<alpha>.json bila berkasnya ada', async () => {
+    const dataFetch = globalThis.fetch
+    vi.stubGlobal('fetch', async (url: string) => {
+      const match = path.basename(url).match(/^iterative_a(\d+)\.json$/)
+      if (!match) return dataFetch(url)
+      const alpha = Number(match[1]) / 100
+      const pairs = (['S1-T1', 'S1-T2', 'S2-T1', 'S2-T2'] as const).map((pairId) => {
+        const [s, t] = pairId.split('-')
+        return { pairId, ...solveMaxFlow(topology, id(s), id(t), alpha) }
+      })
+      pairs[0].maxFlow = 12345 // penanda bahwa angka di layar diambil dari trace
+      return { ok: true, status: 200, json: async () => ({ caseId: topology.case_id, alpha, pairs }) }
+    })
+    window.history.replaceState(null, '', '/?mode=iterative')
+
+    const wrapper = await mountApp()
+    expect(wrapper.find('header').text()).toContain('/ 12345 kend/jam')
+
+    wrapper.unmount()
+    window.history.replaceState(null, '', '/')
+    vi.stubGlobal('fetch', dataFetch)
   })
 })
