@@ -531,7 +531,7 @@ if __name__ == "__main__":
         solver_pasar = FordFulkerson(model)
         flow_pasar = solver_pasar.run(s, t, alpha=OBSERVED_ALPHA)
 
-        print(f"{p['label']:<35} | {flow_normal:>10.1f} kend/j | {flow_pasar:>10.1f} kend/j")
+        print(f"{p['label']:<35} | {flow_normal:>10.1f} skr/j | {flow_pasar:>10.1f} kend/j")
 
     print("-" * 70)
     print("\n2. Mengekspor Seluruh Trace & Manifest ke Visualizer...")
