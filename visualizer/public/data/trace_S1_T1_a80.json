@@ -32,7 +32,7 @@
     "22": 698.3,
     "23": 698.3,
     "24": 698.3,
-    "25": 937.0,
+    "25": 936.9,
     "26": 4684.7,
     "27": 4684.7,
     "28": 4684.7,
@@ -55,14 +55,14 @@
         27,
         28
       ],
-      "bottleneck": 937.0,
-      "totalFlow": 937.0,
+      "bottleneck": 936.9,
+      "totalFlow": 936.9,
       "edgeFlows": {
-        "0": 937.0,
+        "0": 936.9,
         "1": 0.0,
-        "2": 937.0,
+        "2": 936.9,
         "3": 0.0,
-        "4": 937.0,
+        "4": 936.9,
         "5": 0.0,
         "6": 0.0,
         "7": 0.0,
@@ -83,10 +83,10 @@
         "22": 0.0,
         "23": 0.0,
         "24": 0.0,
-        "25": 937.0,
-        "26": 937.0,
-        "27": 937.0,
-        "28": 937.0,
+        "25": 936.9,
+        "26": 936.9,
+        "27": 936.9,
+        "28": 936.9,
         "29": 0.0,
         "30": 0.0,
         "31": 0.0,
@@ -94,11 +94,11 @@
         "33": 0.0,
         "34": 0.0
       },
-      "narrative": "Langkah 1: ditemukan jalur dari S1 ke T1 lewat Turun Pasupati / Jl. Tamansari → Jl. Cikapayang → Jl. Surapati (Barat) → Jl. Gasibu Atas → Jl. Surapati (depan Telkom) → Jl. Surapati Timur → Jl. Surapati ke PUSDAI. Ruas paling sempit menyisakan 937.0 kend/jam, sehingga dialirkan 937.0 kend/jam. Total arus 0.0 + 937.0 = 937.0 kend/jam."
+      "narrative": "Langkah 1: ditemukan jalur dari S1 ke T1 lewat Turun Pasupati / Jl. Tamansari → Jl. Cikapayang → Jl. Surapati (Barat) → Jl. Gasibu Atas → Jl. Surapati (depan Telkom) → Jl. Surapati Timur → Jl. Surapati ke PUSDAI. Ruas paling sempit menyisakan 936.9 kend/jam, sehingga dialirkan 936.9 kend/jam. Total arus 0.0 + 936.9 = 936.9 kend/jam."
     }
   ],
   "result": {
-    "maxFlow": 937.0,
+    "maxFlow": 936.9,
     "minCut": [
       19,
       25
