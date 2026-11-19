@@ -29,6 +29,7 @@
   const status = (s) => {
     if (s === 'aman') return { k: 'aman', t: 'Aman' };
     if (s === 'tidak bisa dibuka') return { k: 'mati', t: 'Tidak bisa dibuka' };
+    if (s === 'tidak dipakai') return { k: 'mati', t: 'Tidak dipakai, salah ruas' };
     if (s && s.startsWith('baru')) return { k: 'baru', t: 'Baru, belum dicek' };
     return { k: 'belum', t: s || 'Belum ada data' };
   };
@@ -123,7 +124,7 @@
           ? `<p class="pop-mono">Minggu 1 Nov 2026 sekitar ${esc(k.jam)} · rekaman asli ${durasi(k.durasi_asli_detik)}</p>${video(k, true)}<p class="pop-ket">Cuplikan ${k.durasi_detik} detik dari menit ke-${k.dari_menit} · sudah diproses program hitung</p>`
           : '<p class="pop-kosong">Video belum tersedia.</p>'}
         <p class="pop-cat">${esc(info.alasan || bersih(pt.reason))}</p>
-        <p class="pop-lewat">Dilewati ${lewat(pt.nodeId).join(', ')} · arus sudah dihitung program, angka sementara</p>
+        <p class="pop-lewat">Dilewati ${lewat(pt.nodeId).join(', ')} · dihitung program YOLO, belum dibandingkan dengan hitung manual</p>
       </div>`, OPSI_POPUP);
   });
 
@@ -184,7 +185,7 @@
     if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); c.click(); }
   });
 
-  // Ruas pasar (Jl. Gasibu Atas) diberi sapuan merah lembut di bawah garis rute
+  // Ruas Jl. Gasibu Atas yang terdampak pasar diberi garis merah lembut di bawah garis rute
   const pasar = D.segments.find((s) => s.id === 'seg_gasibu_atas');
   if (pasar) L.polyline(pasar.coords, { color: '#e0492f', weight: 20, opacity: 0.32, lineCap: 'round', interactive: false }).addTo(map).bringToBack();
 
