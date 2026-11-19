@@ -125,7 +125,8 @@ class FordFulkerson(BaseGraphAlgorithm):
         pasar_active = alpha > 0.0
 
         if is_market:
-            cap = float(round(raw_cap * (1.0 - alpha)))
+            # dibulatkan 1 desimal, sama dengan ketelitian kapasitas PKJI (skr/jam)
+            cap = round(raw_cap * (1.0 - alpha) * 10) / 10
 
         if closed_in_morning and pasar_active:
             cap = 0.0
