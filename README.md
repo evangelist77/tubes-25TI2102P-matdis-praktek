@@ -32,6 +32,39 @@ Situs: **https://maxflow-gasibu.vercel.app**
 | 4 | 251524048 | Ghaisan Khoirul Badruzaman | Data CCTV dan rekaman HP, program hitung kendaraan, situs presentasi |
 | 5 | 251524049 | Hafiz Fauzan Syafrudin | Algoritma Iterative Ford-Fulkerson, graf 8 rute dan spesifikasi jalan, pengelolaan repo |
 
+## Tutorial Penggunaan Aplikasi
+
+Aplikasi tubes ini berupa website yang dibuka langsung di browser, jadi tidak perlu memasang apa pun. Buka **https://maxflow-gasibu.vercel.app**, lalu pakai menu di bagian atas, yaitu Cerita, Dashboard Peta, Data Lapangan, Visualisasi, Analisis, dan Tim. Di HP menunya ada di tombol Menu di kanan atas. Untuk menjalankan program Python, visualizer, atau program hitung kendaraan di komputer sendiri, lihat bagian [Menjalankan](#menjalankan).
+
+### 1. Cerita
+
+Halaman awal menceritakan masalahnya dalam tujuh adegan. Gulir ke bawah untuk berpindah adegan, atau pilih adegan langsung dari menu Cerita.
+
+- Adegan 02 Masalah: kartu berita bisa diklik untuk membuka artikel aslinya.
+- Adegan 03 Tim: arahkan kursor ke kartu anggota lalu klik untuk melihat tugasnya.
+- Adegan 05 Data: kartu video bisa diklik untuk diperbesar.
+- Adegan 06 Algoritma: langkah Ford-Fulkerson pada graf contoh berjalan sambil halaman digulir.
+
+### 2. Dashboard Peta
+
+- Pilih filter rute, yaitu Semua, Lewat Gasibu Atas, Dari S1, Dari S2, Ke T1, atau Ke T2.
+- Klik garis rute di peta atau kartunya di Daftar rute untuk melihat arah aliran dan simpang yang dilewati.
+- Klik pin CCTV atau titik rekam HP untuk melihat keterangan dan cuplikan videonya.
+- Tombol Sembunyikan CCTV dan titik rekam HP serta geseran Kejelasan peta dipakai untuk merapikan tampilan.
+
+### 3. Visualisasi Ford-Fulkerson
+
+Buka menu Visualisasi lalu pilih Ford-Fulkerson, atau klik Buka layar penuh supaya tampilannya lebih lega di [`/graph/ff/`](https://maxflow-gasibu.vercel.app/graph/ff/).
+
+1. Pastikan tab **Langkah per Langkah (Alifah)** di bagian atas sedang aktif.
+2. Di **Pilih Kondisi**, pilih **Tanpa pasar** atau **Pasar penuh**. Pasar penuh berarti kapasitas Jl. Gasibu Atas menyempit 11% dan Jl. Singaperbangsa ditutup.
+3. Di **Pilih Rute**, pilih pasangan S1 → T1, S1 → T2, S2 → T1, atau S2 → T2. **Semua rute** menampilkan seluruh jaringan untuk pasangan itu, atau pilih salah satu rute di bawahnya.
+4. Tekan **Maju ▶** untuk menjalankan satu jalur augmentasi, **◀ Mundur** untuk kembali, atau **▶ Putar** untuk berjalan otomatis dengan kecepatan 0,5×, 1×, atau 2×. Nomor langkah bisa diklik untuk langsung loncat.
+5. Panel kanan menjelaskan langkah yang sedang tampil beserta bottleneck-nya. Di langkah terakhir, garis merah putus-putus adalah min cut.
+6. Klik ruas atau simpul di peta untuk melihat arus, kapasitas, dan rute yang melewatinya.
+7. Nyalakan **Mode residual** untuk melihat kapasitas sisa dan edge balik, atau matikan **Peta dasar** untuk tampilan skematik.
+8. Di **Analisis sensitivitas penyempitan**, klik salah satu nilai α pada grafik untuk melihat hasil simulasi penyempitan Gasibu Atas dari 0 sampai 100%.
+
 ## Pendekatan
 
 ### Graf jaringan jalan
