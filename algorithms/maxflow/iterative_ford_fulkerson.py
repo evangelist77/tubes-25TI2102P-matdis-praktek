@@ -109,3 +109,9 @@ class IterativeFordFulkerson(BaseGraphAlgorithm):
             event_type="PAIR_MAX_FLOW",
             state_mutations={"pair": result["pairId"], "alpha": result["alpha"], "max_flow": result["maxFlow"]},
         )
+
+
+# Registrasi otomatis ke AlgorithmRegistry
+from algorithms.registry import AlgorithmRegistry
+
+AlgorithmRegistry.register("iterative_ford_fulkerson", IterativeFordFulkerson)
