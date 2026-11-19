@@ -356,7 +356,7 @@
         <div style="font-size:12px; font-family: sans-serif; line-height:1.4;">
           <b>${edge.road}</b><br>
           Arus: <b>${edge.flow.toLocaleString('id-ID')}</b> / ${edge.capacity.toLocaleString('id-ID')} skr/jam (${pct}%)
-          ${edge.isMarket ? '<br><span style="color:#ea580c; font-weight:700;">★ Ruas Pasar Tumpah</span>' : ''}
+          ${edge.isMarket ? '<br><span style="color:#ea580c; font-weight:700;">★ Ruas Jl. Gasibu Atas (terdampak pasar)</span>' : ''}
           ${edge.closedInMorning && state.currentCondition === 'pasar' ? '<br><span style="color:#dc2626;">✕ Ditutup Pagi</span>' : ''}
         </div>
       `, { sticky: true });
@@ -473,7 +473,7 @@
       </div>
       <div style="margin-top: 10px; font-size: 12px; color: #57534e; line-height: 1.4;">
         <b>Kode Ruas:</b> <code>${edge.code}</code> (ID: ${edge.id})<br>
-        ${edge.isMarket ? '<span style="color:#c2410c; font-weight:700;">★ Ruas Pasar Tumpah: Mengalami penyempitan kapasitas saat pasar aktif.</span><br>' : ''}
+        ${edge.isMarket ? '<span style="color:#c2410c; font-weight:700;">★ Ruas Jl. Gasibu Atas: kapasitas menyempit saat pasar karena hambatan samping naik.</span><br>' : ''}
         ${edge.closedInMorning ? '<span style="color:#b91c1c; font-weight:600;">✕ Ruas Ditutup Pagi: Kapasitas menjadi 0 saat pasar tumpah pagi hari.</span>' : ''}
       </div>
     `;
@@ -507,7 +507,7 @@
         <tr id="row-edge-${edge.id}" class="${isSelected ? 'terpilih' : ''}" data-id="${edge.id}">
           <td>
             <b>${edge.road}</b>
-            ${edge.isMarket ? '<span style="color:#ea580c; font-weight:700; font-size:11px;"> [Pasar]</span>' : ''}
+            ${edge.isMarket ? '<span style="color:#ea580c; font-weight:700; font-size:11px;"> [terdampak pasar]</span>' : ''}
           </td>
           <td><code style="font-size:11.5px;">${edge.code}</code></td>
           <td style="font-family: var(--mono); font-weight:700; color: ${color};">
