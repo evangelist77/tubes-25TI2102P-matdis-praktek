@@ -111,6 +111,10 @@ describe('App (smoke)', () => {
     const manifest = JSON.parse(fs.readFileSync(path.join(dataDir, 'manifest.json'), 'utf-8')) as Manifest
     const alpha = manifest.runs.find((r) => r.isDefault)!.alpha
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    // trace iterative sekarang ada di data publik, jadi berkasnya dibuat seolah tidak ada
+    const dataFetch = globalThis.fetch
+    vi.stubGlobal('fetch', async (url: string) =>
+      /^iterative_a\d+\.json$/.test(path.basename(url)) ? new Response('tidak ada', { status: 404 }) : dataFetch(url))
     window.history.replaceState(null, '', '/?mode=iterative')
 
     const wrapper = await mountApp()
@@ -121,6 +125,7 @@ describe('App (smoke)', () => {
     wrapper.unmount()
     window.history.replaceState(null, '', '/')
     warn.mockRestore()
+    vi.stubGlobal('fetch', dataFetch)
   })
 
   it('mode iterative memakai angka dari trace iterative_a<alpha>.json bila berkasnya ada', async () => {
