@@ -4,9 +4,12 @@ Aplikasi web (Vue 3 + Vite + TypeScript + Tailwind + Leaflet) yang menunjukkan *
 Ford-Fulkerson bekerja** pada jaringan jalan kasus pasar tumpah: jalur augmentasi tiap langkah, sisa kapasitas
 tiap ruas, bottleneck, residual graph, min-cut, dan perbandingan kondisi tanpa pasar vs pasar penuh.
 
-Mode Ford-Fulkerson per pasangan membaca trace hasil solver Python. Mode Iterative menghitung empat pasangan
-S→T secara berurutan di browser dengan Edmonds–Karp; setiap pasangan memakai solver baru sehingga arusnya
-direset, sementara cabang rute dalam pasangan tersebut berbagi kapasitas ruas.
+Mode Ford-Fulkerson per pasangan membaca trace hasil solver Python. Mode Iterative juga membaca trace Python,
+yaitu `iterative_a<alpha>.json` dari `iterative_ford_fulkerson.py`: empat pasangan S→T dihitung berurutan,
+setiap pasangan mulai dari arus nol, sementara cabang rute dalam pasangan tersebut berbagi kapasitas ruas.
+Bila berkas itu belum ada, keempat pasangan dihitung di browser (`solveMaxFlow` di `core/iterative.ts`) sebagai
+cadangan dan console memberi peringatan. Saat `npm run dev`, trace Python juga dicocokkan dengan hitungan browser
+dan perbedaannya ditulis di console.
 
 ## Menjalankan
 
@@ -48,7 +51,8 @@ Peta dasar memakai tile OpenStreetMap (butuh internet). Matikan "Peta dasar" unt
 
 ```
 visualizer/
-├─ public/data/          topology.json, geometry.json, routes.json, manifest.json, trace_<S>_<T>_a<alpha>.json
+├─ public/data/          topology.json, geometry.json, routes.json, manifest.json, trace_<S>_<T>_a<alpha>.json,
+│                        iterative_a<alpha>.json
 ├─ scripts/              convert_yaml_to_topology.py, build_map_data.mjs
 ├─ dev/sampleTrace.ts    generator trace CONTOH (Edmonds-Karp), hanya untuk pengembangan
 └─ src/
@@ -71,6 +75,7 @@ Tidak ada warna atau angka literal di komponen; semuanya dari token atau data.
 cases/scenarios/case_04_pasar_tumpah.yaml ─(convert:yaml + labels.json)─▶ topology.json
 graph/index.html (web tim) ─(build:map)─▶ geometry.json (bentuk jalan) + routes.json (8 rute)
 topology.json ─(python -m algorithms.maxflow.ford_fulkerson)─▶ trace_*.json + manifest.json   (solver Python Elang)
+topology.json ─(iterative_ford_fulkerson.py)─▶ iterative_a<alpha>.json (mode Iterative)
 ```
 
 - **Kondisi.** `manifest.json` memuat `observedAlpha` = penyempitan ruas Jl. Gasibu Atas saat *pasar penuh*. Sekarang
