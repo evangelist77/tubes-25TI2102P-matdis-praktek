@@ -31,9 +31,10 @@ PAIRS: List[Dict[str, Any]] = [
     {"source": 2, "sink": 4, "sCode": "S2", "tCode": "T2", "label": "S2 (Dipatiukur) → T2 (Diponegoro)"},
 ]
 
-# Alpha observasi empiris pasar penuh: rekaman CCTV Minggu 15 Nov 2026 07.30-08.00 menunjukkan Jl. Gasibu Atas tertutup
-# penuh tenda lapak (0 kendaraan lewat), jadi penyempitannya 100% (hitung-kendaraan/hasil_hitung/cctv_15nov_minggu)
-OBSERVED_ALPHA = 1.0
+# Alpha pasar penuh sementara dari hambatan samping PKJI di Jl. Gasibu Atas (FCHS sedang 0,91 jadi sangat tinggi 0,81,
+# turun sekitar 11%). Angka 100% sebelumnya ditarik karena kamera Lapang Gasibu 02 ternyata menghadap Jl. Japati.
+# Nanti diganti hasil perbandingan kamera Gasibu_02 Sabtu 21 dan Minggu 22 Nov 2026.
+OBSERVED_ALPHA = 0.11
 
 # Simpul dan busur khusus
 MARKET_EDGES: Set[Tuple[int, int]] = {(24, 25)}  # Jl. Gasibu Atas
@@ -441,12 +442,13 @@ def generate_all_traces(
     output_dir: Optional[Path] = None,
     alphas: Optional[List[float]] = None,
 ) -> Tuple[List[Path], Path]:
-    """Menghasilkan seluruh 44 kombinasi trace (4 pasangan x 11 nilai alpha) dan manifest.json."""
+    """Menghasilkan trace untuk 4 pasangan x (alpha 0 sampai 1,0 tiap 0,1 ditambah OBSERVED_ALPHA) dan manifest.json."""
     out_dir = output_dir or VISUALIZER_DATA_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
 
     if alphas is None:
-        alphas = [round(k * 0.1, 1) for k in range(11)]  # 0.0, 0.1, ..., 1.0 (1.0 = observasi CCTV)
+        # 0.0, 0.1, ..., 1.0 untuk analisis sensitivitas, ditambah OBSERVED_ALPHA untuk kondisi pasar penuh
+        alphas = sorted({round(k * 0.1, 2) for k in range(11)} | {OBSERVED_ALPHA})
 
     manifest_entries: List[Dict[str, Any]] = []
     step_counts: Dict[str, int] = {}
