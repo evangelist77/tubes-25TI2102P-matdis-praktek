@@ -1,0 +1,51 @@
+/* Halaman /graph/analisis: fishbone, bobot PKJI, pipeline, eksperimen, temuan. Memakai token dan komponen halaman.css. */
+
+/* ===== S01 ===== */
+.analisis .blob-a { width: clamp(220px, 34vw, 440px); }
+.urgensi { margin-top: 6px; }
+.urgensi > div:nth-child(2) { rotate: 0.6deg; }
+.urgensi > div:nth-child(3) { rotate: -0.5deg; background: #fff3d6; }
+.urgensi > div:nth-child(4) { rotate: 0.4deg; }
+.urgensi b small { font-size: 0.45em; letter-spacing: 0; }
+
+.tulang {
+  position: relative;
+  margin-top: 30px;
+  padding: clamp(10px, 2vw, 22px);
+  background: var(--kertas);
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.tulang svg { display: block; width: 100%; height: auto; }
+.tulang .duri { stroke: var(--ink); stroke-width: 2.2; fill: none; stroke-linecap: round; }
+.tulang .tulang-utama { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+.tulang .ranting { stroke: var(--ink); stroke-width: 1.2; opacity: 0.55; }
+.tulang .ranting.akar { stroke: var(--vermilion); stroke-width: 2.6; opacity: 1; }
+.tulang .sebab { font: 500 15px var(--serif); fill: var(--ink); }
+.tulang .sebab.akar { font-weight: 700; fill: #b3361f; }
+.tulang .label-kat { font: 700 18px var(--serif); fill: var(--ink); }
+.tulang .kepala-teks { font: 700 19px var(--serif); fill: var(--cream); }
+.tulang figcaption { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; font: 500 14.5px/1.4 var(--serif); }
+.tulang figcaption i { display: inline-block; width: 22px; height: 3px; margin-right: 8px; border-radius: 2px; background: var(--vermilion); vertical-align: 4px; }
+.tulang-hp { display: none; }
+@media (max-width: 760px) {
+  .tulang svg { display: none; }
+  .tulang-hp { display: grid; gap: 14px; }
+  .tulang-hp section { padding: 12px 14px; border: 1.5px solid var(--ink); border-radius: 12px; background: var(--cream); }
+  .tulang-hp h3 { font: 700 18px/1.2 var(--serif); }
+  .tulang-hp ul { margin-top: 6px; padding-left: 1.1em; }
+  .tulang-hp li.akar { color: #b3361f; font-weight: 700; }
+  .tulang-hp .kepala-hp { padding: 12px 14px; border-radius: 12px; background: var(--vermilion); color: var(--cream); font: 700 18px/1.3 var(--serif); }
+}
+
+.akar-model { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); grid-auto-rows: auto; gap: 26px; margin-top: 18px; list-style: none; }
+.akar-model li { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; background: var(--kertas); border: 1.5px solid var(--ink); border-radius: 16px; box-shadow: 5px 5px 0 var(--ink); overflow: hidden; }
+.akar-model .dari { padding: 14px 16px 12px; background: rgba(242, 167, 184, 0.55); border-bottom: 1.5px dashed var(--ink); }
+.akar-model .panah { justify-self: center; margin: -13px 0; z-index: 1; display: grid; place-items: center; width: 26px; height: 26px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--gold); font: 700 15px/1 var(--sans); }
+.akar-model .ke { padding: 16px 16px 16px; }
+.akar-model small { display: block; font: 600 12px/1.2 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.7; margin-bottom: 4px; }
+.akar-model b { font: 700 18px/1.25 var(--serif); }
+.akar-model p { margin-top: 6px; font-size: 15.5px; line-height: 1.45; }
+/* ===== /S01 ===== */
+
