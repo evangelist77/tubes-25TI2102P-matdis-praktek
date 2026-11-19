@@ -194,7 +194,7 @@ Situs di-deploy oleh Vercel secara otomatis setiap ada push ke branch `main`. Is
 
 ## Alur Kerja
 
-Tiap anggota mengerjakan bagiannya di branch sendiri (contohnya `alifah`), lalu membuka pull request ke `main`. Sebelum membuka pull request, jalankan pemeriksaan yang sesuai dengan bagian yang diubah: `python -m pytest` untuk kode Python, `npm test` di `visualizer/`, dan `node graph/verify-map.mjs` untuk Dashboard Peta. Kalau `GRAPH_DATA` atau `visualizer/` berubah, jalankan juga `ekstrak_graf.mjs` atau `bangun_ff.sh` dan commit hasilnya.
+Repo ini memakai satu branch utama, yaitu `main`. Sebagian besar perubahan langsung di-commit ke `main`, dengan satu commit untuk satu perubahan supaya riwayatnya mudah dibaca. Ada dua branch lain yang pernah dipakai dan sekarang isinya sudah ada semua di `main`, yaitu `alifah` untuk template dan visualisasi Ford-Fulkerson yang digabung lewat pull request #1 pada 11 November 2026, dan `ganesh` untuk visualisasi Iterative yang digabung pada 18 November 2026. Sebelum commit ke `main`, jalankan pemeriksaan yang sesuai dengan bagian yang diubah: `python -m pytest` untuk kode Python, `npm test` di `visualizer/`, dan `node graph/verify-map.mjs` untuk Dashboard Peta. Kalau `GRAPH_DATA` atau `visualizer/` berubah, jalankan juga `ekstrak_graf.mjs` atau `bangun_ff.sh` dan commit hasilnya.
 
 ## Sumber Data dan Atribusi
 
