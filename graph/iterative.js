@@ -241,7 +241,8 @@
         baseCapacity: edge.capacity,
         isMarket: !!edge.isMarket,
         closedInMorning: !!edge.closedInMorning,
-        flow: 0
+        flow: 0, // arus maksimal dari pasangan yang dipilih, dipakai untuk kepenuhan ruas
+        total: 0 // jumlah arus dari pasangan yang dipilih
       };
     }
 
@@ -268,7 +269,10 @@
         for (const [eid, flow] of Object.entries(finalStep.edgeFlows)) {
           const numId = Number(eid);
           if (edgeMap[numId]) {
-            edgeMap[numId].flow = Math.round((edgeMap[numId].flow + flow) * 10) / 10;
+            // tiap pasangan dihitung terpisah dari arus nol, jadi kepenuhan memakai arus terbesar, bukan jumlahnya
+            const e = edgeMap[numId];
+            e.flow = Math.max(e.flow, flow);
+            e.total = Math.round((e.total + flow) * 10) / 10;
           }
         }
       }
@@ -362,7 +366,8 @@
       line.bindTooltip(`
         <div style="font-size:12px; font-family: sans-serif; line-height:1.4;">
           <b>${edge.road}</b><br>
-          Arus: <b>${edge.flow.toLocaleString('id-ID')}</b> / ${edge.capacity.toLocaleString('id-ID')} skr/jam (${pct}%)
+          Arus maksimal: <b>${edge.flow.toLocaleString('id-ID')}</b> / ${edge.capacity.toLocaleString('id-ID')} skr/jam (${pct}%)<br>
+          Total arus pasangan terpilih: ${edge.total.toLocaleString('id-ID')} skr/jam
           ${edge.isMarket ? '<br><span style="color:#ea580c; font-weight:700;">★ Ruas Jl. Gasibu Atas (terdampak pasar)</span>' : ''}
           ${edge.closedInMorning && state.currentCondition === 'pasar' ? '<br><span style="color:#dc2626;">✕ Ditutup Pagi</span>' : ''}
         </div>
@@ -398,7 +403,7 @@
 
     for (const edge of Object.values(edgeMap)) {
       if (edge.from === 0 || edge.to === 27) continue;
-      totalNetworkFlow += edge.flow;
+      totalNetworkFlow += edge.total;
 
       if (edge.capacity > 0) {
         const r = edge.flow / edge.capacity;
@@ -409,7 +414,7 @@
       }
     }
 
-    $('#iter-stat-totalflow').textContent = `${totalNetworkFlow.toLocaleString('id-ID')} skr`;
+    $('#iter-stat-totalflow').textContent = `${(Math.round(totalNetworkFlow * 10) / 10).toLocaleString('id-ID')} skr`;
 
     // 3. Bottleneck
     if (worstEdge) {
@@ -450,9 +455,14 @@
     $('#iter-inspect-content').innerHTML = `
       <div class="iter-metric-grid">
         <div class="iter-metric-box">
-          <span class="iter-metric-label">Total Arus Lewat</span>
+          <span class="iter-metric-label">Arus Maksimal</span>
           <span class="iter-metric-val" style="color: ${color};">${edge.flow.toLocaleString('id-ID')}</span>
-          <span style="font-size:11px; color:#78716c;">skr / jam</span>
+          <span style="font-size:11px; color:#78716c;">skr / jam, pasangan terbesar</span>
+        </div>
+        <div class="iter-metric-box">
+          <span class="iter-metric-label">Total Arus Lewat</span>
+          <span class="iter-metric-val">${edge.total.toLocaleString('id-ID')}</span>
+          <span style="font-size:11px; color:#78716c;">skr / jam, jumlah pasangan terpilih</span>
         </div>
         <div class="iter-metric-box">
           <span class="iter-metric-label">Kapasitas Efektif</span>
@@ -520,6 +530,7 @@
           <td style="font-family: var(--mono); font-weight:700; color: ${color};">
             ${edge.flow.toLocaleString('id-ID')}
           </td>
+          <td style="font-family: var(--mono);">${edge.total.toLocaleString('id-ID')}</td>
           <td style="font-family: var(--mono);">${edge.capacity.toLocaleString('id-ID')}</td>
           <td style="font-family: var(--mono);">${sisa.toLocaleString('id-ID')}</td>
           <td>
