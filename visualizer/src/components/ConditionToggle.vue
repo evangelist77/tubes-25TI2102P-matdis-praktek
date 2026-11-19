@@ -36,8 +36,8 @@ const options = [
     </p>
     <p v-else-if="current?.key === 'pasar'" class="text-xs text-stone-500 px-1">
       Penyempitan Gasibu Atas: <b>{{ Math.round(manifest.observedAlpha * 100) }}%</b>
-      <span class="text-amber-700">&nbsp;(placeholder, diganti dari data CCTV/video manual)</span>
+      <span class="text-amber-700">&nbsp;(hambatan samping PKJI naik dari sedang ke sangat tinggi)</span>
     </p>
-    <p v-else class="text-xs text-stone-500 px-1">Kapasitas ruas = nilai dasar dari spek.</p>
+    <p v-else class="text-xs text-stone-500 px-1">Kapasitas ruas dihitung dengan rumus PKJI.</p>
   </div>
 </template>
