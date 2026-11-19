@@ -10,8 +10,9 @@ Situs: **https://maxflow-gasibu.vercel.app**
 |:---|:---|
 | [`/`](https://maxflow-gasibu.vercel.app) | Landing berisi cerita masalah, cara kerja max flow pada graf contoh, tim, dan kliping berita |
 | [`/graph/`](https://maxflow-gasibu.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
-| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | CCTV dan Video: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
+| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | Data Lapangan: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
 | [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
+| [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen Ford-Fulkerson dan Dinic pada graf dinamis, serta temuan dan batasan |
 
 ## Identitas Kelompok
 
@@ -96,6 +97,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   ├── index.html              Dashboard Peta, sekaligus sumber data GRAPH_DATA
 │   ├── cctv.html               halaman CCTV dan Video
 │   ├── visualisasi.html        halaman Visualisasi
+│   ├── analisis.html, analisis.css  halaman Analisis
 │   ├── ff/                     hasil build visualizer, dibuka di /graph/ff/
 │   ├── data/                   graf.json (salinan GRAPH_DATA) dan contoh_graf.json (graf contoh di landing)
 │   ├── landing/                skrip, gaya, dan gambar peta untuk landing
