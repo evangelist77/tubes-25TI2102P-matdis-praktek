@@ -1965,6 +1965,9 @@
         return `${nodeId[0]}<sub>${nodeId.slice(1)}</sub>`;
       }
       if (nodeId.startsWith('V_')) {
+        // simpang ditampilkan dengan nama jalannya supaya tidak terbaca seperti kode, kodenya tetap ada di title
+        const n = GRAPH_DATA.nodes[nodeId];
+        if (n && n.label) return `<span title="${nodeId}">${n.label.replace(/^Simpang\s+/, '')}</span>`;
         const cleanSub = nodeId.slice(2).replace(/_/g, ' ');
         return `V<sub>${cleanSub}</sub>`;
       }
