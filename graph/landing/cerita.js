@@ -823,7 +823,7 @@ const TIM = [
   { num: 'IV', panggilan: 'Ghaisan', nama: 'Ghaisan Khoirul Badruzaman', foto: 'ghaisan.webp', peran: 'Data CCTV dan YOLO', url: 'https://ghaisan.vercel.app', suit: 's-bidang', acc: '#d6537a', accL: '#fad7da',
     tugas: 'Mengurus data CCTV dan rekaman HP lalu membuat program hitung kendaraan dengan YOLO, sekaligus menyusun situs ini dan bahan presentasi.' },
   { num: 'V', panggilan: 'Hafiz', nama: 'Hafiz Fauzan Syafrudin', foto: 'hafiz.webp', peran: 'Iterative Ford-Fulkerson', url: 'https://hafizfs.my.id/', suit: 's-cahaya', acc: '#c98a1f', accL: '#f8e6b8',
-    tugas: 'Mengerjakan algoritma Iterative Ford-Fulkerson dan menyusun graf {rute} rute beserta spesifikasi jalannya, sekaligus mengelola repositori kelompok.' }
+    tugas: 'Mengerjakan algoritma Iterative Ford-Fulkerson dan Dinic, menyusun graf {rute} rute beserta spesifikasi jalannya, sekaligus mengelola repositori kelompok.' }
 ];
 const tugasTxt = c => c.tugas.replace('{rute}', D ? D.n.rute : '');
 const domain = u => { try { return new URL(u).host; } catch (e) { return u; } };
