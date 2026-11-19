@@ -218,6 +218,8 @@ class FordFulkerson(BaseGraphAlgorithm):
         total_flow = 0.0
         step_index = 0
         self._initial_augmenting_path = []
+        # jumlah sisi residual yang diperiksa BFS, hanya metrik untuk banding dengan Dinic
+        self.edges_scanned = 0
 
         self.log_step(
             event_type="INITIALIZATION",
@@ -240,6 +242,7 @@ class FordFulkerson(BaseGraphAlgorithm):
                 u = queue.popleft()
                 if u == goal_node:
                     break
+                self.edges_scanned += len(adj.get(u, []))
                 for idx, redge in enumerate(adj.get(u, [])):
                     res_cap = redge.capacity - redge.flow
                     if res_cap > 1e-9 and redge.to not in visited:
