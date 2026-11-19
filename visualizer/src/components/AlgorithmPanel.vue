@@ -44,7 +44,7 @@ const isFinal = computed(() => props.stepIndex === total.value)
       <div v-if="stepIndex === 0" class="space-y-2">
         <div class="text-sm font-bold text-stone-900">Awal: belum ada arus</div>
         <p class="text-[13px] text-stone-600 leading-relaxed">
-          Setiap ruas punya kapasitas efektif (batas kendaraan/jam) yang tampil di peta. Ada
+          Setiap ruas punya kapasitas efektif (batas skr/jam) yang tampil di peta. Ada
           <b>{{ total }} langkah</b> sampai arus maksimum ditemukan. Tekan <b>Maju</b> atau <b>Putar</b>.
         </p>
       </div>
