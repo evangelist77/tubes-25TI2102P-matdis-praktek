@@ -214,6 +214,8 @@ sub { font-size: 0.72em; vertical-align: -0.2em; line-height: 0; }
   border-radius: 9px;
 }
 .foto.lebar video { aspect-ratio: 16 / 9; }
+.foto img { display: block; width: 100%; height: auto; border: 1.5px solid var(--ink); border-radius: 9px; }
+.peta-gmaps { --r: -0.4deg; margin-bottom: 30px; }
 .foto figcaption { padding: 12px 4px 0; }
 .foto h4 { font: 700 18px/1.2 var(--serif); letter-spacing: -0.01em; }
 .foto .meta { margin-top: 4px; font: 500 15px/1.45 var(--serif); color: var(--navy); }
