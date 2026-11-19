@@ -44,11 +44,12 @@ class Dinic(BaseGraphAlgorithm):
         # kapasitas hasil event dinamis, (u, v) -> kapasitas baru
         self._capacity_override: Dict[Tuple[int, int], float] = {}
         self._adj: Dict[int, List[_ResidualEdge]] = {}
-        # (u, v) -> [(edge_id, is_market, closed_in_morning, sisi maju di graf residual)], untuk min cut
+        # (u, v) -> [(edge_id, is_market, closed_in_morning, sisi maju di graf residual)], untuk min cut dan event
         self._sisi: Dict[Tuple[int, int], List[Tuple[int, bool, bool, _ResidualEdge]]] = {}
         self._first_path: List[int] = []
         self.total_flow = 0.0
         # metrik run terakhir, dipakai untuk banding dengan Ford-Fulkerson
+        self.strategy = ""
         self.bfs_phases = 0
         self.augmenting_paths = 0
         self.edges_scanned = 0
@@ -162,8 +163,9 @@ class Dinic(BaseGraphAlgorithm):
             },
         )
 
-    def _alirkan(self, s: int, t: int) -> FlowResult:
+    def _alirkan(self, s: int, t: int, strategy: str) -> FlowResult:
         """Ulangi fase Dinic (BFS level graph lalu blocking flow) sampai t tidak terjangkau dari s."""
+        self.strategy = strategy
         self.bfs_phases = 0
         self.augmenting_paths = 0
         self.edges_scanned = 0
@@ -175,6 +177,7 @@ class Dinic(BaseGraphAlgorithm):
                 "source": s,
                 "sink": t,
                 "alpha": self._last_alpha,
+                "strategy": strategy,
                 "max_flow": self.total_flow,
             },
         )
@@ -226,22 +229,30 @@ class Dinic(BaseGraphAlgorithm):
         self._adj.setdefault(goal_node, [])
         self.total_flow = 0.0
 
-        hasil = self._alirkan(start_node, goal_node)
+        hasil = self._alirkan(start_node, goal_node, "hitung_ulang")
         self.elapsed_ms = (time.perf_counter() - mulai) * 1000
         return hasil
 
     def handle_dynamic_event(self, event_data: Dict[str, Any]) -> FlowResult:
-        """Menangani DYNAMIC_EDGE_CAPACITY. Untuk sekarang max flow selalu dihitung ulang dari nol."""
+        """Menangani DYNAMIC_EDGE_CAPACITY.
+
+        Kalau kapasitas baru masih >= arus yang sedang lewat di sisi itu, arus lama tetap sah, jadi cukup
+        dilanjutkan di graf residual (warm start). Kalau lebih kecil, arus lama melanggar kapasitas dan
+        max flow dihitung ulang dari nol.
+        """
+        mulai = time.perf_counter()
         target = event_data.get("edge") or event_data.get("target_edge")
         new_cap = float(event_data.get("new_capacity", event_data.get("new_weight", 0.0)))
         start = event_data.get("start", self._last_source or 0)
         goal = event_data.get("goal", self._last_sink or 27)
 
+        key = None
         if target and len(target) == 2:
             u, v = int(target[0]), int(target[1])
             if self.graph.has_edge(u, v):
+                key = (u, v)
                 self.graph[u][v]["capacity"] = new_cap
-                self._capacity_override[(u, v)] = new_cap
+                self._capacity_override[key] = new_cap
                 self.log_step(
                     event_type="DYNAMIC_EDGE_CAPACITY",
                     state_mutations={
@@ -251,4 +262,21 @@ class Dinic(BaseGraphAlgorithm):
                     },
                 )
 
-        return self.run(start, goal, alpha=self._last_alpha)
+        if not self._adj or (start, goal) != (self._last_source, self._last_sink):
+            return self.run(start, goal, alpha=self._last_alpha)
+
+        # kapasitas efektif baru tiap sisi (u, v), aturan alpha tetap sama dengan run()
+        baru = []
+        if key:
+            for eid, is_m, is_c, maju in self._sisi.get(key, []):
+                cap = self._get_effective_capacity(eid, key[0], key[1], new_cap, self._last_alpha, is_m, is_c)
+                baru.append((maju, cap))
+        if any(cap < maju.flow - EPS for maju, cap in baru):
+            return self.run(start, goal, alpha=self._last_alpha)
+
+        for maju, cap in baru:
+            maju.capacity = cap
+        hasil = self._alirkan(start, goal, "warm_start")
+        self.elapsed_ms = (time.perf_counter() - mulai) * 1000
+        return hasil
+
