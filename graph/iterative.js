@@ -393,8 +393,8 @@
     // 1. Max Flow
     $('#iter-stat-maxflow').textContent = `${calculatedMaxFlow.toLocaleString('id-ID')}`;
     $('#iter-stat-maxflow-sub').textContent = state.currentPair === 'all'
-      ? 'total kapasitas keluar jaringan'
-      : `arus maksimal ${state.currentPair}`;
+      ? 'skr/jam, jumlah max flow keempat pasangan yang dihitung terpisah'
+      : `skr/jam, arus maksimal ${state.currentPair}`;
 
     // 2. Total Arus yang Lewat di seluruh ruas
     let totalNetworkFlow = 0;
@@ -414,7 +414,7 @@
       }
     }
 
-    $('#iter-stat-totalflow').textContent = `${(Math.round(totalNetworkFlow * 10) / 10).toLocaleString('id-ID')} skr`;
+    $('#iter-stat-totalflow').textContent = `${(Math.round(totalNetworkFlow * 10) / 10).toLocaleString('id-ID')} skr/jam`;
 
     // 3. Bottleneck
     if (worstEdge) {
