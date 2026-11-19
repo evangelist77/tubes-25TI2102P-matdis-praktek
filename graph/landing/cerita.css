@@ -363,6 +363,7 @@ em,i,cite,address,var,dfn{font-style:normal}
 .pol{position:absolute;left:0;top:0;width:var(--pw,130px);padding:6px 6px 8px;background:#fffaf0;color:var(--ink);border-radius:4px;box-shadow:0 0 0 1px rgba(35,42,120,.18),0 16px 28px -14px rgba(35,42,120,.6);opacity:0;will-change:transform,opacity;transition:box-shadow .2s}
 .layer.on .pol.hidup{pointer-events:auto;cursor:pointer}
 .pol img,.pol video,.pol .kosong{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:2px;background:#d9d1bf}
+.pol .salah{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) rotate(-8deg);font:700 11px/1.1 var(--serif);color:#b3361f;background:rgba(255,250,240,.9);border:2px solid currentColor;padding:3px 6px;border-radius:3px;white-space:nowrap;pointer-events:none}
 .pol .kosong{display:grid;place-items:center;overflow:hidden;container-type:inline-size;background:repeating-linear-gradient(-45deg,#dcd4c3 0 6px,#e6dfcf 6px 12px)}
 .pol .kosong b{font:700 clamp(8px,13cqi,12px)/1.1 var(--serif);color:#b3361f;border:2px solid currentColor;padding:4px 7px 5px;border-radius:3px;transform:rotate(-8deg);text-align:center}
 .pol span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:6px;font:600 12px/1.25 var(--serif)}
