@@ -79,6 +79,16 @@ Hasil Iterative bisa dilihat dengan dua cara.
 
 **Langkah per pasangan** di tab **Iterative Jaringan (Ganesh)** pada [`/graph/ff/?mode=iterative`](https://maxflow-gasibu.vercel.app/graph/ff/?mode=iterative). Pilih pasangan di Pilih Pasangan S → T, lalu pakai Maju, Mundur, atau Putar seperti pada Ford-Fulkerson untuk melihat keempat pasangan dihitung bergantian.
 
+### 5. Data Lapangan
+
+- Tabel CCTV menunjukkan status tiap kamera dan simpul yang dipantaunya.
+- Cuplikan CCTV dan rekaman HP berputar sendiri saat halaman digulir sampai ke kartunya.
+- Bagian Program hitung kendaraan menjelaskan cara program YOLO menghitung kendaraan, dan bagian Hasil akhir membandingkan arus terukur dengan kapasitas PKJI.
+
+### 6. Analisis
+
+Halaman ini berisi fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen graf dinamis, serta temuan dan batasan. Klik **Tabel kapasitas 31 ruas** untuk membuka kapasitas semua ruas, dan pakai menu Analisis untuk langsung loncat ke bagian tertentu.
+
 ## Pendekatan
 
 ### Graf jaringan jalan
