@@ -80,7 +80,7 @@ export interface ManifestEntry {
 }
 
 export interface Manifest {
-  /** Penyempitan ruas pasar saat pasar penuh (hasil pengamatan; masih placeholder sampai data CCTV selesai). */
+  /** Penyempitan ruas Jl. Gasibu Atas saat pasar penuh (sementara dari hambatan samping PKJI, sekitar 11%). */
   observedAlpha: number
   runs: ManifestEntry[]
 }
