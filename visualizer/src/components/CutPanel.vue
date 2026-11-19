@@ -34,7 +34,7 @@ const matches = computed(() => cutSum.value === props.trace.result.maxFlow)
         >
           <span class="text-[13px] font-semibold text-stone-900 leading-snug">
             {{ b.road }}
-            <span v-if="b.isMarket" class="text-orange-600">· ruas pasar</span>
+            <span v-if="b.isMarket" class="text-orange-600">· ruas Gasibu Atas</span>
             <span v-if="b.isClosed" class="text-red-600">· ditutup</span>
           </span>
           <span class="font-mono text-base font-bold text-red-600">{{ b.capacity }}</span>

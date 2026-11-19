@@ -46,7 +46,7 @@ const passingRoutes = computed(() => {
       <!-- Tag Khusus Kondisi Lapangan -->
       <div v-if="edge.isMarket || edge.closedInMorning" class="flex flex-wrap gap-1.5">
         <span v-if="edge.isMarket" class="rounded-md bg-orange-100 text-orange-800 text-[11px] font-bold px-2 py-0.5">
-          ⚠️ Ruas Pasar Tumpah (Kapasitas turun saat pasar)
+          ⚠️ Ruas Jl. Gasibu Atas (kapasitas turun saat pasar ramai)
         </span>
         <span v-if="edge.closedInMorning && marketActive" class="rounded-md bg-red-100 text-red-800 text-[11px] font-bold px-2 py-0.5">
           ⛔ Ditutup Total Minggu Pagi
