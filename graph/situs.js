@@ -4,7 +4,7 @@
 (() => {
   'use strict';
   const MENU = [
-    { k: 'cerita', t: 'Cerita', sub: [['01', 'Max Flow', '/#mulai'], ['02', 'Masalah', '/#masalah'], ['03', 'Tim', '/#tim'], ['04', 'Graf', '/#graf'], ['05', 'Rute', '/#rute'], ['06', 'Data lapangan', '/#data'], ['07', 'Aliran', '/#aliran'], ['08', 'Akhir', '/#akhir']] },
+    { k: 'cerita', t: 'Cerita', sub: [['01', 'Max Flow', '/#mulai'], ['02', 'Masalah', '/#masalah'], ['03', 'Tim', '/#tim'], ['04', 'Rute', '/#rute'], ['05', 'Data lapangan', '/#data'], ['06', 'Aliran', '/#aliran'], ['07', 'Akhir', '/#akhir']] },
     { k: 'dashboard', t: 'Dashboard Peta', href: '/graph/' },
     { k: 'cctv', t: 'CCTV dan Video', sub: [['', 'CCTV', '/graph/cctv.html#cctv'], ['', 'Rekaman HP', '/graph/cctv.html#hp'], ['', 'Deteksi kendaraan', '/graph/cctv.html#deteksi'], ['', 'Program hitung kendaraan', '/graph/cctv.html#program']] },
     { k: 'visualisasi', t: 'Visualisasi', sub: [['', 'Ford-Fulkerson', '/graph/visualisasi.html#ford-fulkerson'], ['', 'Iterative Ford-Fulkerson', '/graph/visualisasi.html#iterative']] },
