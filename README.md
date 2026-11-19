@@ -65,6 +65,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 - **Kapasitas belum final.** Belum ada data kapasitas kendaraan per jam yang terverifikasi untuk tiap ruas (lihat "Status data kapasitas" di bagian 3 `GRAPH_SPEC_LLM.md`). Lebar dan jumlah lajur tidak bisa langsung dianggap kapasitas. Angka kapasitas di YAML masih nilai relatif. Arus hasil hitung CCTV dan HP sudah tersedia per ruas, tapi belum dimasukkan sebagai kapasitas karena arus hanya batas bawah kapasitas dan tidak semua ruas terukur.
 - Program hitung mengukur arus, bukan kapasitas. Arus baru sama dengan kapasitas kalau di hulu ruas sedang ada antrean.
 - Algoritma Iterative Ford-Fulkerson dan visualisasinya sedang dikerjakan.
+- Dinic sudah jadi dan max flow-nya sama dengan Ford-Fulkerson untuk S*-T*, keempat pasangan, dan keempat event skenario. Event yang menutup ruas yang sedang dialiri membuat Dinic menghitung ulang dari nol, sedangkan event yang menaikkan kapasitas cukup diselesaikan dengan warm start. `python -m scripts.banding_ff_dinic` menulis perbandingan keduanya (max flow, jumlah BFS, augmenting path, sisi yang diperiksa, dan waktu) untuk kondisi normal, kondisi pasar, tiap event, dan graf grid sintetis sampai sekitar 2000 simpul ke `output/banding_ff_dinic.csv`. Waktu Ford-Fulkerson ikut menghitung penyusunan trace visualizer tiap langkah, jadi kerja kedua algoritma lebih adil dibandingkan lewat kolom `sisi_diperiksa`.
 - Pipeline Python template sudah tersambung. `run_simulation` menjalankan Ford-Fulkerson dan keempat event skenario: max flow 1000, turun ke 600 saat Gasibu Atas tertutup, lalu ke 350 saat Jl. Singaperbangsa juga ditutup. `ScenarioLoader` masih hanya meneruskan `weight`, jadi `FordFulkerson` membaca kapasitas dari `visualizer/public/data/topology.json`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu.
 
 ## Struktur Repo
@@ -82,10 +83,10 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │       └── case_04_pasar_tumpah.yaml   graf kasus 4, kapasitas relatif, event penyempitan
 ├── config/settings.py          skenario dan algoritma default, folder output
 ├── core/                       model graf, runner simulasi, observer, gambar graf matplotlib
-├── scripts/                    run_simulation.py dan run_benchmark.py
+├── scripts/                    run_simulation.py, run_benchmark.py, dan banding_ff_dinic.py
 ├── tests/                      tes pytest untuk loader, kontrak skenario, dan event max flow
 ├── tracer/                     modul trace bawaan template, masih kosong
-├── output/                     tempat trace JSON hasil runner
+├── output/                     tempat trace JSON hasil runner dan CSV banding Ford-Fulkerson dengan Dinic
 ├── visualizer/                 aplikasi visualisasi Ford-Fulkerson (Vue 3 + Vite)
 ├── hitung-kendaraan/
 │   ├── video_counting/         rekam CCTV, kalibrasi garis, hitung, agregasi, validasi, beserta config dan tes
@@ -131,6 +132,7 @@ python -m pytest                   # tes loader dan kontrak skenario
 python -m scripts.run_simulation   # skenario default case_04_pasar_tumpah.yaml
 python -m scripts.run_benchmark    # ringkasan langkah dan waktu per skenario
 python -m scripts.run_benchmark -a maxflow -a dinic   # Ford-Fulkerson dan Dinic dalam satu tabel
+python -m scripts.banding_ff_dinic # banding lengkap Ford-Fulkerson dan Dinic, sekitar 30 detik
 ```
 
 Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
