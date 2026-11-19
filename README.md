@@ -177,71 +177,107 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 
 ## Menjalankan
 
-### Pipeline Python (template dosen)
+Bagian ini untuk menjalankan program di komputer sendiri. Kalau hanya ingin melihat hasilnya, cukup buka website seperti di [Tutorial Penggunaan Aplikasi](#tutorial-penggunaan-aplikasi). Semua langkah di bawah sudah diuji ulang pada 20 November 2026 dari clone baru di macOS dengan Python 3.12 dan Node.js 25. Hasilnya sama dengan isi repo, kecuali kolom waktu di CSV banding yang bergantung pada kecepatan komputer.
+
+### 1. Persiapan
+
+| Kebutuhan | Dipakai untuk | Wajib |
+|:---|:---|:---|
+| Git | mengunduh repo | ya |
+| Python 3.12 atau lebih baru | pipeline algoritma dan program hitung kendaraan | ya |
+| Node.js 20 atau lebih baru beserta npm | visualizer Ford-Fulkerson dan pemeriksaan Dashboard Peta | hanya untuk bagian 3 dan 6 |
+| ffmpeg | merekam stream CCTV | hanya untuk merekam di bagian 4 |
+
+```bash
+git clone https://github.com/evangelist77/tubes-25TI2102P-matdis-praktek.git
+cd tubes-25TI2102P-matdis-praktek
+```
+
+### 2. Pipeline Python (template dosen)
+
+Buat virtual environment lalu pasang paketnya. Langkah ini cukup sekali.
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-Semua perintah dijalankan dari akar repo.
+Semua perintah berikut dijalankan dari akar repo dengan virtual environment yang aktif.
 
-```bash
-python -m pytest                   # tes loader dan kontrak skenario
-python -m scripts.run_simulation   # skenario default case_04_pasar_tumpah.yaml
-python -m scripts.run_benchmark    # ringkasan langkah dan waktu per skenario
-python -m scripts.run_benchmark -a maxflow -a dinic   # Ford-Fulkerson dan Dinic dalam satu tabel
-python -m scripts.banding_ff_dinic # banding lengkap Ford-Fulkerson dan Dinic, sekitar 30 detik
-```
+| Perintah | Fungsi | Hasil yang diharapkan |
+|:---|:---|:---|
+| `python -m pytest` | menjalankan semua tes, termasuk tes yang memastikan Dinic sama dengan Ford-Fulkerson | `39 passed` |
+| `python -m scripts.run_simulation` | menjalankan Ford-Fulkerson pada skenario kasus 4 beserta keempat event | Jendela gambar graf terbuka dan harus ditutup supaya program lanjut. Terminal mencetak setiap event, dan angka `Cost` di baris `Rute` adalah max flow-nya, yaitu 2668.6, lalu 2331.9 saat Jl. Singaperbangsa ditutup, lalu kembali 2668.6. Log ditulis ke `output/output_case_04_pasar_tumpah.json`. |
+| `python -m scripts.run_benchmark` | ringkasan langkah dan waktu skenario | tabel `FordFulkerson` dengan 28 langkah |
+| `python -m scripts.run_benchmark -a maxflow -a dinic` | Ford-Fulkerson dan Dinic dalam satu tabel | Ford-Fulkerson 28 langkah dan Dinic 25 langkah |
+| `python -m scripts.banding_ff_dinic` | banding lengkap kedua algoritma pada kondisi normal, kondisi pasar, tiap event, dan graf grid sampai 2.027 simpul, sekitar 30 detik | tabel di terminal dan `output/banding_ff_dinic.csv` |
+| `python -m algorithms.maxflow.ford_fulkerson` | membuat ulang 48 trace Ford-Fulkerson dan `manifest.json` untuk visualizer | berkas di `visualizer/public/data/`, isinya sama dengan yang ada di repo |
+| `python algorithms/maxflow/iterative_ford_fulkerson.py` | membuat ulang 12 trace Iterative | berkas `iterative_a<alpha>.json` di `visualizer/public/data/` |
 
-Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
+Untuk menjalankan simulasi tanpa jendela gambar, pakai `MPLBACKEND=Agg python -m scripts.run_simulation` di macOS dan Linux, atau `$env:MPLBACKEND="Agg"; python -m scripts.run_simulation` di PowerShell. Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` ada di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
 
-Semua tes lulus, termasuk tes yang memastikan Dinic sama dengan Ford-Fulkerson. `run_simulation` membuka jendela gambar graf matplotlib dan menunggu jendela itu ditutup. Untuk menjalankannya tanpa jendela, pakai `MPLBACKEND=Agg python -m scripts.run_simulation`.
+Kapasitas dibaca dari `visualizer/public/data/topology.json`, karena `ScenarioLoader` bawaan template hanya meneruskan `weight`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu, buat ulang trace dengan dua perintah terakhir di tabel, lalu jalankan `bash graph/bangun_ff.sh` supaya visualisasi di situs ikut berubah.
 
-Trace visualizer dibuat ulang dengan `python -m algorithms.maxflow.ford_fulkerson` (trace Ford-Fulkerson dan `manifest.json`) dan `python3 algorithms/maxflow/iterative_ford_fulkerson.py` (trace Iterative), keduanya ke `visualizer/public/data/`. Setelah itu jalankan `bash graph/bangun_ff.sh`.
-
-### Visualizer Ford-Fulkerson
-
-Butuh Node.js 20 atau lebih baru.
+### 3. Visualizer Ford-Fulkerson
 
 ```bash
 cd visualizer
 npm install
-npm run dev                        # buka http://localhost:5173
-npm test                           # tes logika, integritas data trace, dan tes asap App
 ```
 
-Perintah lain (`build`, `convert:yaml`, `build:map`, `gen:traces`) dan format trace ada di [`visualizer/README.md`](visualizer/README.md).
+| Perintah | Fungsi |
+|:---|:---|
+| `npm run dev` | menjalankan visualizer di `http://localhost:5173`, hentikan dengan Ctrl+C |
+| `npm test` | tes logika, integritas data trace, dan tes App, hasilnya `Tests 48 passed` |
+| `npm run build` | memeriksa tipe TypeScript lalu membuat build produksi di `visualizer/dist/` |
+| `npm run preview` | membuka hasil `npm run build` di browser |
+| `npm run convert:yaml` | membuat ulang `public/data/topology.json` dari berkas kasus YAML, butuh Python dengan PyYAML |
+| `npm run build:map` | membuat ulang geometri jalan dan daftar 8 rute (`geometry.json` dan `routes.json`) dari Dashboard Peta |
 
-### Program hitung kendaraan
+`npm run gen:traces` dan `npm run gen:data` hanya untuk pengembangan. Keduanya **menimpa trace asli dari Python dengan trace contoh**, jadi jangan dijalankan. Kalau terlanjur, buat ulang trace dengan dua perintah terakhir di tabel bagian 2. Format trace dan alur datanya ada di [`visualizer/README.md`](visualizer/README.md). Hasil build untuk situs dipasang dengan `bash graph/bangun_ff.sh` (bagian 6).
 
-Butuh Python 3 (diuji dengan Python 3.14) dan `ffmpeg`. Semua perintah dijalankan dari folder `hitung-kendaraan/`.
+### 4. Program hitung kendaraan
+
+Program ini memakai YOLO dari Ultralytics yang ukurannya sekitar 1 sampai 2 GB beserta PyTorch, jadi dipasang di virtual environment tersendiri di folder `hitung-kendaraan/`.
 
 ```bash
 cd hitung-kendaraan
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/yolo settings sync=False                  # matikan kiriman data analitik Ultralytics
-.venv/bin/python video_counting/tests/test_lintasan.py
+source .venv/bin/activate          # Windows PowerShell: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+yolo settings sync=False           # matikan kiriman data analitik Ultralytics
 ```
 
-Alurnya rekam (`rekam_cctv.py`), pasang garis hitung (`kalibrasi.py`), hitung (`hitung.py`), rekap (`agregasi.py`), lalu validasi dengan hitungan manual (`validasi.py`). Perintah lengkap tiap tahap, format keluaran, dan hasil uji ada di [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md). Video rekaman dan bobot model tidak disimpan di repo.
+Bobot model `yolo26s.pt` terunduh otomatis saat `hitung.py` pertama kali jalan. Video rekaman tidak disimpan di repo karena ukurannya besar, jadi tahap rekam sampai hitung butuh stream CCTV yang sedang hidup atau video sendiri. Semua perintah berikut dijalankan dari folder `hitung-kendaraan/` dengan virtual environment folder itu aktif.
 
-### Situs statis secara lokal
+| Tahap | Perintah | Hasil |
+|:---|:---|:---|
+| Cek CCTV | `python video_counting/cek_cctv.py` | status, resolusi, dan satu frame tiap kamera di `dokumentasi/cek_cctv/` |
+| Rekam | `python video_counting/rekam_cctv.py --menit 30` | video `.ts` di `data/video/<titik>/` |
+| Pasang garis hitung | `python video_counting/kalibrasi.py --titik T1 --frame cek_T1.jpg --lintasan 60` | gambar jejak kendaraan untuk menentukan posisi garis hitung |
+| Uji hitung 1 menit | `python video_counting/hitung.py --titik T1 --detik 60 --anotasi` | `events_<titik>.csv` dan video beranotasi di `data/lapangan/` |
+| Hitung penuh | `python video_counting/hitung.py` | `events_<titik>.csv` untuk semua titik |
+| Rekap | `python video_counting/agregasi.py` | rekap per menit dan jam puncak |
+| Validasi | `python video_counting/validasi.py` | galat hitung program dibanding hitung manual di `data/lapangan/manual.csv` |
+| Kapasitas PKJI | `python video_counting/kapasitas_pkji.py` | `hasil_hitung/kapasitas_pkji.csv` dan `hasil_hitung/cek_arus_vs_kapasitas.csv`, bisa dijalankan tanpa memasang YOLO |
+
+Tes program ini ikut berjalan saat `python -m pytest` di akar repo, atau bisa sendiri dengan `python -m pytest video_counting/tests`. Penjelasan lengkap tiap tahap, cara memasang garis, format keluaran, dan hasil uji ada di [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md).
+
+### 5. Situs statis secara lokal
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Jalankan dari akar repo, lalu buka `http://localhost:8000/` untuk landing dan `http://localhost:8000/graph/` untuk Dashboard Peta. Di server lokal tidak ada `cleanUrls`, jadi halaman lain dibuka lewat `/graph/cctv.html`, `/graph/visualisasi.html`, dan `/graph/analisis.html`. Peta dasar butuh internet karena tile diambil dari OpenStreetMap.
+Jalankan dari akar repo, lalu buka `http://localhost:8000/` untuk landing dan `http://localhost:8000/graph/` untuk Dashboard Peta. Di server lokal tidak ada `cleanUrls`, jadi halaman lain dibuka lewat `/graph/cctv.html`, `/graph/visualisasi.html`, dan `/graph/analisis.html`. Peta dasar butuh internet karena tile diambil dari OpenStreetMap. Hentikan server dengan Ctrl+C.
 
-### Memeriksa dan membangun ulang data
+### 6. Memeriksa dan membangun ulang data
 
 | Perintah | Kapan dijalankan |
 |:---|:---|
 | `node graph/verify-map.mjs` | Setelah mengubah `graph/index.html` atau `GRAPH_SPEC_LLM.md`. Mencetak `PASS` kalau semua pemeriksaan lolos. |
-| `node graph/ekstrak_graf.mjs` | Setiap `GRAPH_DATA` di `graph/index.html` berubah, supaya landing, CCTV, dan Visualisasi memakai data yang sama. |
+| `node graph/ekstrak_graf.mjs` | Setiap `GRAPH_DATA` di `graph/index.html` berubah, supaya landing, Data Lapangan, dan Visualisasi memakai data yang sama. |
 | `bash graph/bangun_ff.sh` | Setiap `visualizer/` berubah. Build dilakukan di salinan sementara (`npm ci` lalu `vite build`), hasilnya ditulis ke `graph/ff/`, dan folder `visualizer/` tidak ikut berubah. Butuh `rsync`, Node.js, dan npm. |
 
 ## Deployment
