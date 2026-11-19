@@ -65,6 +65,20 @@ Buka menu Visualisasi lalu pilih Ford-Fulkerson, atau klik Buka layar penuh supa
 7. Nyalakan **Mode residual** untuk melihat kapasitas sisa dan edge balik, atau matikan **Peta dasar** untuk tampilan skematik.
 8. Di **Analisis sensitivitas penyempitan**, klik salah satu nilai α pada grafik untuk melihat hasil simulasi penyempitan Gasibu Atas dari 0 sampai 100%.
 
+### 4. Visualisasi Iterative Ford-Fulkerson
+
+Hasil Iterative bisa dilihat dengan dua cara.
+
+**Dashboard Iterative** di halaman Visualisasi, bagian Iterative Ford-Fulkerson:
+
+1. Di **Kondisi Pasar Tumpah**, pilih Tanpa Pasar (α = 0%) atau Saat Pasar (α = 11%).
+2. Di **Pasangan Titik**, pilih Semua Pasangan atau salah satu dari empat pasangan.
+3. Di **Cabang Rute**, pilih Semua Cabang Rute atau salah satu dari P1 sampai P8.
+4. Kartu di atas peta menunjukkan jumlah max flow, total arus, ruas pembatas, dan kondisi pasar. Warna ruas berubah dari hijau (lancar) sampai merah (jenuh).
+5. Arahkan kursor atau klik ruas di peta, atau klik baris di tabel rincian, untuk melihat arus maksimal, total arus, kapasitas efektif, sisa kapasitas, dan tingkat kepenuhannya.
+
+**Langkah per pasangan** di tab **Iterative Jaringan (Ganesh)** pada [`/graph/ff/?mode=iterative`](https://maxflow-gasibu.vercel.app/graph/ff/?mode=iterative). Pilih pasangan di Pilih Pasangan S → T, lalu pakai Maju, Mundur, atau Putar seperti pada Ford-Fulkerson untuk melihat keempat pasangan dihitung bergantian.
+
 ## Pendekatan
 
 ### Graf jaringan jalan
