@@ -816,7 +816,7 @@ const TIM = [
   { num: 'I', panggilan: 'Alifah', nama: 'Alifah Zachra Syifatunnajwa', foto: 'alifah.webp', peran: 'Visualisasi Ford-Fulkerson', url: 'https://portfolio-alifah.pages.dev/', suit: 's-titik', acc: '#e0492f', accL: '#f8d3c6',
     tugas: 'Membuat visualisasi Ford-Fulkerson di atas peta dari augmenting path dan residual sampai min cut, lalu ikut mengecek ulang CCTV yang bermasalah pada 1 November.' },
   { num: 'II', panggilan: 'Elang', nama: 'Elang Permadi Lau', foto: 'elang.webp', peran: 'Ford-Fulkerson', url: 'https://portfolio-blond-mu-7zngw837ue.vercel.app/', suit: 's-garis', acc: '#2e9184', accL: '#cdebe0',
-    tugas: 'Mengerjakan algoritma Ford-Fulkerson untuk tiap pasangan source dan sink sambil mengubah faktor penyempitan di ruas pasar.' },
+    tugas: 'Mengerjakan algoritma Ford-Fulkerson untuk tiap pasangan source dan sink sambil mengubah faktor penyempitan di ruas Jl. Gasibu Atas.' },
   { num: 'III', panggilan: 'Ganesh', nama: 'Ganesh Diyan Khansa Khairunnisa', foto: 'ganesh.webp', peran: 'Visualisasi Iterative', url: null, suit: 's-kurva', acc: '#6d4bb3', accL: '#ddd2f3',
     tugas: 'Membuat visualisasi Iterative Ford-Fulkerson dan ikut mengecek arah serta kondisi CCTV pada 31 Oktober.' },
   { num: 'IV', panggilan: 'Ghaisan', nama: 'Ghaisan Khoirul Badruzaman', foto: 'ghaisan.webp', peran: 'Data CCTV dan YOLO', url: 'https://ghaisan.vercel.app', suit: 's-bidang', acc: '#d6537a', accL: '#fad7da',
@@ -1811,7 +1811,7 @@ const Aliran = {
       const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2, L = Math.hypot(B.x - A.x, B.y - A.y) || 1; let nx = -(B.y - A.y) / L, ny = (B.x - A.x) / L; if (ny > 0) { nx = -nx; ny = -ny; }
       o.lb = mk('g', { class: 'al-lb', transform: `translate(${(mx + nx * 15).toFixed(1)} ${(my + ny * 15).toFixed(1)})` }, gL);
       o.rect = mk('rect', { x: -21, y: -11, width: 42, height: 22, rx: 2.5 }, o.lb); o.txt = mk('text', {}, o.lb);
-      if (e.pasar) { const t = mk('text', { class: 'al-lapak', x: (mx - nx * 22).toFixed(1), y: (my - ny * 22 + 4).toFixed(1) }, gL); t.textContent = 'ruas pasar'; o.ilus = mk('text', { class: 'al-lapak', x: (mx - nx * 22).toFixed(1), y: (my - ny * 22 + 18).toFixed(1), opacity: 0 }, gL); o.ilus.textContent = 'ilustrasi'; }
+      if (e.pasar) { const t = mk('text', { class: 'al-lapak', x: (mx - nx * 22).toFixed(1), y: (my - ny * 22 + 4).toFixed(1) }, gL); t.textContent = 'terdampak pasar'; o.ilus = mk('text', { class: 'al-lapak', x: (mx - nx * 22).toFixed(1), y: (my - ny * 22 + 18).toFixed(1), opacity: 0 }, gL); o.ilus.textContent = 'ilustrasi'; }
       this.E[e.id] = o;
     });
     /* edge mundur dipakai langkah yang punya hop "mundur" */
@@ -1840,7 +1840,7 @@ const Aliran = {
     sub[c.steps.length + 1].textContent = `Karena sudah tidak ada jalur tersisa, max flow contoh ini ${c.maxFlow} dan min cut-nya ${ce.map(e => ar(e.from, e.to)).join(' dan ')} dengan kapasitas ${ce.map(e => e.capacity).join(' + ')} = ${c.minCut.capacity}, sama dengan max flow.`;
     const pe = c.edges.find(e => e.pasar), av = c.alphaVariation.filter(v => v.edge === (pe ? pe.id : '')), vMax = av[av.length - 1];
     this.av = av; this.pe = pe;
-    if (pe && vMax) sub[c.steps.length + 2].textContent = `Lapak kami modelkan sebagai kapasitas efektif = (1 - α) × kapasitas, jadi kalau ${ar(pe.from, pe.to)} ruas pasar dan α = ${String(vMax.alpha).replace('.', ',')} kapasitasnya tinggal ${vMax.capacityEffective} dan max flow turun ke ${vMax.maxFlow}.`;
+    if (pe && vMax) sub[c.steps.length + 2].textContent = `Pengaruh pasar kami modelkan sebagai kapasitas efektif = (1 - α) × kapasitas, jadi kalau ${ar(pe.from, pe.to)} ruas yang terdampak pasar dan α = ${String(vMax.alpha).replace('.', ',')} kapasitasnya tinggal ${vMax.capacityEffective} dan max flow turun ke ${vMax.maxFlow}.`;
     this.caps = kapsi('#L-aliran .cap');
     this.el = { wrap: $('#alWrap'), note: $('#alWrap .al-note'), k: $('#alK'), num: $('#alNum'), s: $('#alS'), rp: $('#alRp'), step: $('#alStep'), bn: $('#alBn'), tf: $('#alTf'), mf: $('#alMf'), seq: $('#alSeq'), cnt: $('#alCount') };
     this.last = ''; this.dx = this.rpX = this.noteX = 0;
