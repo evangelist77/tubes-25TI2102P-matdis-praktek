@@ -206,6 +206,23 @@ skr = sum(n[c] * ekr[c] for c in ("KR", "SM", "KB")) * per_jam if lengkap else N
     <p class="catatan-kotak">Dari sepuluh ruas yang punya arus layak tidak ada yang arusnya melebihi kapasitas. Jl. Dipatiukur bagian selatan paling padat dengan derajat kejenuhan 1,01 dan memang macet di pagi hari. Kapasitas semua 31 ruas ada di hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv dan angka penyempitan Jl. Gasibu Atas saat pasar sementara memakai hambatan samping PKJI sekitar 11%.</p>
   </section>
 
+  <section class="bagian" id="gmaps" aria-labelledby="judul-gmaps">
+    <div class="bagian-kepala">
+      <span class="no">06</span>
+      <h2 id="judul-gmaps">Pembanding dari Google Maps</h2>
+      <p>Google Maps tidak memberi jumlah kendaraan, jadi datanya tidak bisa dijadikan kapasitas. Kami memakai fitur lalu lintas biasanya untuk mengecek di ruas mana kemacetan Minggu pagi selalu berulang, lalu mencocokkannya dengan model.</p>
+    </div>
+    <figure class="foto peta-gmaps">
+      <a href="/graph/assets/gmaps-lalu-lintas-biasanya-0900.webp" target="_blank" rel="noopener" aria-label="Buka gambar ukuran penuh"><img src="/graph/assets/gmaps-lalu-lintas-biasanya-0900.webp" width="2000" height="953" loading="lazy" alt="Peta lalu lintas biasanya dari Google Maps di sekitar Lapangan Gasibu pukul 09.00. Kiri hari Senin, semua ruas hijau. Kanan hari Minggu, Jl. Surapati di depan Lapangan Gasibu dan Jl. Japati berwarna merah."></a>
+      <figcaption>
+        <h4>Lalu lintas biasanya pukul 09.00, Senin dan Minggu</h4>
+        <p class="meta">Tangkapan layar Google Maps, diambil 24 Oktober 2026</p>
+        <p>Hari Senin semua ruas berwarna hijau. Hari Minggu, Jl. Surapati di depan Lapangan Gasibu berwarna merah dari turunan flyover Pasupati sampai Jl. Merak, dan Jl. Japati yang dipakai untuk lapak berwarna merah tua.</p>
+      </figcaption>
+    </figure>
+    <p class="catatan-kotak">Ruas merah itu mencakup Jl. Gasibu Atas, yaitu ruas yang kapasitasnya dikali 1 - α saat pasar di model kami dan dilewati keempat rute yang terdampak pasar. Waktu tempuh koridor Surapati sepanjang 600 m dari turunan flyover Pasupati ke Surapati timur sekitar 2 menit pada Senin pukul 09.00, tetapi 3 sampai 7 menit pada Minggu pukul 09.00 dan 10.00. Empat koridor lain yang kami cek waktu tempuhnya sama atau hanya berbeda 1 menit.</p>
+  </section>
+
   <section class="hal-akhir" aria-label="Halaman lain">
     <h2>Lihat juga</h2>
     <div class="tombol-baris">
