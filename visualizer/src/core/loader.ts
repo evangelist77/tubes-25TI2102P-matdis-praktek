@@ -1,3 +1,4 @@
+import type { IterativeTrace } from './iterative'
 import type { GeometryMap, Manifest, RoutesFile, Topology, Trace } from './types'
 
 /** URL berkas data publik; mengikuti `base` Vite agar tetap benar bila nanti dihosting di sub-path. */
@@ -29,6 +30,11 @@ export function loadRoutes(url = dataUrl('routes.json')): Promise<RoutesFile> {
 
 export function loadGeometry(url = dataUrl('geometry.json')): Promise<GeometryMap> {
   return fetchJson<GeometryMap>(url, 'geometri jalan')
+}
+
+/** Trace iterative hasil Python untuk satu alpha, mis. alpha 1 dibaca dari iterative_a100.json. */
+export function loadIterativeTrace(alpha: number): Promise<IterativeTrace> {
+  return fetchJson<IterativeTrace>(dataUrl(`iterative_a${Math.round(alpha * 100)}.json`), 'trace iterative')
 }
 
 const traceCache = new Map<string, Promise<Trace>>()

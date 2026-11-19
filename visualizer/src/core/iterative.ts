@@ -30,6 +30,18 @@ export interface MaxFlowResult {
   sourceSide: number[]
 }
 
+/** Hasil satu pasangan di iterative_a<alpha>.json, keluaran iterative_ford_fulkerson.py. */
+export interface IterativePairResult extends MaxFlowResult {
+  pairId: TerminalPairId
+}
+
+/** Isi iterative_a<alpha>.json: hasil keempat pasangan untuk satu nilai alpha. */
+export interface IterativeTrace {
+  caseId: string
+  alpha: number
+  pairs: IterativePairResult[]
+}
+
 interface ResidualArc {
   to: number
   reverseIndex: number
