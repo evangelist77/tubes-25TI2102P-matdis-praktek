@@ -97,7 +97,7 @@ Graf punya 26 simpul dengan koordinat dari OpenStreetMap: dua titik masuk S1 (tu
 
 Arah dan lebar tiap ruas diambil dari tag OSM (`oneway`, `lanes`, `width`). Jalan berjalur ganda yang dipisah median, seperti Jl. Ir. H. Djuanda dan Jl. Diponegoro Barat, dihitung setengah lebarnya karena graf hanya memakai satu arah. Rinciannya ada di [`graph/GRAPH_SPEC_LLM.md`](graph/GRAPH_SPEC_LLM.md).
 
-Untuk pipeline Python, [`cases/scenarios/case_04_pasar_tumpah.yaml`](cases/scenarios/case_04_pasar_tumpah.yaml) menambahkan supersource S* dan supersink T* (jadi 28 simpul, 35 ruas) serta event penyempitan ruas pasar dan penutupan Jl. Singaperbangsa pada pagi hari pasar.
+Untuk pipeline Python, [`cases/scenarios/case_04_pasar_tumpah.yaml`](cases/scenarios/case_04_pasar_tumpah.yaml) menambahkan supersource S* dan supersink T* (jadi 28 simpul, 35 ruas) serta event penyempitan Jl. Gasibu Atas dan penutupan Jl. Singaperbangsa pada pagi hari pasar.
 
 ### Algoritma
 
