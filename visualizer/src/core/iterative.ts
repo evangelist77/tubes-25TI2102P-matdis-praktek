@@ -53,11 +53,12 @@ interface ResidualArc {
 function effectiveCapacity(edge: EdgeDef, alpha: number): number {
   if (alpha > 0 && edge.closedInMorning) return 0
   if (edge.isMarket) {
-    const narrowed = edge.capacity * (1 - alpha)
+    // dibulatkan 1 desimal dengan aturan round() Python, supaya sama dengan trace Elang dan Hafiz
+    const narrowed = edge.capacity * (1 - alpha) * 10
     const lower = Math.floor(narrowed)
     const fraction = narrowed - lower
-    if (fraction === 0.5) return lower % 2 === 0 ? lower : lower + 1
-    return Math.round(narrowed)
+    if (fraction === 0.5) return (lower % 2 === 0 ? lower : lower + 1) / 10
+    return Math.round(narrowed) / 10
   }
   return edge.capacity
 }
