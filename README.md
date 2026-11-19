@@ -36,7 +36,7 @@ Situs: **https://maxflow-gasibu.vercel.app**
 |:---|:---|
 | [`/`](https://maxflow-gasibu.vercel.app) | Landing berisi cerita masalah, cara kerja max flow pada graf contoh, tim, dan kliping berita |
 | [`/graph/`](https://maxflow-gasibu.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
-| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | Data Lapangan: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
+| [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | Data Lapangan: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam, dan pembanding lalu lintas biasanya dari Google Maps |
 | [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
 | [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: alur metodologi, fishbone akar masalah, rumus kapasitas PKJI, flowchart Ford-Fulkerson dan Dinic, pipeline input proses output, eksperimen kedua algoritma pada graf dinamis, serta temuan dan batasan |
 
@@ -110,6 +110,7 @@ Hasil Iterative bisa dilihat dengan dua cara.
 - Tabel CCTV menunjukkan status tiap kamera dan simpul yang dipantaunya.
 - Cuplikan CCTV dan rekaman HP berputar sendiri saat halaman digulir sampai ke kartunya.
 - Bagian Program hitung kendaraan menjelaskan cara program YOLO menghitung kendaraan, dan bagian Hasil akhir membandingkan arus terukur dengan kapasitas PKJI.
+- Bagian Pembanding dari Google Maps menunjukkan lalu lintas biasanya hari Senin dan Minggu pukul 09.00 beserta waktu tempuh koridor Surapati. Klik gambarnya untuk membuka ukuran penuh.
 
 ### 6. Analisis
 
@@ -323,6 +324,7 @@ Sejak 20 November 2026 tiap anggota punya branch sendiri, yaitu `alifah`, `elang
 - Peta dasar dan geometri jalan: © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), ditampilkan dengan Leaflet.
 - Video CCTV: [Pelindung Bandung](https://pelindung.bandung.go.id/), dikelola Diskominfo, Dishub, dan DPKP3 Kota Bandung.
 - Rekaman HP: direkam anggota kelompok di simpang yang tidak punya CCTV.
+- Peta lalu lintas biasanya dan waktu tempuh: tangkapan layar Google Maps, diambil 24 Oktober 2026.
 - Kliping berita dari UlasBandung, detikNews, detikJabar, kumparan, dan situs DPRD Kota Bandung. Gambarnya ada di `graph/assets/`, tautan ke artikel aslinya ada di landing.
 
 ## Dokumen Lain
