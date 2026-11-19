@@ -78,6 +78,8 @@ $$\text{MaxFlow}(S^* \to T^*) = \sum_{e \in \text{out}(S^*)} f(e) = \sum_{e \in 
 
 ## 3. Rincian 8 Path Aliran Terarah (Directed Flow Paths)
 
+**Urutan simpul (diperbarui 20 November 2026):** Rute P2, P3, dan P4 sekarang menulis lengkap simpang yang dilewatinya (Cikapayang, Hasanuddin, Dipatiukur Selatan, dan Surapati-Gagak), jadi graf punya 31 ruas, sama dengan topologi algoritma dan tabel kapasitas PKJI. Diagram Mermaid di bawah tetap ringkasan.
+
 **Status data kapasitas (diperbarui 19 November 2026):** Kapasitas tiap ruas sekarang dihitung dengan rumus PKJI jalan perkotaan (C = C0 x FCLJ x FCPA x FCHS x FCUK, satuan skr/jam per arah) dari lebar dan jumlah lajur di dokumen ini. Tabelnya ada di `hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv` dan skripnya `hitung-kendaraan/video_counting/kapasitas_pkji.py`. Arus hasil hitung CCTV dan rekaman HP dipakai untuk mengecek bahwa tidak ada arus yang melebihi kapasitas.
 
 ### Metodologi Penentuan Lebar Jalan dan Arah Lalu Lintas (Berdasarkan OpenStreetMap)
@@ -160,12 +162,13 @@ Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komuni
   7. Jl. Cisangkuy
   8. Jl. Diponegoro Timur/Pusdai
 - **Urutan Simpul Graf:**  
-  `S1` $\to$ `V_Sulanjana` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Cisangkuy` $\to$ `T2`
+  `S1` $\to$ `V_Cikapayang` $\to$ `V_Sulanjana` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Cisangkuy` $\to$ `T2`
 - **Daftar Edge Terarah & Kapasitas Jalan:**
 
 | Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif & Catatan Arah |
 |:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **Turun Pasupati / Jl. Tamansari** | `S1` | `V_Sulanjana` | ~7-8 meter (total dua arah) | 2 lajur | Secondary (2 Arah Bersama / Shared Lanes, `oneway=no`) | Data kapasitas belum tersedia — *Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)* |
+| **Turun Pasupati / Jl. Tamansari** | `S1` | `V_Cikapayang` | ~7-8 meter (total dua arah) | 2 lajur | Secondary (2 Arah Bersama / Shared Lanes, `oneway=no`) | Data kapasitas belum tersedia — *Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)* |
+| **Turun Pasupati / Jl. Tamansari** | `V_Cikapayang` | `V_Sulanjana` | ~7-8 meter (total dua arah) | 2 lajur | Secondary (2 Arah Bersama / Shared Lanes, `oneway=no`) | Data kapasitas belum tersedia — *Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)* |
 | **Jl. Sulanjana** | `V_Sulanjana` | `V_Djuanda_Diponegoro` | ~6 meter | 2 lajur | Tertiary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
 | **Jl. Diponegoro (Barat)** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | ~7 meter (total 4 lajur primary ~14m dibagi 2) | 2 lajur independen (lajur selatan) | Primary (2 Arah Independen / Dual Carriageway) | Data kapasitas belum tersedia — Jalur selatan mandiri ke arah timur |
 | **Jl. Aria Jipang** | `V_AriaJipang` | `V_Cilamaya` | ~6 meter | 2 lajur | Tertiary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
@@ -186,16 +189,18 @@ Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komuni
   5. Jl. Surapati
   6. PUSDAI
 - **Urutan Simpul Graf:**  
-  `S2` $\to$ `V_Singaperbangsa` $\to$ `V_Titiran` $\to$ `V_Merak` $\to$ `V_Surapati_Merak` $\to$ `T1`
+  `S2` $\to$ `V_Hasanuddin` $\to$ `V_Singaperbangsa` $\to$ `V_Titiran` $\to$ `V_Merak` $\to$ `V_Surapati_Merak` $\to$ `V_Surapati_Gagak` $\to$ `T1`
 - **Daftar Edge Terarah & Kapasitas Jalan:**
 
 | Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif & Catatan Arah |
 |:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **Jl. Dipati Ukur (Utara)** | `S2` | `V_Singaperbangsa` | ~8 meter | 2 lajur | Secondary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
+| **Jl. Dipati Ukur (Tengah)** | `S2` | `V_Hasanuddin` | ~8 meter | 2 lajur | Secondary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
+| **Jl. Dipati Ukur (Utara)** | `V_Hasanuddin` | `V_Singaperbangsa` | ~8 meter | 2 lajur | Secondary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
 | **Jl. Singaperbangsa** | `V_Singaperbangsa` | `V_Titiran` | ~4-5 meter (total dua arah) | 1-2 lajur | Residential (2 Arah Bersama / Shared Lanes, `oneway=no`) | Data kapasitas belum tersedia — *Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)* |
 | **Jl. Titiran** | `V_Titiran` | `V_Merak` | 3 meter (OSM) | 1 lajur | Residential (2 Arah Bersama / Shared Lanes, `oneway=no`) | Data kapasitas belum tersedia — *Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)* |
 | **Jl. Merak** | `V_Merak` | `V_Surapati_Merak` | 4 meter (OSM) | 2 lajur | Residential (2 Arah Bersama / Shared Lanes, `oneway=no`) | Data kapasitas belum tersedia — *Nilai C (Effective Lane Width) untuk konteks masalah ini belum ditentukan (masih open-ended question)* |
-| **Jl. Surapati** | `V_Surapati_Merak` | `T1` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
+| **Jl. Surapati** | `V_Surapati_Merak` | `V_Surapati_Gagak` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
+| **Jl. Surapati $\to$ PUSDAI** | `V_Surapati_Gagak` | `T1` | ~11 meter | 3 lajur (oneway trunk) | Trunk (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
 
 ---
 
@@ -213,14 +218,15 @@ Mengacu pada data faktual OpenStreetMap (OSM API & Way tags serta Diskusi Komuni
   9. Jl. Citarum
   10. Jl. Diponegoro Timur
 - **Urutan Simpul Graf:**  
-  `S2` $\to$ `V_Hasanuddin` $\to$ `V_Djuanda_Hasanuddin` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Citarum` $\to$ `T2`
+  `S2` $\to$ `V_Hasanuddin` $\to$ `V_Djuanda_Hasanuddin` $\to$ `V_DU_Selatan` $\to$ `V_Djuanda_Diponegoro` $\to$ `V_AriaJipang` $\to$ `V_Cilamaya` $\to$ `V_Cimandiri` $\to$ `V_Cisanggarung` $\to$ `V_Citarum` $\to$ `T2`
 - **Daftar Edge Terarah & Kapasitas Jalan:**
 
 | Ruas Jalan / Edge | Simpul Asal ($u$) | Simpul Tujuan ($v$) | Lebar Jalan | Jumlah Lajur | Klasifikasi OSM | Kapasitas Relatif & Catatan Arah |
 |:---|:---:|:---:|:---:|:---:|:---:|:---|
 | **Jl. Dipati Ukur (Tengah)** | `S2` | `V_Hasanuddin` | ~8 meter | 2 lajur | Secondary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
 | **Jl. Hasanuddin** | `V_Hasanuddin` | `V_Djuanda_Hasanuddin` | ~6 meter | 2 lajur | Tertiary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
-| **Jl. Ir. H. Djuanda (Dago)** | `V_Djuanda_Hasanuddin` | `V_Djuanda_Diponegoro` | ~6 meter (total ~12m dibagi 2) | 1-2 lajur independen | Primary (2 Arah Independen / Dual Carriageway) | Data kapasitas belum tersedia — Jalur barat mandiri ke arah selatan |
+| **Jl. Ir. H. Djuanda** | `V_Djuanda_Hasanuddin` | `V_DU_Selatan` | ~6 meter (total ~12m dibagi 2) | 1-2 lajur independen | Primary (2 Arah Independen / Dual Carriageway) | Data kapasitas belum tersedia — Jalur barat mandiri ke arah selatan menuju Simpang Cikapayang/Surapati |
+| **Jl. Ir. H. Djuanda (Dago)** | `V_DU_Selatan` | `V_Djuanda_Diponegoro` | ~6 meter (total ~12m dibagi 2) | 1-2 lajur independen | Primary (2 Arah Independen / Dual Carriageway) | Data kapasitas belum tersedia — Jalur barat mandiri ke arah selatan |
 | **Jl. Diponegoro (Barat)** | `V_Djuanda_Diponegoro` | `V_AriaJipang` | ~7 meter (total 4 lajur primary ~14m dibagi 2) | 2 lajur independen (lajur selatan) | Primary (2 Arah Independen / Dual Carriageway) | Data kapasitas belum tersedia — Jalur selatan mandiri ke arah timur |
 | **Jl. Aria Jipang** | `V_AriaJipang` | `V_Cilamaya` | ~6 meter | 2 lajur | Tertiary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
 | **Jl. Cilamaya** | `V_Cilamaya` | `V_Cimandiri` | ~7 meter | 2 lajur (oneway) | Tertiary (1 Arah Murni, `oneway=yes`) | Data kapasitas belum tersedia |
