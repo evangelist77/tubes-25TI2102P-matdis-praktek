@@ -35,7 +35,7 @@ const ratioSteps = [
         <div class="flex items-center gap-2"><span class="h-1.5 w-8 rounded" :style="{ backgroundColor: themeTokens.colors.edges.augmentingPath }"></span>Jalur langkah ini</div>
         <div class="flex items-center gap-2"><span class="w-8 border-t-2 border-dashed" :style="{ borderColor: themeTokens.colors.edges.minCut }"></span>Bottleneck (min-cut)</div>
         <div class="flex items-center gap-2"><span class="w-8 border-t-[3px] border-dotted border-stone-500"></span>Ruas ditutup</div>
-        <div class="flex items-center gap-2"><span class="rounded-full bg-orange-700 px-1.5 text-[10px] font-bold text-white">PASAR</span>Ruas pasar tumpah</div>
+        <div class="flex items-center gap-2"><span class="rounded-full bg-orange-700 px-1.5 text-[10px] font-bold text-white">PASAR</span>Ruas Jl. Gasibu Atas (terdampak pasar)</div>
         <div v-if="residualMode" class="flex items-center gap-2"><span class="w-8 border-t-2 border-dashed" :style="{ borderColor: themeTokens.colors.edges.residualBack }"></span>Edge balik (↩)</div>
       </div>
       <div class="space-y-1 border-t border-stone-100 pt-2">

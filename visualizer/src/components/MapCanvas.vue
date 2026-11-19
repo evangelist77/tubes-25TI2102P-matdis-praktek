@@ -169,7 +169,7 @@ function fitToVisible(nodeMap: Map<number, NodeDef>, force = false) {
 function tooltipHtml(edge: EdgeDef, from: NodeDef, to: NodeDef, flow: number, capacity: number, color: string) {
   const pct = Math.round(edgeRatio(flow, capacity) * 100)
   const tags = [
-    edge.isMarket && props.marketActive ? '<span style="color:#c2410c;font-weight:800">[PASAR TUMPAH]</span>' : '',
+    edge.isMarket && props.marketActive ? '<span style="color:#c2410c;font-weight:800">[TERDAMPAK PASAR]</span>' : '',
     edge.closedInMorning && capacity === 0 ? '<span style="color:#dc2626;font-weight:800">[DITUTUP]</span>' : ''
   ]
     .filter(Boolean)
