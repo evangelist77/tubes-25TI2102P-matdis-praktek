@@ -1,4 +1,30 @@
-# Tugas Besar Matematika Diskrit Lanjut
+<div align="center">
+
+# Max Flow Gasibu
+
+**Tugas Besar Matematika Diskrit Lanjut · Kasus 4 Pasar Tumpah**
+
+Menghitung arus maksimum dan ruas pembatas jaringan jalan Gasibu, Bandung, saat pasar tumpah Minggu pagi.
+
+[maxflow-gasibu.vercel.app](https://maxflow-gasibu.vercel.app) · [Tutorial](#tutorial-penggunaan-aplikasi) · [Menjalankan](#menjalankan) · [Analisis](https://maxflow-gasibu.vercel.app/graph/analisis)
+
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
+![Vue](https://img.shields.io/badge/Vue-3.5-4FC08D?logo=vuedotjs&logoColor=white)
+![HTML CSS JS](https://img.shields.io/badge/HTML%20%C2%B7%20CSS%20%C2%B7%20JS-situs_statis-E34F26?logo=html5&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Leaflet](https://img.shields.io/badge/Leaflet-1.9-199900?logo=leaflet&logoColor=white)
+![YOLO](https://img.shields.io/badge/YOLO-Ultralytics_8.4-111F68)
+![pytest](https://img.shields.io/badge/pytest-39_lulus-0A9EDC?logo=pytest&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-48_lulus-6E9F18?logo=vitest&logoColor=white)
+![Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel&logoColor=white)
+
+[![Buka website](https://img.shields.io/badge/Buka_website-maxflow--gasibu.vercel.app-1a2050?style=for-the-badge)](https://maxflow-gasibu.vercel.app)
+[![Coba visualisasi](https://img.shields.io/badge/Coba-Visualisasi_Ford--Fulkerson-e07a3f?style=for-the-badge)](https://maxflow-gasibu.vercel.app/graph/visualisasi)
+
+Kelompok 1 · 2B D4 Teknik Informatika · Politeknik Negeri Bandung · 2026
+
+</div>
 
 ## Kasus 4: Pasar Tumpah (Maximum Flow)
 
@@ -309,3 +335,7 @@ Sejak 20 November 2026 tiap anggota punya branch sendiri, yaitu `alifah`, `elang
 - [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md): program hitung kendaraan, alur pengambilan data, dan hasil uji
 - [Kolase rekaman HP di YouTube](https://youtu.be/rOYqXmBW57s)
 - [Kolase rekaman CCTV Minggu 15 November di YouTube](https://youtu.be/KW-fCy3HZwM)
+
+## Lisensi
+
+Repo ini dibuat untuk tugas kuliah dan tidak memakai lisensi open source. Template program milik dosen (trisgelar/matdis-tubes-2026), sedangkan peta, video CCTV, dan kliping berita mengikuti ketentuan sumbernya masing-masing seperti di bagian [Sumber Data dan Atribusi](#sumber-data-dan-atribusi).
