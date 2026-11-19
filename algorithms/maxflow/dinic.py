@@ -280,3 +280,8 @@ class Dinic(BaseGraphAlgorithm):
         self.elapsed_ms = (time.perf_counter() - mulai) * 1000
         return hasil
 
+
+# Registrasi otomatis ke AlgorithmRegistry
+from algorithms.registry import AlgorithmRegistry
+
+AlgorithmRegistry.register("dinic", Dinic)
