@@ -84,7 +84,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 ├── config/settings.py          skenario dan algoritma default, folder output
 ├── core/                       model graf, runner simulasi, observer, gambar graf matplotlib
 ├── scripts/                    run_simulation.py, run_benchmark.py, dan banding_ff_dinic.py
-├── tests/                      tes pytest untuk loader, kontrak skenario, dan event max flow
+├── tests/                      tes pytest untuk loader, kontrak skenario, event max flow, dan Dinic
 ├── tracer/                     modul trace bawaan template, masih kosong
 ├── output/                     tempat trace JSON hasil runner dan CSV banding Ford-Fulkerson dengan Dinic
 ├── visualizer/                 aplikasi visualisasi Ford-Fulkerson (Vue 3 + Vite)
@@ -137,7 +137,7 @@ python -m scripts.banding_ff_dinic # banding lengkap Ford-Fulkerson dan Dinic, s
 
 Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
 
-Kelima tes lulus. `run_simulation` membuka jendela gambar graf matplotlib dan menunggu jendela itu ditutup. Untuk menjalankannya tanpa jendela, pakai `MPLBACKEND=Agg python -m scripts.run_simulation`.
+Semua tes lulus, termasuk tes yang memastikan Dinic sama dengan Ford-Fulkerson. `run_simulation` membuka jendela gambar graf matplotlib dan menunggu jendela itu ditutup. Untuk menjalankannya tanpa jendela, pakai `MPLBACKEND=Agg python -m scripts.run_simulation`.
 
 Trace visualizer dibuat ulang dengan `python -m algorithms.maxflow.ford_fulkerson`, yang menulis 44 trace dan `manifest.json` ke `visualizer/public/data/`. Setelah itu jalankan `bash graph/bangun_ff.sh`.
 
