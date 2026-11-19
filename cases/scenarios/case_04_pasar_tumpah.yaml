@@ -1,6 +1,6 @@
 case_id: "case_04_pasar_tumpah"
 title: "Kasus 4 - Pasar Tumpah Gasibu-Monju Bandung: Bottleneck Aliran Kendaraan (Maximum Flow)"
-description: "Jaringan aliran jalan di kawasan Gasibu-Monju-PUSDAI, Bandung (26 simpul asli + supersource S* dan supersink T*). Dua titik masuk (S1 Tamansari/Pasupati, S2 Dipatiukur) dan dua titik keluar (T1 Surapati Timur/PUSDAI, T2 Diponegoro Timur). Pasar tumpah menyempitkan kapasitas efektif Jl. Gasibu Atas, dan Jl. Singaperbangsa ditutup pada pagi hari pasar sampai sekitar pukul 11.00-12.00. Analisis dibatasi Minggu pagi sampai pukul 12.00. Kapasitas dalam kendaraan/jam (angka relatif dari GRAPH_SPEC_LLM.md, belum hasil survei)."
+description: "Jaringan aliran jalan di kawasan Gasibu-Monju-PUSDAI, Bandung (26 simpul asli + supersource S* dan supersink T*). Dua titik masuk (S1 Tamansari/Pasupati, S2 Dipatiukur) dan dua titik keluar (T1 Surapati Timur/PUSDAI, T2 Diponegoro Timur). Pasar tumpah menyempitkan kapasitas efektif Jl. Gasibu Atas, dan Jl. Singaperbangsa ditutup pada pagi hari pasar sampai sekitar pukul 11.00-12.00. Analisis dibatasi Minggu pagi sampai pukul 12.00. Kapasitas dalam skr/jam per arah dari rumus PKJI jalan perkotaan (hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv)."
 
 # Konvensi id: 0 = S* (supersource), 1-2 = S1,S2, 3-4 = T1,T2, 5-26 = simpang, 27 = T* (supersink)
 # Posisi (pos) = [longitude, latitude] OpenStreetMap, supaya gambar graf mirip bentuk peta asli.
@@ -97,127 +97,127 @@ edges:
   - from: 1   # S1 -> V_Cikapayang  (Turun Pasupati / Jl. Tamansari)
     to: 5
     weight: 1.0
-    capacity: 500.0
+    capacity: 1247.0
   - from: 5   # V_Cikapayang -> V_Sulanjana  (Jl. Tamansari lanjut ke Sulanjana)  [FIX-1]
     to: 6
     weight: 1.0
-    capacity: 500.0
+    capacity: 1247.0
   - from: 5   # V_Cikapayang -> V_DU_Selatan  (Jl. Cikapayang)
     to: 7
     weight: 1.0
-    capacity: 1200.0
+    capacity: 2762.8
   - from: 7   # V_DU_Selatan -> V_Singaperbangsa  (Jl. Dipatiukur (Selatan))
     to: 11
     weight: 1.0
-    capacity: 500.0
+    capacity: 1421.6
   - from: 7   # V_DU_Selatan -> V_Gasibu_Barat  (Jl. Surapati (Barat))
     to: 24
     weight: 1.0
-    capacity: 1400.0
+    capacity: 3003.0
   - from: 2   # S2 -> V_Hasanuddin  (Jl. Dipati Ukur (Tengah))
     to: 8
     weight: 1.0
-    capacity: 500.0
+    capacity: 1421.6
   - from: 8   # V_Hasanuddin -> V_Singaperbangsa  (Jl. Dipati Ukur (Utara) lanjut ke Singaperbangsa)  [FIX-2]
     to: 11
     weight: 1.0
-    capacity: 500.0
+    capacity: 1421.6
   - from: 8   # V_Hasanuddin -> V_Djuanda_Hasanuddin  (Jl. Hasanuddin)
     to: 9
     weight: 1.0
-    capacity: 400.0
+    capacity: 1084.9
   - from: 9   # V_Djuanda_Hasanuddin -> V_DU_Selatan  (Jl. Ir. H. Djuanda)
     to: 7
     weight: 1.0
-    capacity: 1200.0
+    capacity: 2762.8
   - from: 7   # V_DU_Selatan -> V_Djuanda_Diponegoro  (Jl. Ir. H. Djuanda (Dago) lanjut ke Diponegoro)  [FIX-4]
     to: 10
     weight: 1.0
-    capacity: 1200.0
+    capacity: 2762.8
   - from: 6   # V_Sulanjana -> V_Djuanda_Diponegoro  (Jl. Sulanjana)
     to: 10
     weight: 1.0
-    capacity: 400.0
+    capacity: 1084.9
   - from: 10   # V_Djuanda_Diponegoro -> V_AriaJipang  (Jl. Diponegoro (Barat))
     to: 18
     weight: 1.0
-    capacity: 1600.0
+    capacity: 3003.0
   - from: 18   # V_AriaJipang -> V_Cilamaya  (Jl. Aria Jipang)
     to: 19
     weight: 1.0
-    capacity: 350.0
+    capacity: 1084.9
   - from: 19   # V_Cilamaya -> V_Cimandiri  (Jl. Cilamaya)
     to: 20
     weight: 1.0
-    capacity: 450.0
+    capacity: 2838.0
   - from: 20   # V_Cimandiri -> V_Cisanggarung  (Jl. Cimandiri)
     to: 21
     weight: 1.0
-    capacity: 400.0
+    capacity: 2611.0
   - from: 21   # V_Cisanggarung -> V_Cisangkuy  (Jl. Cisanggarung / Cimanuk)
     to: 23
     weight: 1.0
-    capacity: 400.0
+    capacity: 1084.9
   - from: 23   # V_Cisangkuy -> T2  (Jl. Cisangkuy ke Diponegoro Timur)
     to: 4
     weight: 1.0
-    capacity: 450.0
+    capacity: 2838.0
   - from: 21   # V_Cisanggarung -> V_Citarum  (Jl. Cisanggarung)
     to: 22
     weight: 1.0
-    capacity: 400.0
+    capacity: 2611.0
   - from: 22   # V_Citarum -> T2  (Jl. Citarum ke Diponegoro Timur)
     to: 4
     weight: 1.0
-    capacity: 450.0
+    capacity: 1247.0
   - from: 11   # V_Singaperbangsa -> V_Titiran  (Jl. Singaperbangsa (Tutup Pagi Pasar))  <- ditutup pagi di hari pasar
     to: 12
     weight: 1.0
-    capacity: 250.0
+    capacity: 698.3
   - from: 12   # V_Titiran -> V_Merak  (Jl. Titiran)
     to: 13
     weight: 1.0
-    capacity: 150.0
+    capacity: 698.3
   - from: 13   # V_Merak -> V_Surapati_Merak  (Jl. Merak)
     to: 14
     weight: 1.0
-    capacity: 200.0
+    capacity: 698.3
   - from: 12   # V_Titiran -> V_Tikukur  (Jl. Titiran / Tikukur)
     to: 15
     weight: 1.0
-    capacity: 150.0
+    capacity: 698.3
   - from: 15   # V_Tikukur -> V_Gagak  (Jl. Tikukur)
     to: 16
     weight: 1.0
-    capacity: 150.0
+    capacity: 698.3
   - from: 16   # V_Gagak -> V_Surapati_Gagak  (Jl. Gagak)
     to: 17
     weight: 1.0
-    capacity: 150.0
+    capacity: 698.3
   - from: 24   # V_Gasibu_Barat -> V_Gasibu_Timur  (Jl. Gasibu Atas (Pasar Tumpah))  <- ruas pasar tumpah
     to: 25
     weight: 1.0
-    capacity: 1800.0
+    capacity: 4684.7
   - from: 25   # V_Gasibu_Timur -> V_Surapati_Merak  (Jl. Surapati (depan Telkom))
     to: 14
     weight: 1.0
-    capacity: 1800.0
+    capacity: 4684.7
   - from: 14   # V_Surapati_Merak -> V_Surapati_Gagak  (Jl. Surapati Timur)  [FIX-3]
     to: 17
     weight: 1.0
-    capacity: 1800.0
+    capacity: 4684.7
   - from: 17   # V_Surapati_Gagak -> T1  (Jl. Surapati ke PUSDAI)
     to: 3
     weight: 1.0
-    capacity: 1800.0
+    capacity: 4684.7
   - from: 25   # V_Gasibu_Timur -> V_Diponegoro_Sentot  (Jl. Sentot Alibasyah)
     to: 26
     weight: 1.0
-    capacity: 900.0
+    capacity: 2838.0
   - from: 26   # V_Diponegoro_Sentot -> T2  (Jl. Diponegoro Timur / Pusdai)
     to: 4
     weight: 1.0
-    capacity: 1200.0
+    capacity: 3003.0
   # --- Hubungan supersource / supersink (kapasitas sangat besar sebagai pengganti tak hingga) ---
   - from: 0   # S* -> S1
     to: 1
