@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { solveMaxFlow } from './iterative'
+import { diffIterativeTrace, solveMaxFlow, type IterativeTrace } from './iterative'
 import { validateTrace } from './validateTrace'
 import type { Topology, Trace } from './types'
 
@@ -64,6 +64,57 @@ describe('solveMaxFlow', () => {
     }
 
     expect(validateTrace(topology, trace).isValid).toBe(true)
+  })
+})
+
+describe('diffIterativeTrace', () => {
+  // graf kecil: jalur kedua harus membatalkan arus A -> D lewat edge balik (sama dengan FIXTURE di tests/test_iterative_ff.py)
+  const node = (id: number, code: string) => ({ id, code, label: '', pos: [0, 0] as [number, number] })
+  const edge = (id: number, from: number, to: number) => ({ id, from, to, capacity: 1, road: `${from} > ${to}` })
+  const smallTopology: Topology = {
+    case_id: 'fixture',
+    title: '',
+    description: '',
+    nodes: [node(0, 'S1'), node(1, 'A'), node(2, 'B'), node(3, 'C'), node(4, 'D'), node(5, 'T1')],
+    edges: [edge(0, 0, 1), edge(1, 1, 4), edge(2, 4, 5), edge(3, 0, 2), edge(4, 2, 4), edge(5, 1, 3), edge(6, 3, 5)],
+    events: []
+  }
+
+  // keluaran iterative_ford_fulkerson.py untuk graf di atas (kunci string dan angka float seperti aslinya)
+  const pythonTrace = () => JSON.parse(`{"caseId": "fixture", "alpha": 0.0, "pairs": [{"pairId": "S1-T1", "source": 0, "sink": 5,
+    "alpha": 0.0, "effectiveCapacity": {"0": 1.0, "1": 1.0, "2": 1.0, "3": 1.0, "4": 1.0, "5": 1.0, "6": 1.0},
+    "steps": [
+      {"step": 1, "path": [
+        {"edgeId": 0, "from": 0, "to": 1, "isBackward": false, "residualBefore": 1.0},
+        {"edgeId": 1, "from": 1, "to": 4, "isBackward": false, "residualBefore": 1.0},
+        {"edgeId": 2, "from": 4, "to": 5, "isBackward": false, "residualBefore": 1.0}],
+       "pathNodes": [0, 1, 4, 5], "bottleneck": 1.0, "totalFlow": 1.0,
+       "edgeFlows": {"0": 1.0, "1": 1.0, "2": 1.0, "3": 0.0, "4": 0.0, "5": 0.0, "6": 0.0}},
+      {"step": 2, "path": [
+        {"edgeId": 3, "from": 0, "to": 2, "isBackward": false, "residualBefore": 1.0},
+        {"edgeId": 4, "from": 2, "to": 4, "isBackward": false, "residualBefore": 1.0},
+        {"edgeId": 1, "from": 4, "to": 1, "isBackward": true, "residualBefore": 1.0},
+        {"edgeId": 5, "from": 1, "to": 3, "isBackward": false, "residualBefore": 1.0},
+        {"edgeId": 6, "from": 3, "to": 5, "isBackward": false, "residualBefore": 1.0}],
+       "pathNodes": [0, 2, 4, 1, 3, 5], "bottleneck": 1.0, "totalFlow": 2.0,
+       "edgeFlows": {"0": 1.0, "1": 0.0, "2": 1.0, "3": 1.0, "4": 1.0, "5": 1.0, "6": 1.0}}],
+    "maxFlow": 2.0, "minCut": [0, 3], "sourceSide": [0]}]}`) as IterativeTrace
+
+  it('trace Python sama dengan hitungan browser, termasuk edge balik', () => {
+    const trace = pythonTrace()
+    const browser = solveMaxFlow(smallTopology, 0, 5)
+
+    expect(diffIterativeTrace(smallTopology, trace)).toEqual([])
+    expect(browser.steps[1].path.filter((t) => t.isBackward).map((t) => t.edgeId)).toEqual([1])
+    expect(browser.steps).toEqual(trace.pairs[0].steps)
+  })
+
+  it('menyebut bagian yang berbeda bila trace tidak cocok', () => {
+    const trace = pythonTrace()
+    trace.pairs[0].maxFlow = 3
+    trace.pairs[0].steps[1].path[2].isBackward = false
+
+    expect(diffIterativeTrace(smallTopology, trace)).toEqual(['S1-T1: max flow berbeda', 'S1-T1: jalur berbeda'])
   })
 })
 
