@@ -28,6 +28,7 @@
     if (s === 'aman') return { k: 'aman', t: 'Aman', urut: 0 };
     if (s && s.startsWith('baru')) return { k: 'baru', t: 'Baru, belum dicek', urut: 1 };
     if (s === 'tidak bisa dibuka') return { k: 'mati', t: 'Tidak bisa dibuka', urut: 2 };
+    if (s === 'tidak dipakai') return { k: 'mati', t: 'Tidak dipakai, salah ruas', urut: 2 };
     return { k: 'tunggu', t: s || 'Belum ada data', urut: 3 };
   };
   const namaKamera = (k) => bersih(k).replace(/^CCTV\s+/i, '');
@@ -165,7 +166,7 @@
             <h4>${esc(judul)}</h4>
             <p class="meta">${simpul(x.p.nodeId)} · sekitar ${esc(k.jam || '')} · asli ${k.durasi_asli_detik ? durasi(k.durasi_asli_detik) : '-'}</p>
             <p>${esc(x.info.alasan || '')}${khusus ? ` ${esc(khusus)}` : ''}</p>
-            <span class="belum">Arus sudah dihitung, angka sementara</span>
+            <span class="belum">Dihitung program YOLO, belum dibandingkan dengan hitung manual</span>
           </figcaption>
         </figure>`;
     }).join('');
