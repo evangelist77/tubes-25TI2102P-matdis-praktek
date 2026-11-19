@@ -46,7 +46,7 @@ Untuk pipeline Python, [`cases/scenarios/case_04_pasar_tumpah.yaml`](cases/scena
 Sesuai catatan dosen, perhitungan dibagi dua.
 
 1. **Ford-Fulkerson per pasangan** (S1-T1, S1-T2, S2-T1, S2-T2). Pengaruh pasar dimodelkan sebagai faktor penyempitan α di ruas Jl. Gasibu Atas, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas itu mulai menjadi pembatas. Kodenya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp). Kelas `FordFulkerson` terdaftar di `AlgorithmRegistry` sebagai `maxflow`, menerima event `DYNAMIC_EDGE_CAPACITY` dari skenario, dan menulis trace tiap langkah untuk keempat pasangan dengan α dari 0 sampai 100%. Nilai α untuk kondisi pasar penuh sementara 11% dari hambatan samping PKJI, sampai perbandingan kamera Gasibu_02 Sabtu 21 dan Minggu 22 November keluar.
-2. **Iterative Ford-Fulkerson** untuk semua pasangan sekaligus. Tiap ruas nantinya menampilkan arus maksimal, total arus yang lewat, dan kapasitas efektifnya.
+2. **Iterative Ford-Fulkerson** untuk keempat pasangan yang dihitung bergantian di jaringan yang sama. Kodenya ada di [`algorithms/maxflow/iterative_ford_fulkerson.py`](algorithms/maxflow/iterative_ford_fulkerson.py) dan hasilnya ditulis sebagai trace `iterative_a<alpha>.json` yang dibaca mode Iterative di visualisasi. Tiap ruas menampilkan arus maksimal, total arus yang lewat, dan kapasitas efektifnya.
 
 Sebagai pembanding algoritma klasik dengan algoritma lanjutan (template dosen memetakan kasus 4 ke Ford-Fulkerson/Dinic), max flow juga dihitung dengan **Dinic**. Kodenya ada di [`algorithms/maxflow/dinic.py`](algorithms/maxflow/dinic.py) dan terdaftar di `AlgorithmRegistry` sebagai `dinic`. Tiap fase membangun level graph dengan BFS, lalu mencari blocking flow dengan DFS yang menyimpan pointer sisi per simpul supaya sisi yang sudah jenuh atau buntu tidak diperiksa ulang. Masukan, aturan α, dan nilai kembaliannya sama dengan `FordFulkerson`. Untuk event `DYNAMIC_EDGE_CAPACITY`, kalau kapasitas baru masih ≥ arus yang sedang lewat di ruas itu, arus lama dipertahankan dan perhitungan dilanjutkan dari graf residual (warm start). Kalau lebih kecil, max flow dihitung ulang dari nol.
 
@@ -64,7 +64,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 
 - **Kapasitas dari PKJI.** Kapasitas 31 ruas di YAML dihitung dengan rumus PKJI jalan perkotaan dalam skr/jam per arah (`hitung-kendaraan/video_counting/kapasitas_pkji.py`, tabelnya `hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv`). Arus hasil hitung CCTV dan HP dipakai untuk mengecek, dan dari 10 ruas yang terukur tidak ada arus yang melebihi kapasitas.
 - Program hitung mengukur arus, bukan kapasitas. Arus baru sama dengan kapasitas kalau di hulu ruas sedang ada antrean.
-- Algoritma Iterative Ford-Fulkerson dan visualisasinya sedang dikerjakan.
+- Algoritma Iterative Ford-Fulkerson sudah jadi dan visualisasi Iterative membaca trace dari algoritma Python. Hitungan di browser hanya dipakai kalau berkas trace tidak ada, dan tes memastikan keduanya sama.
 - Dinic sudah jadi dan max flow-nya sama dengan Ford-Fulkerson untuk S*-T*, keempat pasangan, dan keempat event skenario. Event yang menutup ruas yang sedang dialiri membuat Dinic menghitung ulang dari nol, sedangkan event yang menaikkan kapasitas cukup diselesaikan dengan warm start. `python -m scripts.banding_ff_dinic` menulis perbandingan keduanya (max flow, jumlah BFS, augmenting path, sisi yang diperiksa, dan waktu) untuk kondisi normal, kondisi pasar, tiap event, dan graf grid sintetis sampai sekitar 2000 simpul ke `output/banding_ff_dinic.csv`. Waktu Ford-Fulkerson ikut menghitung penyusunan trace visualizer tiap langkah, jadi kerja kedua algoritma lebih adil dibandingkan lewat kolom `sisi_diperiksa`.
 - Pipeline Python template sudah tersambung. `run_simulation` menjalankan Ford-Fulkerson dan keempat event skenario. Max flow seluruh jaringan 2.668,6 skr/jam dengan pembatas di Jl. Tamansari dan Jl. Dipatiukur, tetap 2.668,6 saat Gasibu Atas menyempit 11%, lalu turun ke 2.331,9 saat Jl. Singaperbangsa ditutup. Gasibu Atas baru ikut membatasi kalau penyempitannya lebih dari 70%. `ScenarioLoader` masih hanya meneruskan `weight`, jadi `FordFulkerson` membaca kapasitas dari `visualizer/public/data/topology.json`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu.
 
@@ -139,7 +139,7 @@ Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan d
 
 Semua tes lulus, termasuk tes yang memastikan Dinic sama dengan Ford-Fulkerson. `run_simulation` membuka jendela gambar graf matplotlib dan menunggu jendela itu ditutup. Untuk menjalankannya tanpa jendela, pakai `MPLBACKEND=Agg python -m scripts.run_simulation`.
 
-Trace visualizer dibuat ulang dengan `python -m algorithms.maxflow.ford_fulkerson`, yang menulis 44 trace dan `manifest.json` ke `visualizer/public/data/`. Setelah itu jalankan `bash graph/bangun_ff.sh`.
+Trace visualizer dibuat ulang dengan `python -m algorithms.maxflow.ford_fulkerson` (trace Ford-Fulkerson dan `manifest.json`) dan `python3 algorithms/maxflow/iterative_ford_fulkerson.py` (trace Iterative), keduanya ke `visualizer/public/data/`. Setelah itu jalankan `bash graph/bangun_ff.sh`.
 
 ### Visualizer Ford-Fulkerson
 
