@@ -12,7 +12,7 @@ Situs: **https://maxflow-gasibu.vercel.app**
 | [`/graph/`](https://maxflow-gasibu.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
 | [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | Data Lapangan: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam |
 | [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
-| [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen Ford-Fulkerson dan Dinic pada graf dinamis, serta temuan dan batasan |
+| [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: alur metodologi, fishbone akar masalah, rumus kapasitas PKJI, flowchart Ford-Fulkerson dan Dinic, pipeline input proses output, eksperimen kedua algoritma pada graf dinamis, serta temuan dan batasan |
 
 ## Identitas Kelompok
 
@@ -87,7 +87,7 @@ Hasil Iterative bisa dilihat dengan dua cara.
 
 ### 6. Analisis
 
-Halaman ini berisi fishbone akar masalah, rumus kapasitas PKJI, pipeline input proses output, eksperimen graf dinamis, serta temuan dan batasan. Klik **Tabel kapasitas 31 ruas** untuk membuka kapasitas semua ruas, dan pakai menu Analisis untuk langsung loncat ke bagian tertentu.
+Halaman ini dibuka dengan alur metodologi tujuh tahap yang tiap tahapnya bisa diklik, lalu berisi fishbone akar masalah, rumus kapasitas PKJI, flowchart Ford-Fulkerson dan Dinic beserta tabel perbandingannya, pipeline input proses output, eksperimen graf dinamis, serta temuan dan batasan. Klik **Tabel kapasitas 31 ruas** untuk membuka kapasitas semua ruas, dan pakai menu Analisis untuk langsung loncat ke bagian tertentu.
 
 ## Pendekatan
 
