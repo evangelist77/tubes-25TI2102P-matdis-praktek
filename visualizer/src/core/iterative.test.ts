@@ -43,9 +43,10 @@ describe('solveMaxFlow', () => {
   it('applies market narrowing and morning closure to the shared network', () => {
     const result = solveMaxFlow(topology, 0, 5, 0.5)
 
-    expect(result.effectiveCapacity[4]).toBe(4)
+    // 7 x 0,5 = 3,5, kapasitas dibulatkan 1 desimal jadi tetap 3,5
+    expect(result.effectiveCapacity[4]).toBe(3.5)
     expect(result.effectiveCapacity[6]).toBe(0)
-    expect(result.maxFlow).toBe(4)
+    expect(result.maxFlow).toBe(3.5)
   })
 
   it('produces a trace accepted by the existing capacity, conservation, and min-cut validator', () => {
