@@ -29,7 +29,8 @@ from core.base_algorithm import BaseGraphAlgorithm
 from core.graph_model import SpatialGraphModel
 
 # Nilai alpha sama dengan generate_all_traces di ford_fulkerson.py (0%, 10%, ..., 100%)
-ALPHAS: List[float] = [round(k * 0.1, 1) for k in range(11)]
+# alpha 0 sampai 1,0 tiap 0,1 untuk sensitivitas, ditambah OBSERVED_ALPHA supaya kondisi pasar penuh juga punya trace
+ALPHAS: List[float] = sorted({round(k * 0.1, 2) for k in range(11)} | {OBSERVED_ALPHA})
 
 
 class IterativeFordFulkerson(BaseGraphAlgorithm):
