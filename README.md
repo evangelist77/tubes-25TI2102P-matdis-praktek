@@ -130,6 +130,7 @@ Semua perintah dijalankan dari akar repo.
 python -m pytest                   # tes loader dan kontrak skenario
 python -m scripts.run_simulation   # skenario default case_04_pasar_tumpah.yaml
 python -m scripts.run_benchmark    # ringkasan langkah dan waktu per skenario
+python -m scripts.run_benchmark -a maxflow -a dinic   # Ford-Fulkerson dan Dinic dalam satu tabel
 ```
 
 Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` dijelaskan di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.

@@ -28,8 +28,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-a",
         "--algorithm",
+        action="append",
         default=None,
-        help="Registry key/alias algoritma (mis. pathfinding, spanning_tree).",
+        help="Registry key/alias algoritma (mis. maxflow, dinic). Bisa diulang: -a maxflow -a dinic.",
     )
     return parser
 
@@ -57,18 +58,19 @@ def main(argv: Optional[List[str]] = None) -> None:
 
     rows = []
     for yaml_path in scenario_paths:
-        algorithm_key, solver, result = run_single(
-            yaml_path, algorithm_override=args.algorithm
-        )
-        rows.append(
-            {
-                "case": result.metadata.get("case_id", yaml_path.stem),
-                "algorithm": result.algorithm_name,
-                "steps": solver.step_count,
-                "initial_ms": result.initial_elapsed_ms,
-                "reroute_ms": sum(r.elapsed_ms for r in result.reroutes),
-            }
-        )
+        for algorithm in args.algorithm or [None]:
+            algorithm_key, solver, result = run_single(
+                yaml_path, algorithm_override=algorithm
+            )
+            rows.append(
+                {
+                    "case": result.metadata.get("case_id", yaml_path.stem),
+                    "algorithm": result.algorithm_name,
+                    "steps": solver.step_count,
+                    "initial_ms": result.initial_elapsed_ms,
+                    "reroute_ms": sum(r.elapsed_ms for r in result.reroutes),
+                }
+            )
 
     print("\n------------------------- BENCHMARK RESULTS -------------------------")
     print(f" {'Case':<30} {'Algorithm':<18} {'Steps':>6} {'Init (ms)':>12} {'Reroute (ms)':>14}")
