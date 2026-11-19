@@ -262,7 +262,7 @@ const small = () => S.vw < 760;
 const navH = () => { const n = $('.snav'); return n ? n.offsetHeight : 0; };
 // adegan Graf (rasi) dilepas dari alur cerita karena isinya sama dengan Rute; tautan lama #graf diarahkan ke Rute
 const ORDER = ['hero', 'lorong', 'kartu', 'goresan', 'data', 'aliran', 'akhir'];
-const NAMES = ['Max Flow', 'Masalah', 'Tim', 'Rute', 'Data', 'Aliran', 'Akhir'];
+const NAMES = ['Max Flow', 'Masalah', 'Tim', 'Rute', 'Data', 'Algoritma', 'Akhir'];
 const HASH = { mulai: 'hero', masalah: 'lorong', tim: 'kartu', graf: 'goresan', rute: 'goresan', data: 'data', aliran: 'aliran', akhir: 'akhir' };
 const G = {};
 function measure() {
@@ -577,7 +577,7 @@ const Hero = {
   }
 };
 
-const NAV = [['Max Flow', 'hero'], ['Masalah', 'lorong'], ['Tim', 'kartu'], ['Rute', 'goresan'], ['Data', 'data'], ['Aliran', 'aliran'], ['Akhir', 'akhir']];
+const NAV = [['Max Flow', 'hero'], ['Masalah', 'lorong'], ['Tim', 'kartu'], ['Rute', 'goresan'], ['Data', 'data'], ['Algoritma', 'aliran'], ['Akhir', 'akhir']];
 function tailPath(P, Q, th) {
   let tx = P[0] - Q[0], ty = P[1] - Q[1]; const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
   const nx = -ty, ny = tx, h = th * 0.5, L = th * 1.15;
