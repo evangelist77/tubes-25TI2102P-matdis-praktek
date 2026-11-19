@@ -22,7 +22,7 @@
     <h1 class="hal-judul">Analisis</h1>
     <p class="hal-lede">Dari akar masalah kemacetan Gasibu sampai cara kami menghitung kapasitas tiap ruas, alur program dari berkas kasus sampai visualisasi, hasil uji banding Ford-Fulkerson dan Dinic saat jalan berubah, lalu temuan dan batasannya.</p>
     <nav class="lompat" aria-label="Bagian halaman">
-      <a href="#fishbone">Fishbone</a>
+      <a href="#fishbone">Fishbone</a><a href="#temuan">Temuan dan batasan</a>
     </nav>
   </header>
 
@@ -52,6 +52,38 @@
     <p class="catatan-kotak">Penyebab seperti olahraga Minggu pagi dan riwayat penertiban tidak kami masukkan ke model karena bukan sifat ruas jalan. Penyebab itu tetap penting untuk kebijakan, tetapi graf aliran hanya bisa menjawab berapa kendaraan yang bisa lewat dan di ruas mana arusnya tertahan.</p>
   </section>
   <!--/S01-->
+
+  <!--S05-->
+  <section class="bagian" id="temuan" aria-labelledby="judul-temuan">
+    <div class="bagian-kepala">
+      <span class="no">05</span>
+      <h2 id="judul-temuan">Temuan, batasan, dan langkah lanjut</h2>
+      <p>Hasil hitungan kami kembalikan ke masalah awal, lalu kami tulis apa saja yang belum bisa dijawab model ini dan apa yang perlu diperbaiki kalau penelitian ini dilanjutkan.</p>
+    </div>
+    <ul class="temuan">
+      <li><b>2.668,6 <small>skr/jam</small></b><h3>Pembatasnya ada di jalan masuk</h3><p>Tanpa pasar, arus maksimum dibatasi Jl. Tamansari (1.247) dan Jl. Dipatiukur (1.421,6). Kapasitas kawasan Gasibu lebih ditentukan oleh pintu masuknya daripada oleh Gasibu Atas.</p></li>
+      <li><b>−12,6<small>%</small></b><h3>Penutupan ruas lebih berpengaruh</h3><p>Saat pasar arus maksimum turun menjadi 2.331,9 skr/jam. Penyebabnya penutupan Jl. Singaperbangsa, karena arus dari Dipatiukur tinggal bisa lewat Jl. Hasanuddin dengan kapasitas 1.084,9.</p></li>
+      <li><b>&gt; 70<small>%</small></b><h3>Gasibu Atas punya cadangan besar</h3><p>Penyempitan Gasibu Atas baru menurunkan arus jaringan kalau kapasitasnya hilang lebih dari 70%. Menertibkan lapak di Gasibu Atas saja belum tentu menaikkan arus kawasan kalau ruas di sekitarnya tetap ditutup.</p></li>
+    </ul>
+    <h3 class="sub-judul">Batasan model</h3>
+    <ul class="daftar batasan">
+      <li>Kapasitas dianggap tetap dalam satu jam, belum berubah menit ke menit.</li>
+      <li>Hambatan samping hari biasa dianggap sedang untuk semua ruas.</li>
+      <li>Lebar dan lajur dari OpenStreetMap, belum diukur langsung. Jalan di bawah 5 m memakai nilai 5 m, jadi kapasitasnya batas atas.</li>
+      <li>Penyempitan Gasibu Atas sekitar 11% masih dari tabel hambatan samping PKJI sampai hasil kamera Gasibu_02 keluar.</li>
+      <li>Penutupan Jl. Singaperbangsa saat pagi hari pasar adalah asumsi skenario.</li>
+      <li>Simpang dianggap tidak membatasi arus, padahal lampu lalu lintas dan antrean belok juga mengurangi kapasitas.</li>
+      <li>Hitungan YOLO baru dicek visual di satu klip HP. Program kurang hitung sekitar 7 sampai 10%, terutama motor, dan hitung manual belum dilakukan.</li>
+      <li>Tiga CCTV di jalur graf tidak bisa dibuka, dan cuaca serta arus pejalan kaki belum dimodelkan.</li>
+    </ul>
+    <h3 class="sub-judul">Kalau dilanjutkan</h3>
+    <div class="lanjut">
+      <section><h3>Data</h3><ul class="daftar"><li>Merekam CCTV Pelindung otomatis setiap Sabtu dan Minggu selama beberapa pekan supaya α dan arus punya sebaran, bukan satu sampel.</li><li>Hitung manual di beberapa klip untuk mengukur galat program YOLO.</li><li>Mengukur lebar jalan langsung di lapangan untuk ruas yang paling menentukan.</li></ul></section>
+      <section><h3>Model dan algoritma</h3><ul class="daftar"><li>Menghitung kapasitas simpang bersinyal dengan PKJI dan memasukkannya sebagai batas di simpul.</li><li>Graf berbasis waktu supaya arus per 15 menit bisa dibandingkan sepanjang pagi.</li><li>Mencoba Push-Relabel atau max flow inkremental untuk perubahan yang sering.</li></ul></section>
+    </div>
+    <p class="catatan-kotak">Kalau proyek ini dijadikan PKM atau tugas akhir, yang paling mendesak adalah data, yaitu rekaman otomatis yang panjang dan validasi hitung manual. Angka penyempitan saat pasar dan penutupan ruas paling banyak memengaruhi kesimpulan, jadi dua hal itu yang perlu dipastikan dulu sebelum algoritmanya dikembangkan.</p>
+  </section>
+  <!--/S05-->
 
   <section class="hal-akhir" aria-label="Halaman lain">
     <h2>Lihat juga</h2>
