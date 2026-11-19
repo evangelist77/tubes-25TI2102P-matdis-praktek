@@ -260,9 +260,10 @@ const stage = $('#stage');
 function readViewport() { const r = stage.getBoundingClientRect(); S.vw = Math.round(r.width) || innerWidth; S.vh = Math.round(r.height) || innerHeight; }
 const small = () => S.vw < 760;
 const navH = () => { const n = $('.snav'); return n ? n.offsetHeight : 0; };
-const ORDER = ['hero', 'lorong', 'kartu', 'rasi', 'goresan', 'data', 'aliran', 'akhir'];
-const NAMES = ['Max Flow', 'Masalah', 'Tim', 'Graf', 'Rute', 'Data', 'Aliran', 'Akhir'];
-const HASH = { mulai: 'hero', masalah: 'lorong', tim: 'kartu', graf: 'rasi', rute: 'goresan', data: 'data', aliran: 'aliran', akhir: 'akhir' };
+// adegan Graf (rasi) dilepas dari alur cerita karena isinya sama dengan Rute; tautan lama #graf diarahkan ke Rute
+const ORDER = ['hero', 'lorong', 'kartu', 'goresan', 'data', 'aliran', 'akhir'];
+const NAMES = ['Max Flow', 'Masalah', 'Tim', 'Rute', 'Data', 'Aliran', 'Akhir'];
+const HASH = { mulai: 'hero', masalah: 'lorong', tim: 'kartu', graf: 'goresan', rute: 'goresan', data: 'data', aliran: 'aliran', akhir: 'akhir' };
 const G = {};
 function measure() {
   for (const k of ORDER) { const el = $('#s-' + k); const r = el.getBoundingClientRect(); G[k] = { top: r.top + window.scrollY, h: el.offsetHeight }; }
@@ -576,7 +577,7 @@ const Hero = {
   }
 };
 
-const NAV = [['Max Flow', 'hero'], ['Masalah', 'lorong'], ['Tim', 'kartu'], ['Graf', 'rasi'], ['Rute', 'goresan'], ['Data', 'data'], ['Aliran', 'aliran'], ['Akhir', 'akhir']];
+const NAV = [['Max Flow', 'hero'], ['Masalah', 'lorong'], ['Tim', 'kartu'], ['Rute', 'goresan'], ['Data', 'data'], ['Aliran', 'aliran'], ['Akhir', 'akhir']];
 function tailPath(P, Q, th) {
   let tx = P[0] - Q[0], ty = P[1] - Q[1]; const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
   const nx = -ty, ny = tx, h = th * 0.5, L = th * 1.15;
@@ -2089,8 +2090,8 @@ function frame(now) {
   if (!S.degraded && S.t > 6 && S.slowAcc > 1.75) { S.degraded = true; QUALITY = 0.6; Flow.reset(); Tun.M = small() ? 72 : 90; }
 
   const y = S.smoothY;
-  const inHero = y < G.lorong.top, inLor = !inHero && y < G.kartu.top, inKar = y >= G.kartu.top && y < G.rasi.top;
-  const inRas = y >= G.rasi.top && y < G.goresan.top, inGor = y >= G.goresan.top && y < G.data.top;
+  const inHero = y < G.lorong.top, inLor = !inHero && y < G.kartu.top, inKar = y >= G.kartu.top && y < G.goresan.top;
+  const inRas = false, inGor = y >= G.goresan.top && y < G.data.top;
   const inDat = y >= G.data.top && y < G.aliran.top, inAli = y >= G.aliran.top && y < G.akhir.top;
   const endK = clamp((y - (G.aliran.top + G.aliran.h * 0.8)) / (G.aliran.h * 0.2 + S.vh * 0.6));
   /* penutup baru bisa difokus keyboard setelah mulai tampil, jadi Tab dari navigasi tidak melompati seluruh cerita */
