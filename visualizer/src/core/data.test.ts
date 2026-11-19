@@ -5,6 +5,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { diffIterativeTrace, type IterativeTrace } from './iterative'
 import type { GeometryMap, Manifest, RoutesFile, Topology, Trace } from './types'
 import { validateTrace } from './validateTrace'
 
@@ -38,6 +39,12 @@ describe('data publik', () => {
     for (const run of manifest.runs) {
       const result = validateTrace(topology, read<Trace>(run.filename))
       expect(result.isValid, `${run.filename}: ${result.errors.join('; ')}`).toBe(true)
+    }
+  })
+
+  it('trace iterative (bila sudah dibuat) sama dengan hitungan browser', () => {
+    for (const f of fs.readdirSync(dataDir).filter((name) => /^iterative_a\d+\.json$/.test(name))) {
+      expect(diffIterativeTrace(topology, read<IterativeTrace>(f)), f).toEqual([])
     }
   })
 
