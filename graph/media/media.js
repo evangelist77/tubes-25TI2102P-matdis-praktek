@@ -69,12 +69,6 @@ window.MEDIA_DATA = {
       catatan: "Dipakai untuk ruas Jl. Surapati menuju Gasibu Atas (P5 sampai P8). Rekaman Sabtu 14 November rusak berat, jadi yang dipakai rekaman Minggu 15 November sebagai batas bawah. Kamera ada di Jl. Surapati bawah flyover sekitar 270 m sebelum simpang Gasibu Barat dan menghadap ke arah Gasibu, jadi kendaraan yang terlihat bergerak menjauhi kamera menuju Gasibu Atas. Direkam malam hari waktu lampu jalan sudah menyala.",
       kamera: "CCTV Jl. Surapati - Gasibu 01 (arah Gasibu)",
       klip: { src: "media/cctv/V_Gasibu_Barat.mp4", poster: "media/cctv/V_Gasibu_Barat.jpg", direkam: "2026-11-13T18:26:58+07:00", durasi_detik: 20 }
-    },
-    cctv_lapang_gasibu: {
-      status: "tidak dipakai",
-      catatan: "Tidak dipakai karena setelah dicek kamera ini menghadap Jl. Japati, jalan pasar yang ditutup saat Minggu pagi, bukan Jl. Gasibu Atas. Data Gasibu Atas diambil dari kamera CCTV Gasibu_02 pada 21 dan 22 November. Jam di layar kamera ini tertinggal sekitar 12 menit dari waktu rekam.",
-      kamera: "CCTV Lapang Gasibu 02 (arah Telkom Japati)",
-      klip: { src: "media/cctv/V_Gasibu_Timur.mp4", poster: "media/cctv/V_Gasibu_Timur.jpg", direkam: "2026-11-13T18:27:02+07:00", durasi_detik: 20 }
     }
   },
   manual: {

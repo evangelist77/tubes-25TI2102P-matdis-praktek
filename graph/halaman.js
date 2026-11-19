@@ -31,7 +31,6 @@
     if (s === 'aman') return { k: 'aman', t: 'Aman', urut: 0 };
     if (s && s.startsWith('baru')) return { k: 'baru', t: 'Baru, belum dicek', urut: 1 };
     if (s === 'tidak bisa dibuka') return { k: 'mati', t: 'Tidak bisa dibuka', urut: 2 };
-    if (s === 'tidak dipakai') return { k: 'mati', t: 'Tidak dipakai, salah ruas', urut: 2 };
     return { k: 'tunggu', t: s || 'Belum ada data', urut: 3 };
   };
   const namaKamera = (k) => bersih(k).replace(/^CCTV\s+/i, '');
@@ -121,10 +120,7 @@
       .sort((a, b) => String((a.info.klip || {}).jam).localeCompare(String((b.info.klip || {}).jam)));
     const hit = (k) => cctv.filter((x) => x.st.k === k).length;
     const N = {
-      cctv: cctv.length, aman: hit('aman'), baru: hit('baru'),
-      // kamera yang salah ruas dihitung terpisah dari yang tidak bisa dibuka
-      tdkPakai: cctv.filter((x) => x.info.status === 'tidak dipakai').length,
-      mati: cctv.filter((x) => x.info.status === 'tidak bisa dibuka').length,
+      cctv: cctv.length, aman: hit('aman'), mati: hit('mati'), baru: hit('baru'),
       hp: manual.length,
       klipCctv: cctv.filter((x) => x.info.klip && x.info.klip.src).length,
       totalHp: durasi(manual.reduce((s, x) => s + ((x.info.klip || {}).durasi_asli_detik || 0), 0))
@@ -132,7 +128,7 @@
     $$('[data-n]').forEach((el) => { el.textContent = N[el.dataset.n]; });
 
     $('#ringkas').innerHTML = [
-      [N.cctv, 'titik CCTV'], [N.aman, 'aman'], [N.mati, 'tidak bisa dibuka'], [N.tdkPakai, 'tidak dipakai'], [N.baru, 'baru'], [N.hp, 'rekaman HP']
+      [N.cctv, 'titik CCTV'], [N.aman, 'aman'], [N.mati, 'tidak bisa dibuka'], [N.baru, 'baru'], [N.hp, 'rekaman HP']
     ].filter(([n]) => n).map(([n, t]) => `<li><b>${n}</b><span>${t}</span></li>`).join('') +
       '<li class="gelap"><span>kapasitas dihitung PKJI</span></li>';
 
