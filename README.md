@@ -58,6 +58,19 @@ Situs: **https://maxflow-gasibu.vercel.app**
 | 4 | 251524048 | Ghaisan Khoirul Badruzaman | Data CCTV dan rekaman HP, program hitung kendaraan, situs presentasi |
 | 5 | 251524049 | Hafiz Fauzan Syafrudin | Algoritma Iterative Ford-Fulkerson dan Dinic, graf 8 rute dan spesifikasi jalan, pengelolaan repo |
 
+## Presentasi
+
+Website ini juga dipakai sebagai slide presentasi di video tubes, jadi tidak ada file slide terpisah. Urutan halaman yang dibuka mengikuti lima bagian brief video:
+
+| Bagian brief | Halaman yang dibuka |
+|:---|:---|
+| 1. Isu kontemporer dan akar masalah | Cerita adegan 01 Max Flow dan 02 Masalah, Analisis 01 Akar masalah, Alur metodologi |
+| Perkenalan anggota | Cerita adegan 03 Tim |
+| 2. Pemodelan graf dan justifikasi bobot | Cerita adegan 04 Rute, Dashboard Peta, Analisis 02 Bobot PKJI, Data Lapangan |
+| 3. Abstraksi algoritma dan pipeline | Cerita adegan 06 Algoritma, Analisis 03 Algoritma dan pipeline, Visualisasi Ford-Fulkerson, repo ini |
+| 4. Eksperimen komparasi dan graf dinamis | Visualisasi Iterative Ford-Fulkerson, Analisis 04 Eksperimen |
+| 5. Batasan, temuan, dan langkah lanjut | Analisis 05 Temuan dan batasan, Cerita adegan 07 |
+
 ## Tutorial Penggunaan Aplikasi
 
 Aplikasi tubes ini berupa website yang dibuka langsung di browser, jadi tidak perlu memasang apa pun. Buka **https://maxflow-gasibu.vercel.app**, lalu pakai menu di bagian atas, yaitu Cerita, Dashboard Peta, Data Lapangan, Visualisasi, Analisis, dan Tim. Di HP menunya ada di tombol Menu di kanan atas. Untuk menjalankan program Python, visualizer, atau program hitung kendaraan di komputer sendiri, lihat bagian [Menjalankan](#menjalankan).
