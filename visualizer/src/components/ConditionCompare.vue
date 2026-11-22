@@ -18,7 +18,8 @@ const names = (r: ComparisonRow | null) =>
 
 const summary = computed(() => {
   if (!normal.value || !pasar.value) return ''
-  const drop = normal.value.maxFlow - pasar.value.maxFlow
+  // dibulatkan 1 desimal seperti angka lain, supaya selisih float (325.0999...) tidak tampil apa adanya
+  const drop = Math.round((normal.value.maxFlow - pasar.value.maxFlow) * 10) / 10
   const same = JSON.stringify(normal.value.bottlenecks.map((b) => b.edgeId).sort()) ===
     JSON.stringify(pasar.value.bottlenecks.map((b) => b.edgeId).sort())
   if (drop <= 0) {
