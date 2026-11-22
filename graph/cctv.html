@@ -121,7 +121,7 @@ t["akhir"] = (titik, s)</code></pre></figure>
         <div>
           <h3>Satuan kendaraan ringan menurut PKJI</h3>
           <span class="berkas">video_counting/hitung.py · video_counting/agregasi.py</span>
-          <p>Kelas COCO diubah ke golongan PKJI, yaitu sepeda motor (SM), kendaraan ringan (KR), kendaraan berat (KB), dan sepeda (KTB), lalu kendaraan per jam diubah ke skr per jam memakai ekr PKJI 2014 yang angkanya masih diisi kelompok, jadi kolom skr dikosongkan selama ekr SM dan KB belum ada.</p>
+          <p>Kelas COCO diubah ke golongan PKJI, yaitu sepeda motor (SM), kendaraan ringan (KR), kendaraan berat (KB), dan sepeda (KTB), lalu kendaraan per jam diubah ke skr per jam memakai ekr PKJI (di PKJI 2023 disebut EMP), yaitu kendaraan ringan 1,0, sepeda motor 0,40 sampai 0,5, dan kendaraan berat 1,3 sesuai tipe jalan dan volumenya.</p>
           <ul class="param"><li><code>car</code> ke KR</li><li><code>motorcycle</code> ke SM</li><li><code>bus</code> dan <code>truck</code> ke KB</li><li><code>bicycle</code> ke KTB</li></ul>
           <figure class="kode"><figcaption><span>agregasi.py · rekap()</span><span>baris 80 sampai 81</span></figcaption><pre><code>per_jam = 3600 / cover
 skr = sum(n[c] * ekr[c] for c in ("KR", "SM", "KB")) * per_jam if lengkap else None</code></pre></figure>
@@ -177,33 +177,33 @@ skr = sum(n[c] * ekr[c] for c in ("KR", "SM", "KB")) * per_jam if lengkap else N
         </tbody>
       </table>
     </div>
-    <p class="catatan-kotak">Rekaman 21 dan 22 November ditambahkan karena kamera Lapang Gasibu 02 yang dipakai sebelumnya ternyata menghadap Jl. Japati. Perbandingan kamera Gasibu_02 di dua hari itu dipakai untuk angka penyempitan Jl. Gasibu Atas, dan sampai hasilnya keluar angkanya memakai hambatan samping PKJI sekitar 11%.</p>
+    <p class="catatan-kotak">Rekaman 21 dan 22 November ditambahkan karena kamera Lapang Gasibu 02 yang dipakai sebelumnya ternyata menghadap Jl. Japati. Hasilnya, arus searah ruas Gasibu Atas hanya 74,2 skr/jam pada Sabtu dan 183,3 skr/jam pada Minggu, jauh di bawah kapasitasnya 4.826,6 skr/jam. Karena jalannya tidak penuh, selisih arus dua hari itu hanya menunjukkan permintaan yang naik di hari Minggu, bukan kapasitas yang menyempit. Angka penyempitan tetap memakai hambatan samping PKJI 2023 sekitar 11%.</p>
   </section>
 
   <section class="bagian" id="hasil" aria-labelledby="judul-hasil">
     <div class="bagian-kepala">
       <span class="no">05</span>
       <h2 id="judul-hasil">Hasil akhir yang masuk ke algoritma</h2>
-      <p>Kapasitas yang dipakai Ford-Fulkerson dan Dinic dihitung dengan rumus PKJI jalan perkotaan dari lebar dan jumlah lajur tiap ruas. Arus dari CCTV dan rekaman HP tidak langsung dijadikan kapasitas karena arus hanya menunjukkan kendaraan yang lewat saat direkam, jadi arus dipakai untuk mengecek apakah kapasitasnya masuk akal.</p>
+      <p>Kapasitas yang dipakai Ford-Fulkerson dan Dinic dihitung dengan rumus PKJI 2023 jalan perkotaan dari lebar dan jumlah lajur tiap ruas. Arus dari CCTV dan rekaman HP tidak langsung dijadikan kapasitas karena arus hanya menunjukkan kendaraan yang lewat saat direkam, jadi arus dipakai untuk mengecek apakah kapasitasnya masuk akal.</p>
     </div>
     <div class="tabel-wrap">
       <table class="tabel">
         <thead><tr><th scope="col">Ruas</th><th scope="col">Arus terukur (skr/jam)</th><th scope="col">Kapasitas PKJI (skr/jam)</th><th scope="col">Derajat kejenuhan</th></tr></thead>
         <tbody>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Dipatiukur (selatan)</b></td><td data-l="Arus terukur">1.435,5</td><td data-l="Kapasitas PKJI">1.421,6</td><td data-l="Derajat kejenuhan">1,01</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Surapati (barat, bawah flyover)</b></td><td data-l="Arus terukur">795,5</td><td data-l="Kapasitas PKJI">3.003,0</td><td data-l="Derajat kejenuhan">0,26</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Hasanuddin</b></td><td data-l="Arus terukur">305,7</td><td data-l="Kapasitas PKJI">1.084,9</td><td data-l="Derajat kejenuhan">0,28</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Sulanjana</b></td><td data-l="Arus terukur">518,0</td><td data-l="Kapasitas PKJI">1.084,9</td><td data-l="Derajat kejenuhan">0,48</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Aria Jipang</b></td><td data-l="Arus terukur">1.000,2</td><td data-l="Kapasitas PKJI">1.084,9</td><td data-l="Derajat kejenuhan">0,92</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Cimandiri</b></td><td data-l="Arus terukur">1.000,0</td><td data-l="Kapasitas PKJI">2.611,0</td><td data-l="Derajat kejenuhan">0,38</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Singaperbangsa</b></td><td data-l="Arus terukur">79,9</td><td data-l="Kapasitas PKJI">698,3</td><td data-l="Derajat kejenuhan">0,11</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Gagak</b></td><td data-l="Arus terukur">242,2</td><td data-l="Kapasitas PKJI">698,3</td><td data-l="Derajat kejenuhan">0,35</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Surapati (timur)</b></td><td data-l="Arus terukur">1.232,3</td><td data-l="Kapasitas PKJI">4.684,7</td><td data-l="Derajat kejenuhan">0,26</td></tr>
-          <tr><td class="utama" data-l="Ruas"><b>Jl. Surapati (ke PUSDAI)</b></td><td data-l="Arus terukur">1.181,2</td><td data-l="Kapasitas PKJI">4.684,7</td><td data-l="Derajat kejenuhan">0,25</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Dipatiukur (selatan)</b></td><td data-l="Arus terukur">1.435,5</td><td data-l="Kapasitas PKJI">1.372,6</td><td data-l="Derajat kejenuhan">1,05</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Surapati (barat, bawah flyover)</b></td><td data-l="Arus terukur">795,5</td><td data-l="Kapasitas PKJI">3.094,0</td><td data-l="Derajat kejenuhan">0,26</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Hasanuddin</b></td><td data-l="Arus terukur">305,7</td><td data-l="Kapasitas PKJI">1.047,5</td><td data-l="Derajat kejenuhan">0,29</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Sulanjana</b></td><td data-l="Arus terukur">518,0</td><td data-l="Kapasitas PKJI">1.047,5</td><td data-l="Derajat kejenuhan">0,49</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Aria Jipang</b></td><td data-l="Arus terukur">1.000,2</td><td data-l="Kapasitas PKJI">1.047,5</td><td data-l="Derajat kejenuhan">0,95</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Cimandiri</b></td><td data-l="Arus terukur">1.000,0</td><td data-l="Kapasitas PKJI">2.690,1</td><td data-l="Derajat kejenuhan">0,37</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Singaperbangsa</b></td><td data-l="Arus terukur">79,9</td><td data-l="Kapasitas PKJI">674,2</td><td data-l="Derajat kejenuhan">0,12</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Gagak</b></td><td data-l="Arus terukur">242,2</td><td data-l="Kapasitas PKJI">674,2</td><td data-l="Derajat kejenuhan">0,36</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Surapati (timur)</b></td><td data-l="Arus terukur">1.232,3</td><td data-l="Kapasitas PKJI">4.826,6</td><td data-l="Derajat kejenuhan">0,26</td></tr>
+          <tr><td class="utama" data-l="Ruas"><b>Jl. Surapati (ke PUSDAI)</b></td><td data-l="Arus terukur">1.181,2</td><td data-l="Kapasitas PKJI">4.826,6</td><td data-l="Derajat kejenuhan">0,24</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="catatan-kotak">Dari sepuluh ruas yang punya arus layak tidak ada yang arusnya melebihi kapasitas. Jl. Dipatiukur bagian selatan paling padat dengan derajat kejenuhan 1,01 dan memang macet di pagi hari. Kapasitas semua 31 ruas ada di hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv dan angka penyempitan Jl. Gasibu Atas saat pasar sementara memakai hambatan samping PKJI sekitar 11%.</p>
+    <p class="catatan-kotak">Dari sepuluh ruas yang punya arus layak, sembilan arusnya di bawah kapasitas. Jl. Dipatiukur bagian selatan paling padat dengan derajat kejenuhan 1,05, artinya arusnya sedikit di atas kapasitas PKJI 2023. Selisih 5% ini masih di dalam perkiraan galat hitung program, dan cocok dengan kondisinya yang memang macet di pagi hari. Kapasitas semua 31 ruas ada di hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv, dan angka penyempitan Jl. Gasibu Atas saat pasar memakai hambatan samping PKJI 2023 sekitar 11%.</p>
   </section>
 
   <section class="bagian" id="gmaps" aria-labelledby="judul-gmaps">
