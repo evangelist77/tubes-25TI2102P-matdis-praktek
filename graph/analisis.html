@@ -265,7 +265,7 @@
     <div class="dua-grafik">
       <div class="grafik">
         <h3>Waktu eksekusi saat graf membesar</h3>
-        <p class="ket-grafik">Skala logaritmik. Di graf Gasibu yang kecil keduanya selesai di bawah 0,2 ms, perbedaannya baru terasa di graf besar.</p>
+        <p class="ket-grafik">Skala logaritmik. Di graf Gasibu yang kecil keduanya selesai di bawah 0,3 ms, perbedaannya baru terasa di graf besar.</p>
         <div class="skala">
 <div class="baris kami"><div class="nama-g">Graf Gasibu kami<small>28 simpul, 35 sisi</small></div><div class="dua"><span class="bar ff" style="--p:8.3%"><i></i><em>FF 0,21 ms</em></span><span class="bar dn" style="--p:4.0%"><i></i><em>Dinic 0,10 ms</em></span><span class="kali">Dinic 2,1× lebih cepat</span></div></div>
 <div class="baris"><div class="nama-g">Grid 5x5<small>27 simpul, 70 sisi</small></div><div class="dua"><span class="bar ff" style="--p:17.0%"><i></i><em>FF 0,96 ms</em></span><span class="bar dn" style="--p:9.2%"><i></i><em>Dinic 0,25 ms</em></span><span class="kali">Dinic 3,9× lebih cepat</span></div></div>
@@ -299,7 +299,7 @@
       <li><h3>Bagaimana respons algoritma dasar?</h3><p>Ford-Fulkerson menghitung ulang dari nol setiap ada perubahan, jadi setiap event kembali memeriksa 119 sampai 188 sisi dengan 3 sampai 4 BFS walaupun max flow-nya tidak berubah.</p></li>
       <li><h3>Apakah hasilnya optimal global?</h3><p>Ya. Ford-Fulkerson dan Dinic sama-sama algoritma eksak, berhenti saat tidak ada jalur augmentasi dan nilainya sama dengan kapasitas min cut. Di semua kondisi, pasangan, dan event nilai keduanya sama, jadi tidak ada optimum lokal.</p></li>
       <li><h3>Kapan solusi lama tidak layak?</h3><p>Saat kapasitas turun di bawah arus yang sedang lewat, seperti t2. Arus lama melanggar kapasitas, jadi harus dihitung ulang. Dinic hanya memakai arus lama kalau masih layak.</p></li>
-      <li><h3>Advance unggul atau overkill?</h3><p>Di graf 28 simpul keduanya di bawah 0,2 ms dan pada kondisi normal Dinic malah memeriksa lebih banyak sisi (245 dibanding 188) karena menyusun graf level. Dinic unggul saat ada perubahan kecil berkat warm start dan saat graf besar, di grid 2.027 simpul sekitar 43 kali lebih cepat.</p></li>
+      <li><h3>Advance unggul atau overkill?</h3><p>Di graf 28 simpul keduanya di bawah 0,3 ms dan pada kondisi normal Dinic malah memeriksa lebih banyak sisi (245 dibanding 188) karena menyusun graf level. Dinic unggul saat ada perubahan kecil berkat warm start dan saat graf besar, di grid 2.027 simpul sekitar 43 kali lebih cepat.</p></li>
     </ul>
   </section>
   <!--/S04-->
