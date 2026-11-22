@@ -37,8 +37,8 @@ Situs: **https://maxflow-gasibu.vercel.app**
 | [`/`](https://maxflow-gasibu.vercel.app) | Landing berisi cerita masalah, cara kerja max flow pada graf contoh, tim, dan kliping berita |
 | [`/graph/`](https://maxflow-gasibu.vercel.app/graph/) | Dashboard Peta: 8 rute di atas peta OpenStreetMap, simpul, lebar ruas, titik CCTV dan rekaman HP beserta videonya |
 | [`/graph/cctv`](https://maxflow-gasibu.vercel.app/graph/cctv) | Data Lapangan: cuplikan CCTV Pelindung dan rekaman HP yang sudah diproses program hitung kendaraan, cara kerja program, jadwal rekam, dan pembanding lalu lintas biasanya dari Google Maps |
-| [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson yang bisa dicoba langsung, dan tempat visualisasi Iterative Ford-Fulkerson |
-| [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: alur metodologi, fishbone akar masalah, rumus kapasitas PKJI, flowchart Ford-Fulkerson dan Dinic, pipeline input proses output, eksperimen kedua algoritma pada graf dinamis, serta temuan dan batasan |
+| [`/graph/visualisasi`](https://maxflow-gasibu.vercel.app/graph/visualisasi) | Visualisasi Ford-Fulkerson langkah per langkah yang bisa dicoba langsung |
+| [`/graph/analisis`](https://maxflow-gasibu.vercel.app/graph/analisis) | Analisis: alur metodologi, fishbone akar masalah, rumus kapasitas PKJI 2023 beserta tabel resminya, flowchart Ford-Fulkerson dan Dinic, pipeline input proses output, eksperimen kedua algoritma pada graf dinamis, pengaruh rute alternatif, serta temuan dan batasan |
 
 ## Identitas Kelompok
 
@@ -54,9 +54,9 @@ Situs: **https://maxflow-gasibu.vercel.app**
 |:--:|:---:|:---|:---|
 | 1 | 251524036 | Alifah Zachra Syifatunnajwa | Visualisasi Ford-Fulkerson (`visualizer/`) |
 | 2 | 251524042 | Elang Permadi Lau | Algoritma Ford-Fulkerson |
-| 3 | 251524046 | Ganesh Diyan Khansa Khairunnisa | Visualisasi Iterative Ford-Fulkerson |
+| 3 | 251524046 | Ganesh Diyan Khansa Khairunnisa | Analisis rute alternatif, visualisasi awal arus per pasangan |
 | 4 | 251524048 | Ghaisan Khoirul Badruzaman | Data CCTV dan rekaman HP, program hitung kendaraan, situs presentasi |
-| 5 | 251524049 | Hafiz Fauzan Syafrudin | Algoritma Iterative Ford-Fulkerson dan Dinic, graf 8 rute dan spesifikasi jalan, pengelolaan repo |
+| 5 | 251524049 | Hafiz Fauzan Syafrudin | Algoritma Dinic, graf 8 rute dan spesifikasi jalan, pengelolaan repo |
 
 ## Presentasi
 
@@ -68,7 +68,7 @@ Website ini juga dipakai sebagai slide presentasi di video tubes, jadi tidak ada
 | Perkenalan anggota | Cerita adegan 03 Tim |
 | 2. Pemodelan graf dan justifikasi bobot | Cerita adegan 04 Rute, Dashboard Peta, Analisis 02 Bobot PKJI, Data Lapangan |
 | 3. Abstraksi algoritma dan pipeline | Cerita adegan 06 Algoritma, Analisis 03 Algoritma dan pipeline, Visualisasi Ford-Fulkerson, repo ini |
-| 4. Eksperimen komparasi dan graf dinamis | Visualisasi Iterative Ford-Fulkerson, Analisis 04 Eksperimen |
+| 4. Eksperimen komparasi dan graf dinamis | Analisis 04 Eksperimen, termasuk pengaruh rute alternatif |
 | 5. Batasan, temuan, dan langkah lanjut | Analisis 05 Temuan dan batasan, Cerita adegan 07 |
 
 ## Tutorial Penggunaan Aplikasi
@@ -104,30 +104,16 @@ Buka menu Visualisasi lalu pilih Ford-Fulkerson, atau klik Buka layar penuh supa
 7. Nyalakan **Mode residual** untuk melihat kapasitas sisa dan edge balik, atau matikan **Peta dasar** untuk tampilan skematik.
 8. Di **Analisis sensitivitas penyempitan**, klik salah satu nilai α pada grafik untuk melihat hasil simulasi penyempitan Gasibu Atas dari 0 sampai 100%.
 
-### 4. Visualisasi Iterative Ford-Fulkerson
-
-Hasil Iterative bisa dilihat dengan dua cara.
-
-**Dashboard Iterative** di halaman Visualisasi, bagian Iterative Ford-Fulkerson:
-
-1. Di **Kondisi Pasar Tumpah**, pilih Tanpa Pasar (α = 0%) atau Saat Pasar (α = 11%).
-2. Di **Pasangan Titik**, pilih Semua Pasangan atau salah satu dari empat pasangan.
-3. Di **Cabang Rute**, pilih Semua Cabang Rute atau salah satu dari P1 sampai P8.
-4. Kartu di atas peta menunjukkan jumlah max flow, total arus, ruas pembatas, dan kondisi pasar. Warna ruas berubah dari hijau (lancar) sampai merah (jenuh).
-5. Arahkan kursor atau klik ruas di peta, atau klik baris di tabel rincian, untuk melihat arus maksimal, total arus, kapasitas efektif, sisa kapasitas, dan tingkat kepenuhannya.
-
-**Langkah per pasangan** di tab **Iterative Jaringan (Ganesh)** pada [`/graph/ff/?mode=iterative`](https://maxflow-gasibu.vercel.app/graph/ff/?mode=iterative). Pilih pasangan di Pilih Pasangan S → T, lalu pakai Maju, Mundur, atau Putar seperti pada Ford-Fulkerson untuk melihat keempat pasangan dihitung bergantian.
-
-### 5. Data Lapangan
+### 4. Data Lapangan
 
 - Tabel CCTV menunjukkan status tiap kamera dan simpul yang dipantaunya.
 - Cuplikan CCTV dan rekaman HP berputar sendiri saat halaman digulir sampai ke kartunya.
 - Bagian Program hitung kendaraan menjelaskan cara program YOLO menghitung kendaraan, dan bagian Hasil akhir membandingkan arus terukur dengan kapasitas PKJI.
 - Bagian Pembanding dari Google Maps menunjukkan lalu lintas biasanya hari Senin dan Minggu pukul 09.00 beserta waktu tempuh koridor Surapati. Klik gambarnya untuk membuka ukuran penuh.
 
-### 6. Analisis
+### 5. Analisis
 
-Halaman ini dibuka dengan alur metodologi tujuh tahap yang tiap tahapnya bisa diklik, lalu berisi fishbone akar masalah, rumus kapasitas PKJI, flowchart Ford-Fulkerson dan Dinic beserta tabel perbandingannya, pipeline input proses output, eksperimen graf dinamis, serta temuan dan batasan. Klik **Tabel kapasitas 31 ruas** untuk membuka kapasitas semua ruas, dan pakai menu Analisis untuk langsung loncat ke bagian tertentu.
+Halaman ini dibuka dengan alur metodologi tujuh tahap yang tiap tahapnya bisa diklik, lalu berisi fishbone akar masalah, rumus kapasitas PKJI 2023 beserta potongan tabel resminya, flowchart Ford-Fulkerson dan Dinic beserta tabel perbandingannya, pipeline input proses output, eksperimen graf dinamis, pengaruh rute alternatif, serta temuan dan batasan. Klik **Tabel kapasitas 31 ruas** untuk membuka kapasitas semua ruas, dan pakai menu Analisis untuk langsung loncat ke bagian tertentu.
 
 ## Pendekatan
 
@@ -141,10 +127,7 @@ Untuk pipeline Python, [`cases/scenarios/case_04_pasar_tumpah.yaml`](cases/scena
 
 ### Algoritma
 
-Sesuai catatan dosen, perhitungan dibagi dua.
-
-1. **Ford-Fulkerson per pasangan** (S1-T1, S1-T2, S2-T1, S2-T2). Pengaruh pasar dimodelkan sebagai faktor penyempitan α di ruas Jl. Gasibu Atas, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas itu mulai menjadi pembatas. Kodenya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp). Kelas `FordFulkerson` terdaftar di `AlgorithmRegistry` sebagai `maxflow`, menerima event `DYNAMIC_EDGE_CAPACITY` dari skenario, dan menulis trace tiap langkah untuk keempat pasangan dengan α dari 0 sampai 100%. Nilai α untuk kondisi pasar penuh sementara 11% dari hambatan samping PKJI, sampai perbandingan kamera Gasibu_02 Sabtu 21 dan Minggu 22 November keluar.
-2. **Iterative Ford-Fulkerson** untuk keempat pasangan yang dihitung bergantian di jaringan yang sama. Kodenya ada di [`algorithms/maxflow/iterative_ford_fulkerson.py`](algorithms/maxflow/iterative_ford_fulkerson.py) dan hasilnya ditulis sebagai trace `iterative_a<alpha>.json` yang dibaca mode Iterative di visualisasi. Tiap ruas menampilkan arus maksimal, total arus yang lewat, dan kapasitas efektifnya.
+**Ford-Fulkerson** (S\*-T\* dan per pasangan S1-T1, S1-T2, S2-T1, S2-T2). Pengaruh pasar dimodelkan sebagai faktor penyempitan α di ruas Jl. Gasibu Atas, dengan kapasitas efektif = (1 - α) × kapasitas. Nilai α diubah-ubah untuk melihat kapan ruas itu mulai menjadi pembatas. Kodenya ada di [`algorithms/maxflow/ford_fulkerson.py`](algorithms/maxflow/ford_fulkerson.py) (pencarian jalur dengan BFS, varian Edmonds-Karp). Kelas `FordFulkerson` terdaftar di `AlgorithmRegistry` sebagai `maxflow`, menerima event `DYNAMIC_EDGE_CAPACITY` dari skenario, dan menulis trace tiap langkah untuk keempat pasangan dengan α dari 0 sampai 100%. Nilai α untuk kondisi pasar penuh 11%, dari perubahan hambatan samping PKJI 2023 sedang ke sangat tinggi. Kamera Gasibu_02 Sabtu 21 dan Minggu 22 November tidak dipakai untuk α karena arusnya jauh di bawah kapasitas.
 
 Sebagai pembanding algoritma klasik dengan algoritma lanjutan (template dosen memetakan kasus 4 ke Ford-Fulkerson/Dinic), max flow juga dihitung dengan **Dinic**. Kodenya ada di [`algorithms/maxflow/dinic.py`](algorithms/maxflow/dinic.py) dan terdaftar di `AlgorithmRegistry` sebagai `dinic`. Tiap fase membangun level graph dengan BFS, lalu mencari blocking flow dengan DFS yang menyimpan pointer sisi per simpul supaya sisi yang sudah jenuh atau buntu tidak diperiksa ulang. Masukan, aturan α, dan nilai kembaliannya sama dengan `FordFulkerson`. Untuk event `DYNAMIC_EDGE_CAPACITY`, kalau kapasitas baru masih ≥ arus yang sedang lewat di ruas itu, arus lama dipertahankan dan perhitungan dilanjutkan dari graf residual (warm start). Kalau lebih kecil, max flow dihitung ulang dari nol.
 
@@ -155,16 +138,16 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 - **CCTV Pelindung Bandung**: 11 titik pantau yang dipetakan ke simpul graf, 8 bisa dipakai dan 3 tidak bisa dibuka. Daftarnya ada di bagian 7.1 `GRAPH_SPEC_LLM.md`. Stream HLS-nya direkam langsung dengan ffmpeg.
 - **Rekaman HP**: 6 simpang yang tidak punya CCTV direkam anggota pada Minggu 1 November 2026, sekitar 15 menit per titik.
 - **Program hitung kendaraan** (Python, YOLO dari Ultralytics, OpenCV, ByteTrack) ada di [`hitung-kendaraan/`](hitung-kendaraan/). Program ini merekam stream CCTV, mendeteksi dan melacak kendaraan, lalu menghitung kendaraan yang melewati garis di tiap ruas menurut arah dan kelasnya. Untuk rekaman HP yang dipegang tangan, garis hitung ikut bergeser bersama gambar. Rekap rekaman HP ada di [`hitung-kendaraan/hasil_hitung/hp_1nov/`](hitung-kendaraan/hasil_hitung/hp_1nov/), dan kolase rekaman yang sudah diproses ada di [youtu.be/rOYqXmBW57s](https://youtu.be/rOYqXmBW57s).
-- **CCTV Sabtu dan Minggu**: kamera direkam Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB, lalu dihitung dan dicek per kamera. Hasilnya ada di [`hitung-kendaraan/hasil_hitung/`](hitung-kendaraan/hasil_hitung/) (`cctv_14nov_sabtu/`, `cctv_15nov_minggu/`, dan `banding_cctv_sabtu_minggu.csv`), dan kolase rekaman Minggu ada di [youtu.be/KW-fCy3HZwM](https://youtu.be/KW-fCy3HZwM). Kamera CCTV Lapang Gasibu 02 ternyata menghadap Jl. Japati, jalan pasar yang ditutup saat Minggu pagi, jadi datanya tidak dipakai untuk Jl. Gasibu Atas. Gantinya kamera CCTV Gasibu_02 direkam Sabtu 21 dan Minggu 22 November. Jl. Ir. H. Djuanda di Minggu pagi juga ditutup karena Car Free Day.
+- **CCTV Sabtu dan Minggu**: kamera direkam Sabtu 14 November 2026 (tanpa pasar) dan Minggu 15 November 2026 (saat pasar), pukul 07.30 sampai 08.00 WIB, lalu dihitung dan dicek per kamera. Hasilnya ada di [`hitung-kendaraan/hasil_hitung/`](hitung-kendaraan/hasil_hitung/) (`cctv_14nov_sabtu/`, `cctv_15nov_minggu/`, dan `banding_cctv_sabtu_minggu.csv`), dan kolase rekaman Minggu ada di [youtu.be/KW-fCy3HZwM](https://youtu.be/KW-fCy3HZwM). Kamera CCTV Lapang Gasibu 02 ternyata menghadap Jl. Japati, jalan pasar yang ditutup saat Minggu pagi, jadi datanya tidak dipakai untuk Jl. Gasibu Atas. Gantinya kamera CCTV Gasibu_02 direkam Sabtu 21 dan Minggu 22 November. Arus searah Gasibu Atas hanya 74,2 skr/jam (Sabtu) dan 183,3 skr/jam (Minggu), jauh di bawah kapasitas, jadi tidak dipakai untuk angka penyempitan (`hitung-kendaraan/hasil_hitung/banding_gasibu_02_21_22nov.txt`). Jl. Ir. H. Djuanda di Minggu pagi juga ditutup karena Car Free Day.
 - Arus juga dihitung dalam skr/jam dengan ekr dari tabel PKJI sesuai tipe jalan tiap titik. Tabel dan sumbernya ada di bagian "ekr" [`hitung-kendaraan/README.md`](hitung-kendaraan/README.md).
 
 ### Status
 
-- **Kapasitas dari PKJI.** Kapasitas 31 ruas di YAML dihitung dengan rumus PKJI jalan perkotaan dalam skr/jam per arah (`hitung-kendaraan/video_counting/kapasitas_pkji.py`, tabelnya `hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv`). Arus hasil hitung CCTV dan HP dipakai untuk mengecek, dan dari 10 ruas yang terukur tidak ada arus yang melebihi kapasitas.
+- **Kapasitas dari PKJI.** Kapasitas 31 ruas di YAML dihitung dengan rumus PKJI 2023 jalan perkotaan dalam skr/jam per arah (`hitung-kendaraan/video_counting/kapasitas_pkji.py`, tabelnya `hitung-kendaraan/hasil_hitung/kapasitas_pkji.csv`). Arus hasil hitung CCTV dan HP dipakai untuk mengecek. Dari 10 ruas yang terukur, sembilan arusnya di bawah kapasitas dan Jl. Dipatiukur selatan sedikit di atasnya (derajat kejenuhan 1,05).
 - Program hitung mengukur arus, bukan kapasitas. Arus baru sama dengan kapasitas kalau di hulu ruas sedang ada antrean.
-- Algoritma Iterative Ford-Fulkerson sudah jadi dan visualisasi Iterative membaca trace dari algoritma Python. Hitungan di browser hanya dipakai kalau berkas trace tidak ada, dan tes memastikan keduanya sama.
+- Iterative Ford-Fulkerson (`algorithms/maxflow/iterative_ford_fulkerson.py`, `graph/iterative.js`) adalah eksplorasi awal kelompok. Sejak 20 November tidak lagi ditampilkan di situs, karena perbandingan algoritma memakai Ford-Fulkerson dan Dinic, dan menjumlahkan hasil per pasangan menghitung ruas yang sama berkali-kali. Kode, trace, dan tesnya tetap ada.
 - Dinic sudah jadi dan max flow-nya sama dengan Ford-Fulkerson untuk S*-T*, keempat pasangan, dan keempat event skenario. Event yang menutup ruas yang sedang dialiri membuat Dinic menghitung ulang dari nol, sedangkan event yang menaikkan kapasitas cukup diselesaikan dengan warm start. `python -m scripts.banding_ff_dinic` menulis perbandingan keduanya (max flow, jumlah BFS, augmenting path, sisi yang diperiksa, dan waktu) untuk kondisi normal, kondisi pasar, tiap event, dan graf grid sintetis sampai sekitar 2000 simpul ke `output/banding_ff_dinic.csv`. Waktu Ford-Fulkerson ikut menghitung penyusunan trace visualizer tiap langkah, jadi kerja kedua algoritma lebih adil dibandingkan lewat kolom `sisi_diperiksa`.
-- Pipeline Python template sudah tersambung. `run_simulation` menjalankan Ford-Fulkerson dan keempat event skenario. Max flow seluruh jaringan 2.668,6 skr/jam dengan pembatas di Jl. Tamansari dan Jl. Dipatiukur, tetap 2.668,6 saat Gasibu Atas menyempit 11%, lalu turun ke 2.331,9 saat Jl. Singaperbangsa ditutup. Gasibu Atas baru ikut membatasi kalau penyempitannya lebih dari 70%. `ScenarioLoader` masih hanya meneruskan `weight`, jadi `FordFulkerson` membaca kapasitas dari `visualizer/public/data/topology.json`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu.
+- Pipeline Python template sudah tersambung. `run_simulation` menjalankan Ford-Fulkerson dan keempat event skenario. Max flow seluruh jaringan 2.576,6 skr/jam dengan pembatas di Jl. Tamansari dan Jl. Dipatiukur, tetap 2.576,6 saat Gasibu Atas menyempit 11%, lalu turun ke 2.251,5 saat Jl. Singaperbangsa ditutup. Gasibu Atas baru ikut membatasi kalau penyempitannya lebih dari 70%. `ScenarioLoader` masih hanya meneruskan `weight`, jadi `FordFulkerson` membaca kapasitas dari `visualizer/public/data/topology.json`. Kalau kapasitas di YAML diubah, jalankan `npm run convert:yaml` di `visualizer/` dulu.
 
 ## Struktur Repo
 
@@ -202,7 +185,7 @@ Visualisasi Ford-Fulkerson di [`visualizer/`](visualizer/) (Vue 3, Vite, TypeScr
 │   ├── assets/                 foto tim, kliping berita, diagram fishbone
 │   ├── peta.js                 tambahan Dashboard Peta (pin, popup video, ruas Gasibu Atas)
 │   ├── halaman.js, halaman.css isi dan gaya halaman Data Lapangan dan Visualisasi
-│   ├── iterative.js, iterative.css  dashboard Iterative di halaman Visualisasi
+│   ├── iterative.js, iterative.css  eksplorasi awal dashboard Iterative, tidak lagi dipakai halaman
 │   ├── situs.js, situs.css     navigasi bersama untuk semua halaman
 │   ├── pelindung-highlight.js  skrip Console untuk menandai kamera di situs Pelindung Bandung
 │   ├── GRAPH_SPEC_LLM.md       spesifikasi simpul, 8 rute, lebar dan arah ruas, titik CCTV dan survei
@@ -248,12 +231,12 @@ Semua perintah berikut dijalankan dari akar repo dengan virtual environment yang
 | Perintah | Fungsi | Hasil yang diharapkan |
 |:---|:---|:---|
 | `python -m pytest` | menjalankan semua tes, termasuk tes yang memastikan Dinic sama dengan Ford-Fulkerson | `39 passed` |
-| `python -m scripts.run_simulation` | menjalankan Ford-Fulkerson pada skenario kasus 4 beserta keempat event | Jendela gambar graf terbuka dan harus ditutup supaya program lanjut. Terminal mencetak setiap event, dan angka `Cost` di baris `Rute` adalah max flow-nya, yaitu 2668.6, lalu 2331.9 saat Jl. Singaperbangsa ditutup, lalu kembali 2668.6. Log ditulis ke `output/output_case_04_pasar_tumpah.json`. |
+| `python -m scripts.run_simulation` | menjalankan Ford-Fulkerson pada skenario kasus 4 beserta keempat event | Jendela gambar graf terbuka dan harus ditutup supaya program lanjut. Terminal mencetak setiap event, dan angka `Cost` di baris `Rute` adalah max flow-nya, yaitu 2576.6, lalu 2251.5 saat Jl. Singaperbangsa ditutup, lalu kembali 2576.6. Log ditulis ke `output/output_case_04_pasar_tumpah.json`. |
 | `python -m scripts.run_benchmark` | ringkasan langkah dan waktu skenario | tabel `FordFulkerson` dengan 28 langkah |
 | `python -m scripts.run_benchmark -a maxflow -a dinic` | Ford-Fulkerson dan Dinic dalam satu tabel | Ford-Fulkerson 28 langkah dan Dinic 25 langkah |
 | `python -m scripts.banding_ff_dinic` | banding lengkap kedua algoritma pada kondisi normal, kondisi pasar, tiap event, dan graf grid sampai 2.027 simpul, sekitar 30 detik | tabel di terminal dan `output/banding_ff_dinic.csv` |
 | `python -m algorithms.maxflow.ford_fulkerson` | membuat ulang 48 trace Ford-Fulkerson dan `manifest.json` untuk visualizer | berkas di `visualizer/public/data/`, isinya sama dengan yang ada di repo |
-| `python algorithms/maxflow/iterative_ford_fulkerson.py` | membuat ulang 12 trace Iterative | berkas `iterative_a<alpha>.json` di `visualizer/public/data/` |
+| `python algorithms/maxflow/iterative_ford_fulkerson.py` | membuat ulang 12 trace Iterative (eksplorasi awal, tidak ditampilkan di situs) | berkas `iterative_a<alpha>.json` di `visualizer/public/data/` |
 
 Untuk menjalankan simulasi tanpa jendela gambar, pakai `MPLBACKEND=Agg python -m scripts.run_simulation` di macOS dan Linux, atau `$env:MPLBACKEND="Agg"; python -m scripts.run_simulation` di PowerShell. Pilihan lain seperti path YAML tertentu, `--all`, dan `--algorithm` ada di [`TUTORIAL.md`](TUTORIAL.md). Tutorial itu ditulis untuk 28 kasus, sedangkan repo ini hanya berisi skenario kasus 4.
 
@@ -337,6 +320,7 @@ Sejak 20 November 2026 tiap anggota punya branch sendiri, yaitu `alifah`, `elang
 - Peta dasar dan geometri jalan: © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), ditampilkan dengan Leaflet.
 - Video CCTV: [Pelindung Bandung](https://pelindung.bandung.go.id/), dikelola Diskominfo, Dishub, dan DPKP3 Kota Bandung.
 - Rekaman HP: direkam anggota kelompok di simpang yang tidak punya CCTV.
+- Rumus dan tabel kapasitas: Pedoman Kapasitas Jalan Indonesia 2023 (09/P/BM/2023), Direktorat Jenderal Bina Marga. Potongan tabelnya ada di `graph/assets/pkji/`.
 - Peta lalu lintas biasanya dan waktu tempuh: tangkapan layar Google Maps, diambil 24 Oktober 2026.
 - Kliping berita dari UlasBandung, detikNews, detikJabar, kumparan, dan situs DPRD Kota Bandung. Gambarnya ada di `graph/assets/`, tautan ke artikel aslinya ada di landing.
 

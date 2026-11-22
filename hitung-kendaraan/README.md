@@ -203,9 +203,9 @@ Tipe jalan, lebar jalur, dan jumlah lajur tiap titik diambil dari OpenStreetMap 
 `graph/data/graf.json`, lalu ditulis sebagai komentar di samping `tipe_jalan` di config. Jl. Gagak ditulis satu arah
 di graf.json tapi dua arah di OSM. Yang dipakai OSM, karena arah lawan juga terhitung di rekaman HP.
 
-## Kapasitas ruas (PKJI)
+## Kapasitas ruas (PKJI 2023)
 
-Kelompok memutuskan kapasitas tiap ruas dihitung dengan rumus PKJI jalan perkotaan, bukan diambil langsung dari arus CCTV
+Kelompok memutuskan kapasitas tiap ruas dihitung dengan rumus PKJI 2023 jalan perkotaan (09/P/BM/2023, Bina Marga), bukan diambil langsung dari arus CCTV
 dan rekaman HP. Arus yang terukur hanya menunjukkan kendaraan yang lewat saat direkam, dan hanya sebagian ruas yang terukur.
 Arus tetap dipakai sebagai pembanding: arus di suatu ruas tidak boleh lebih besar dari kapasitasnya.
 
@@ -216,11 +216,15 @@ python video_counting/kapasitas_pkji.py
 Hasilnya `hasil_hitung/kapasitas_pkji.csv` (31 ruas, skr/jam per arah) dan `hasil_hitung/cek_arus_vs_kapasitas.csv`
 (10 ruas yang punya arus layak). Rumus, tabel faktor, dan asumsinya ditulis di awal skrip: hambatan samping hari biasa
 dianggap sedang, lebar dan lajur dari `graph/data/graf.json`, dan jalan lingkungan di bawah 5 m memakai nilai tabel terkecil.
-Dari 10 ruas yang dicek tidak ada arus yang melebihi kapasitas. Jl. Dipatiukur selatan paling padat dengan derajat
-kejenuhan 1,01, cocok dengan kondisinya yang memang macet di pagi hari.
+Dari 10 ruas yang dicek, sembilan arusnya di bawah kapasitas. Jl. Dipatiukur selatan paling padat dengan derajat
+kejenuhan 1,05, sedikit di atas kapasitas PKJI 2023 dan masih di dalam perkiraan galat hitung program, cocok dengan
+kondisinya yang memang macet di pagi hari. Sampai 21 November skrip ini memakai C0 PKJI 2014 (2900 dan 1650); PKJI 2023
+mengubah C0 menjadi 2800 dan 1700, sedangkan faktor koreksinya sama.
 
-Penyempitan di Jl. Gasibu Atas sementara memakai hambatan samping PKJI (sedang jadi sangat tinggi, kapasitas turun sekitar
+Penyempitan di Jl. Gasibu Atas memakai hambatan samping PKJI 2023 (sedang jadi sangat tinggi, kapasitas turun sekitar
 11%). Data kamera CCTV Lapang Gasibu 02 tidak dipakai lagi karena kameranya menghadap Jl. Japati, bukan Jl. Gasibu Atas.
 Gantinya kamera CCTV Gasibu_02 direkam Sabtu 21 dan Minggu 22 November 2026 pukul 07.30 sampai 08.00
 (`video_counting/config/cctv_21nov_sabtu.yaml` dan `cctv_22nov_minggu.yaml`), lalu perbandingannya ditulis ke
-`hasil_hitung/banding_gasibu_02_21_22nov.csv`.
+`hasil_hitung/banding_gasibu_02_21_22nov.csv`. Arus searah Gasibu Atas hanya 74,2 skr/jam (Sabtu) dan 183,3 skr/jam
+(Minggu), jauh di bawah kapasitas 4.826,6 skr/jam, jadi jalannya tidak penuh dan selisih dua hari itu tidak menunjukkan
+penyempitan kapasitas. Angka 11% dari PKJI tetap dipakai.
