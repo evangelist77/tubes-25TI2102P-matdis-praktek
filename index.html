@@ -358,7 +358,7 @@
     <div class="pols" id="pols"></div>
     <div class="tag-row"><span class="tag"><small>adegan</small> 05</span><span class="tag-t">Data lapangan · CCTV dan rekaman HP</span></div>
     <div class="depth" id="dCount"><span>Titik pantau</span><b id="dNum">0</b><span><span data-n="cctv"></span> CCTV · <span data-n="hp"></span> HP</span><br><span class="d-pill" id="dPill">kapasitas belum dihitung</span></div>
-    <div class="cap" data-pos="lb" data-a=".03" data-b=".33"><h2 class="disp split">CCTV Pelindung</h2><p class="sub">Graf ini punya <span data-n="cctv"></span> titik CCTV Pelindung Bandung. Dari pengecekan kelompok ada <span data-n="aman"></span> kamera yang bisa dipakai dan <span data-n="mati"></span> yang tidak bisa dibuka. Arus Jalan Gasibu Atas sendiri diambil dari kamera Gasibu_02 yang direkam pada 21 dan 22 November.</p></div>
+    <div class="cap" data-pos="lb" data-a=".03" data-b=".33"><h2 class="disp split">CCTV Pelindung</h2><p class="sub">Graf ini punya <span data-n="cctv"></span> titik CCTV Pelindung Bandung. Dari pengecekan kelompok ada <span data-n="aman"></span> kamera yang bisa dipakai dan <span data-n="mati"></span> yang tidak bisa dibuka. Jalan Gasibu Atas dipantau lewat kamera Gasibu_02 yang direkam pada 21 dan 22 November.</p></div>
     <div class="cap" data-pos="rt" data-a=".35" data-b=".64"><h2 class="disp split">Rekaman HP</h2><p class="sub">Ada <span data-n="hp"></span> simpang yang tidak punya CCTV, jadi semuanya kami rekam pakai HP pada Minggu 1 November sekitar 15 menit per titik.</p></div>
     <div class="cap" data-pos="lb" data-a=".66" data-b=".96"><h2 class="disp split">Dihitung dengan YOLO</h2><p class="sub">Program kami menghitung kendaraan yang melewati garis hitung per jenis dan per arah di rekaman HP dan rekaman CCTV 14 dan 15 November. Arus itu kami pakai untuk mengecek kapasitas PKJI tiap ruas dan hasilnya tidak ada ruas yang arusnya melebihi kapasitas.</p></div>
     <p class="d-hint" id="dHint"></p>
@@ -375,7 +375,7 @@
       <div class="m-tekstur"></div>
     </div>
     <div class="al-wrap" id="alWrap"><svg id="alSvg" viewBox="0 0 560 300" aria-label="Contoh graf kecil untuk Ford-Fulkerson"></svg><p class="al-note">Contoh · kapasitas mainan tanpa satuan</p></div>
-    <div class="tag-row"><span class="tag"><small>adegan</small> 06</span><span class="tag-t">Algoritma · Ford-Fulkerson, Dinic, dan Iterative</span></div>
+    <div class="tag-row"><span class="tag"><small>adegan</small> 06</span><span class="tag-t">Algoritma · Ford-Fulkerson dan Dinic</span></div>
     <div class="depth" id="alCount"><span id="alK">Total flow</span><b id="alNum">0</b><span id="alS">contoh</span></div>
     <div class="cap" data-pos="lb" data-a=".02" data-b=".12"><h2 class="disp split">Cara menghitungnya</h2><p class="sub">Algoritma dasar yang kami pakai adalah Ford-Fulkerson versi Edmonds-Karp. Di graf contoh ini algoritmanya mencari jalur dari S ke T dengan BFS sehingga yang dipilih selalu jalur dengan ruas paling sedikit lalu aliran ditambah sebesar sisa kapasitas terkecil di jalur itu sampai tidak ada jalur yang tersisa.</p></div>
     <div class="cap" data-pos="lt" data-a=".13" data-b=".22"><h2 class="disp split">Langkah 1</h2><p class="sub"></p></div>
@@ -384,7 +384,7 @@
     <div class="cap" data-pos="rb" data-a=".43" data-b=".52"><h2 class="disp split">Langkah 4</h2><p class="sub"></p></div>
     <div class="cap" data-pos="lt" data-a=".53" data-b=".62"><h2 class="disp split">Min cut</h2><p class="sub"></p></div>
     <div class="cap" data-pos="lb" data-a=".63" data-b=".74"><h2 class="disp split">Faktor penyempitan</h2><p class="sub"></p></div>
-    <div class="cap" data-pos="rt" data-a=".75" data-b="1.2"><h2 class="disp split">Untuk graf <span data-n="rute"></span> rute</h2><p class="sub">Di graf asli Ford-Fulkerson kami bandingkan dengan Dinic sebagai algoritma lanjutnya. Dinic menyusun graf level dengan BFS lalu mengirim blocking flow dengan DFS sehingga satu putaran bisa mengisi banyak jalur sekaligus dan jumlah putarannya lebih sedikit. Iterative Ford-Fulkerson menghitung keempat pasangan S dan T satu per satu di jaringan yang sama sehingga terlihat berapa arus tiap pasangan dan ruas mana yang dipakai bersama.</p></div>
+    <div class="cap" data-pos="rt" data-a=".75" data-b="1.2"><h2 class="disp split">Untuk graf <span data-n="rute"></span> rute</h2><p class="sub">Di graf asli Ford-Fulkerson kami bandingkan dengan Dinic sebagai algoritma lanjutnya. Dinic menyusun graf level dengan BFS lalu mengirim blocking flow dengan DFS sehingga satu putaran bisa mengisi banyak jalur sekaligus dan jumlah putarannya lebih sedikit.</p></div>
     <div class="rp" id="alRp"><div class="rp-h"><span>Edmonds-Karp · contoh</span><span>langkah <b id="alStep">0/4</b></span></div><div class="rp-c"><div>bottleneck<b id="alBn">-</b></div><div>total flow<b id="alTf">0</b></div><div>max flow<b id="alMf">-</b></div></div><div class="rp-seq" id="alSeq"></div></div>
   </section>
 </div>
@@ -402,7 +402,7 @@
     <div class="end">
       <p class="end-tag reveal"><span class="tag"><small>adegan</small> 07</span><span>Akhir</span></p>
       <h2 class="end-title" id="endTitle"><span class="ln">Terima</span><span class="ln">kasih</span></h2>
-      <p class="end-lede reveal">Dari graf <span data-n="simpul"></span> simpul ini arus maksimum seluruh jaringan tanpa pasar sebesar 2.668,6 skr/jam dan pembatasnya ada di dua jalan masuk yaitu Jalan Tamansari dan Jalan Dipatiukur. Saat pasar berlangsung arusnya turun menjadi 2.331,9 skr/jam terutama karena Jalan Singaperbangsa ditutup sedangkan penyempitan di Jalan Gasibu Atas baru ikut membatasi kalau kapasitasnya turun lebih dari 70%. Angka penyempitan ini masih sementara sampai hasil kamera Gasibu_02 tanggal 21 dan 22 November keluar.</p>
+      <p class="end-lede reveal">Dari graf <span data-n="simpul"></span> simpul ini arus maksimum seluruh jaringan tanpa pasar sebesar 2.576,6 skr/jam dan pembatasnya ada di dua jalan masuk yaitu Jalan Tamansari dan Jalan Dipatiukur. Saat pasar berlangsung arusnya turun menjadi 2.251,5 skr/jam terutama karena Jalan Singaperbangsa ditutup sedangkan penyempitan di Jalan Gasibu Atas baru ikut membatasi kalau kapasitasnya turun lebih dari 70%. Angka penyempitan 11% diambil dari tabel hambatan samping PKJI 2023.</p>
       <div class="reveal">
         <div class="ticket">
           <div class="tk-l">
@@ -448,6 +448,6 @@
 
 <script src="graph/media/media.js"></script>
 <script src="graph/situs.js"></script>
-<script src="graph/landing/cerita.js?v=20261120d"></script>
+<script src="graph/landing/cerita.js?v=20261122"></script>
 </body>
 </html>
