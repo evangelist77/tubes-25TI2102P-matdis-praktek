@@ -1,15 +1,19 @@
-"""Kapasitas tiap ruas graf kasus 4 dengan rumus PKJI jalan perkotaan, lalu dicek terhadap arus hasil hitung CCTV dan HP.
+"""Kapasitas tiap ruas graf kasus 4 dengan rumus PKJI 2023 jalan perkotaan (Pedoman Kapasitas Jalan Indonesia,
+09/P/BM/2023, Ditjen Bina Marga), lalu dicek terhadap arus hasil hitung CCTV dan HP.
 
-C = C0 x FCLJ x FCPA x FCHS x FCUK (skr/jam per arah)
-- 2/2TT (dua arah tak terbagi): C0 2900 untuk dua arah, dibagi 2 karena graf hanya memakai satu arah (FCPA 1,00 untuk
+C = C0 x FCLJ x FCPA x FCHS x FCUK (skr/jam per arah; PKJI 2023 menyebut satuannya SMP/jam)
+- 2/2TT (dua arah tak terbagi): C0 2800 untuk dua arah (Tabel 4-1), dibagi 2 karena graf hanya memakai satu arah (FCPA 1,00 untuk
   pembagian 50:50). FCLJ dari lebar jalur total.
-- Terbagi (4/2T, 6/2T) dan satu arah: C0 1650 per lajur dikali jumlah lajur, FCLJ dari lebar per lajur. Jalan satu arah
+- Terbagi (4/2T, 6/2T) dan satu arah: C0 1700 per lajur (Tabel 4-1) dikali jumlah lajur, FCLJ dari lebar per lajur. Jalan satu arah
   memakai baris FCHS 2/2TT, jalan terbagi memakai baris FCHS 4/2T.
 - FCUK 1,00 (Kota Bandung 1 sampai 3 juta jiwa). Hambatan samping hari biasa dianggap sedang (S) untuk semua ruas.
 - Lebar dan jumlah lajur dari graph/data/graf.json (OpenStreetMap). Kalau lebarnya rentang, dipakai batas bawah. Jalan
   lingkungan yang lebarnya di bawah 5 m memakai nilai tabel terkecil (5 m), jadi angkanya batas atas.
+- FCLJ (Tabel 4-3), FCPA (Tabel 4-4), FCHS jalan berkereb (Tabel 4-6), dan FCUK (Tabel 4-7) sama dengan PKJI 2014.
 - Penyempitan pasar di Jl. Gasibu Atas: hambatan samping naik dari sedang ke sangat tinggi (FCHS 0,91 jadi 0,81, turun
-  sekitar 11%). Angka ini sementara sampai perbandingan Gasibu_02 Sabtu 21 dan Minggu 22 November keluar.
+  sekitar 11%). Kelas sangat tinggi di Tabel 4-9 berciri "daerah komersial, ada aktivitas pasar sisi jalan". Kamera
+  Gasibu_02 Sabtu 21 dan Minggu 22 November tidak dipakai untuk angka ini karena arusnya jauh di bawah kapasitas
+  (paling tinggi 183 skr/jam), jadi tidak menunjukkan kapasitas yang menyempit.
 
 Jalankan dari folder hitung-kendaraan: python video_counting/kapasitas_pkji.py
 Hasil: hasil_hitung/kapasitas_pkji.csv dan hasil_hitung/cek_arus_vs_kapasitas.csv
@@ -18,7 +22,7 @@ import csv
 from pathlib import Path
 
 P = Path(__file__).resolve().parents[1]
-C0 = {"2/2TT": 2900, "terbagi": 1650, "1-arah": 1650}
+C0 = {"2/2TT": 2800, "terbagi": 1700, "1-arah": 1700}  # PKJI 2023 Tabel 4-1
 FCLJ_LAJUR = {3.00: 0.92, 3.25: 0.96, 3.50: 1.00, 3.75: 1.04, 4.00: 1.08}
 FCLJ_JALUR_2_2TT = {5.0: 0.56, 6.0: 0.87, 7.0: 1.00, 8.0: 1.14, 9.0: 1.25, 10.0: 1.29, 11.0: 1.34}
 FCHS = {"terbagi": {"S": 0.91, "ST": 0.81}, "2/2TT": {"S": 0.86, "ST": 0.68}}

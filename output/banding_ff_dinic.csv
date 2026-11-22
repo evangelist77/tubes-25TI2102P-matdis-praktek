@@ -1,39 +1,39 @@
 bagian,kasus,algoritma,max_flow,bfs,augmenting_path,sisi_diperiksa,strategi,waktu_ms
-normal,S*->T* a=0,ford_fulkerson,2668.6,4,3,188,hitung_ulang,0.1896
-normal,S*->T* a=0,dinic,2668.6,3,3,245,hitung_ulang,0.0912
-normal,S1->T1 a=0,ford_fulkerson,1247.0,2,1,55,hitung_ulang,0.1002
-normal,S1->T1 a=0,dinic,1247.0,2,1,104,hitung_ulang,0.0626
-normal,S1->T2 a=0,ford_fulkerson,1247.0,2,1,48,hitung_ulang,0.0983
-normal,S1->T2 a=0,dinic,1247.0,2,1,98,hitung_ulang,0.0611
-normal,S2->T1 a=0,ford_fulkerson,1421.6,3,2,92,hitung_ulang,0.1433
-normal,S2->T1 a=0,dinic,1421.6,3,2,169,hitung_ulang,0.0764
-normal,S2->T2 a=0,ford_fulkerson,1084.9,2,1,73,hitung_ulang,0.1112
-normal,S2->T2 a=0,dinic,1084.9,2,1,113,hitung_ulang,0.0683
-pasar,S*->T* a=0.11,ford_fulkerson,2331.9,3,2,119,hitung_ulang,0.1543
-pasar,S*->T* a=0.11,dinic,2331.9,3,2,219,hitung_ulang,0.0831
-pasar,S1->T1 a=0.11,ford_fulkerson,1247.0,2,1,46,hitung_ulang,0.099
-pasar,S1->T1 a=0.11,dinic,1247.0,2,1,86,hitung_ulang,0.06
-pasar,S1->T2 a=0.11,ford_fulkerson,1247.0,2,1,39,hitung_ulang,0.0967
-pasar,S1->T2 a=0.11,dinic,1247.0,2,1,80,hitung_ulang,0.0649
-pasar,S2->T1 a=0.11,ford_fulkerson,1084.9,2,1,49,hitung_ulang,0.1049
-pasar,S2->T1 a=0.11,dinic,1084.9,2,1,73,hitung_ulang,0.0616
-pasar,S2->T2 a=0.11,ford_fulkerson,1084.9,2,1,43,hitung_ulang,0.108
-pasar,S2->T2 a=0.11,dinic,1084.9,2,1,72,hitung_ulang,0.0594
-event,"event 1: (24,25) -> 4169.9",ford_fulkerson,2668.6,4,3,188,hitung_ulang,0.1972
-event,"event 1: (24,25) -> 4169.9",dinic,2668.6,1,0,6,warm_start,0.0119
-event,"event 2: (11,12) -> 0",ford_fulkerson,2331.9,3,2,119,hitung_ulang,0.1489
-event,"event 2: (11,12) -> 0",dinic,2331.9,3,2,219,hitung_ulang,0.091
-event,"event 3: (11,12) -> 698.3",ford_fulkerson,2668.6,4,3,188,hitung_ulang,0.1869
-event,"event 3: (11,12) -> 698.3",dinic,2668.6,2,1,59,warm_start,0.0214
-event,"event 4: (24,25) -> 4684.7",ford_fulkerson,2668.6,4,3,188,hitung_ulang,0.1871
-event,"event 4: (24,25) -> 4684.7",dinic,2668.6,1,0,6,warm_start,0.0095
-skala,"grid 5x5 (27 simpul, 70 sisi)",ford_fulkerson,133.0,12,11,1472,hitung_ulang,0.8385
-skala,"grid 5x5 (27 simpul, 70 sisi)",dinic,133.0,5,11,1115,hitung_ulang,0.2262
-skala,"grid 10x10 (102 simpul, 290 sisi)",ford_fulkerson,273.0,45,44,23714,hitung_ulang,11.2875
-skala,"grid 10x10 (102 simpul, 290 sisi)",dinic,273.0,11,44,10263,hitung_ulang,1.4618
-skala,"grid 20x20 (402 simpul, 1180 sisi)",ford_fulkerson,622.0,156,155,348500,hitung_ulang,188.4739
-skala,"grid 20x20 (402 simpul, 1180 sisi)",dinic,622.0,20,155,76575,hitung_ulang,9.8805
-skala,"grid 30x30 (902 simpul, 2670 sisi)",ford_fulkerson,964.0,364,363,1872586,hitung_ulang,1233.3249
-skala,"grid 30x30 (902 simpul, 2670 sisi)",dinic,964.0,32,363,298656,hitung_ulang,39.2252
-skala,"grid 45x45 (2027 simpul, 6030 sisi)",ford_fulkerson,1423.0,738,737,8661702,hitung_ulang,7106.2805
-skala,"grid 45x45 (2027 simpul, 6030 sisi)",dinic,1423.0,58,737,1237801,hitung_ulang,166.3579
+normal,S*->T* a=0,ford_fulkerson,2576.6,4,3,188,hitung_ulang,0.2122
+normal,S*->T* a=0,dinic,2576.6,3,3,245,hitung_ulang,0.1008
+normal,S1->T1 a=0,ford_fulkerson,1204.0,2,1,55,hitung_ulang,0.1084
+normal,S1->T1 a=0,dinic,1204.0,2,1,104,hitung_ulang,0.0652
+normal,S1->T2 a=0,ford_fulkerson,1204.0,2,1,48,hitung_ulang,0.1012
+normal,S1->T2 a=0,dinic,1204.0,2,1,98,hitung_ulang,0.0634
+normal,S2->T1 a=0,ford_fulkerson,1372.6,3,2,92,hitung_ulang,0.141
+normal,S2->T1 a=0,dinic,1372.6,3,2,169,hitung_ulang,0.0769
+normal,S2->T2 a=0,ford_fulkerson,1047.5,2,1,73,hitung_ulang,0.1099
+normal,S2->T2 a=0,dinic,1047.5,2,1,113,hitung_ulang,0.067
+pasar,S*->T* a=0.11,ford_fulkerson,2251.5,3,2,119,hitung_ulang,0.1545
+pasar,S*->T* a=0.11,dinic,2251.5,3,2,219,hitung_ulang,0.0857
+pasar,S1->T1 a=0.11,ford_fulkerson,1204.0,2,1,46,hitung_ulang,0.1039
+pasar,S1->T1 a=0.11,dinic,1204.0,2,1,86,hitung_ulang,0.0615
+pasar,S1->T2 a=0.11,ford_fulkerson,1204.0,2,1,39,hitung_ulang,0.1065
+pasar,S1->T2 a=0.11,dinic,1204.0,2,1,80,hitung_ulang,0.072
+pasar,S2->T1 a=0.11,ford_fulkerson,1047.5,2,1,49,hitung_ulang,0.1054
+pasar,S2->T1 a=0.11,dinic,1047.5,2,1,73,hitung_ulang,0.0613
+pasar,S2->T2 a=0.11,ford_fulkerson,1047.5,2,1,43,hitung_ulang,0.1108
+pasar,S2->T2 a=0.11,dinic,1047.5,2,1,72,hitung_ulang,0.0634
+event,"event 1: (24,25) -> 4295.7",ford_fulkerson,2576.6,4,3,188,hitung_ulang,0.2028
+event,"event 1: (24,25) -> 4295.7",dinic,2576.6,1,0,6,warm_start,0.0149
+event,"event 2: (11,12) -> 0",ford_fulkerson,2251.5,3,2,119,hitung_ulang,0.1608
+event,"event 2: (11,12) -> 0",dinic,2251.5,3,2,219,hitung_ulang,0.0946
+event,"event 3: (11,12) -> 674.2",ford_fulkerson,2576.6,4,3,188,hitung_ulang,0.2011
+event,"event 3: (11,12) -> 674.2",dinic,2576.6,2,1,59,warm_start,0.0215
+event,"event 4: (24,25) -> 4826.6",ford_fulkerson,2576.6,4,3,188,hitung_ulang,0.2008
+event,"event 4: (24,25) -> 4826.6",dinic,2576.6,1,0,6,warm_start,0.01
+skala,"grid 5x5 (27 simpul, 70 sisi)",ford_fulkerson,133.0,12,11,1472,hitung_ulang,0.9611
+skala,"grid 5x5 (27 simpul, 70 sisi)",dinic,133.0,5,11,1115,hitung_ulang,0.2471
+skala,"grid 10x10 (102 simpul, 290 sisi)",ford_fulkerson,273.0,45,44,23714,hitung_ulang,15.1607
+skala,"grid 10x10 (102 simpul, 290 sisi)",dinic,273.0,11,44,10263,hitung_ulang,1.5738
+skala,"grid 20x20 (402 simpul, 1180 sisi)",ford_fulkerson,622.0,156,155,348500,hitung_ulang,330.52
+skala,"grid 20x20 (402 simpul, 1180 sisi)",dinic,622.0,20,155,76575,hitung_ulang,11.6347
+skala,"grid 30x30 (902 simpul, 2670 sisi)",ford_fulkerson,964.0,364,363,1872586,hitung_ulang,2075.0307
+skala,"grid 30x30 (902 simpul, 2670 sisi)",dinic,964.0,32,363,298656,hitung_ulang,66.3729
+skala,"grid 45x45 (2027 simpul, 6030 sisi)",ford_fulkerson,1423.0,738,737,8661702,hitung_ulang,12029.0228
+skala,"grid 45x45 (2027 simpul, 6030 sisi)",dinic,1423.0,58,737,1237801,hitung_ulang,332.2009

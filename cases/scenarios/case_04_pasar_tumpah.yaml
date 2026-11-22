@@ -97,127 +97,127 @@ edges:
   - from: 1   # S1 -> V_Cikapayang  (Turun Pasupati / Jl. Tamansari)
     to: 5
     weight: 1.0
-    capacity: 1247.0
+    capacity: 1204.0
   - from: 5   # V_Cikapayang -> V_Sulanjana  (Jl. Tamansari lanjut ke Sulanjana)  [FIX-1]
     to: 6
     weight: 1.0
-    capacity: 1247.0
+    capacity: 1204.0
   - from: 5   # V_Cikapayang -> V_DU_Selatan  (Jl. Cikapayang)
     to: 7
     weight: 1.0
-    capacity: 2762.8
+    capacity: 2846.5
   - from: 7   # V_DU_Selatan -> V_Singaperbangsa  (Jl. Dipatiukur (Selatan))
     to: 11
     weight: 1.0
-    capacity: 1421.6
+    capacity: 1372.6
   - from: 7   # V_DU_Selatan -> V_Gasibu_Barat  (Jl. Surapati (Barat))
     to: 24
     weight: 1.0
-    capacity: 3003.0
+    capacity: 3094.0
   - from: 2   # S2 -> V_Hasanuddin  (Jl. Dipati Ukur (Tengah))
     to: 8
     weight: 1.0
-    capacity: 1421.6
+    capacity: 1372.6
   - from: 8   # V_Hasanuddin -> V_Singaperbangsa  (Jl. Dipati Ukur (Utara) lanjut ke Singaperbangsa)  [FIX-2]
     to: 11
     weight: 1.0
-    capacity: 1421.6
+    capacity: 1372.6
   - from: 8   # V_Hasanuddin -> V_Djuanda_Hasanuddin  (Jl. Hasanuddin)
     to: 9
     weight: 1.0
-    capacity: 1084.9
+    capacity: 1047.5
   - from: 9   # V_Djuanda_Hasanuddin -> V_DU_Selatan  (Jl. Ir. H. Djuanda)
     to: 7
     weight: 1.0
-    capacity: 2762.8
+    capacity: 2846.5
   - from: 7   # V_DU_Selatan -> V_Djuanda_Diponegoro  (Jl. Ir. H. Djuanda (Dago) lanjut ke Diponegoro)  [FIX-4]
     to: 10
     weight: 1.0
-    capacity: 2762.8
+    capacity: 2846.5
   - from: 6   # V_Sulanjana -> V_Djuanda_Diponegoro  (Jl. Sulanjana)
     to: 10
     weight: 1.0
-    capacity: 1084.9
+    capacity: 1047.5
   - from: 10   # V_Djuanda_Diponegoro -> V_AriaJipang  (Jl. Diponegoro (Barat))
     to: 18
     weight: 1.0
-    capacity: 3003.0
+    capacity: 3094.0
   - from: 18   # V_AriaJipang -> V_Cilamaya  (Jl. Aria Jipang)
     to: 19
     weight: 1.0
-    capacity: 1084.9
+    capacity: 1047.5
   - from: 19   # V_Cilamaya -> V_Cimandiri  (Jl. Cilamaya)
     to: 20
     weight: 1.0
-    capacity: 2838.0
+    capacity: 2924.0
   - from: 20   # V_Cimandiri -> V_Cisanggarung  (Jl. Cimandiri)
     to: 21
     weight: 1.0
-    capacity: 2611.0
+    capacity: 2690.1
   - from: 21   # V_Cisanggarung -> V_Cisangkuy  (Jl. Cisanggarung / Cimanuk)
     to: 23
     weight: 1.0
-    capacity: 1084.9
+    capacity: 1047.5
   - from: 23   # V_Cisangkuy -> T2  (Jl. Cisangkuy ke Diponegoro Timur)
     to: 4
     weight: 1.0
-    capacity: 2838.0
+    capacity: 2924.0
   - from: 21   # V_Cisanggarung -> V_Citarum  (Jl. Cisanggarung)
     to: 22
     weight: 1.0
-    capacity: 2611.0
+    capacity: 2690.1
   - from: 22   # V_Citarum -> T2  (Jl. Citarum ke Diponegoro Timur)
     to: 4
     weight: 1.0
-    capacity: 1247.0
+    capacity: 1204.0
   - from: 11   # V_Singaperbangsa -> V_Titiran  (Jl. Singaperbangsa (Tutup Pagi Pasar))  <- ditutup pagi di hari pasar
     to: 12
     weight: 1.0
-    capacity: 698.3
+    capacity: 674.2
   - from: 12   # V_Titiran -> V_Merak  (Jl. Titiran)
     to: 13
     weight: 1.0
-    capacity: 698.3
+    capacity: 674.2
   - from: 13   # V_Merak -> V_Surapati_Merak  (Jl. Merak)
     to: 14
     weight: 1.0
-    capacity: 698.3
+    capacity: 674.2
   - from: 12   # V_Titiran -> V_Tikukur  (Jl. Titiran / Tikukur)
     to: 15
     weight: 1.0
-    capacity: 698.3
+    capacity: 674.2
   - from: 15   # V_Tikukur -> V_Gagak  (Jl. Tikukur)
     to: 16
     weight: 1.0
-    capacity: 698.3
+    capacity: 674.2
   - from: 16   # V_Gagak -> V_Surapati_Gagak  (Jl. Gagak)
     to: 17
     weight: 1.0
-    capacity: 698.3
+    capacity: 674.2
   - from: 24   # V_Gasibu_Barat -> V_Gasibu_Timur  (Jl. Gasibu Atas (Pasar Tumpah))  <- ruas pasar tumpah
     to: 25
     weight: 1.0
-    capacity: 4684.7
+    capacity: 4826.6
   - from: 25   # V_Gasibu_Timur -> V_Surapati_Merak  (Jl. Surapati (depan Telkom))
     to: 14
     weight: 1.0
-    capacity: 4684.7
+    capacity: 4826.6
   - from: 14   # V_Surapati_Merak -> V_Surapati_Gagak  (Jl. Surapati Timur)  [FIX-3]
     to: 17
     weight: 1.0
-    capacity: 4684.7
+    capacity: 4826.6
   - from: 17   # V_Surapati_Gagak -> T1  (Jl. Surapati ke PUSDAI)
     to: 3
     weight: 1.0
-    capacity: 4684.7
+    capacity: 4826.6
   - from: 25   # V_Gasibu_Timur -> V_Diponegoro_Sentot  (Jl. Sentot Alibasyah)
     to: 26
     weight: 1.0
-    capacity: 2838.0
+    capacity: 2924.0
   - from: 26   # V_Diponegoro_Sentot -> T2  (Jl. Diponegoro Timur / Pusdai)
     to: 4
     weight: 1.0
-    capacity: 3003.0
+    capacity: 3094.0
   # --- Hubungan supersource / supersink (kapasitas sangat besar sebagai pengganti tak hingga) ---
   - from: 0   # S* -> S1
     to: 1
@@ -240,33 +240,34 @@ execution_plan:
   start_node: 0
   goal_node: 27
   events:
-    # Event 1 dan 4 memakai hambatan samping PKJI di Jl. Gasibu Atas (sedang jadi sangat tinggi saat pasar, kapasitas turun
-    # sekitar 11%). Angka ini sementara sampai perbandingan kamera Gasibu_02 Sabtu 21 dan Minggu 22 November keluar.
+    # Event 1 dan 4 memakai hambatan samping PKJI 2023 di Jl. Gasibu Atas (sedang jadi sangat tinggi saat pasar, kapasitas
+    # turun 11%), kapasitas pasar = kapasitas x (1 - 0,11). Kamera Gasibu_02 Sabtu 21 dan Minggu 22 November tidak dipakai
+    # untuk angka ini karena arusnya jauh di bawah kapasitas, jadi tidak menunjukkan penyempitan kapasitas.
     # new_weight diisi sama dengan new_capacity karena runner template dosen meneruskan nilai event lewat new_weight.
     - step: 1
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
-      new_capacity: 4169.9
-      new_weight: 4169.9
-      description: "Pasar tumpah ramai, pengunjung menyeberang dan parkir serta angkot berhenti di Jl. Gasibu Atas sehingga hambatan samping naik dari sedang ke sangat tinggi dan kapasitas efektif turun dari 4684,7 menjadi 4169,9 skr/jam (PKJI)."
+      new_capacity: 4295.7
+      new_weight: 4295.7
+      description: "Pasar tumpah ramai, pengunjung menyeberang dan parkir serta angkot berhenti di Jl. Gasibu Atas sehingga hambatan samping naik dari sedang ke sangat tinggi dan kapasitas efektif turun dari 4.826,6 menjadi 4.295,7 skr/jam (PKJI)."
     - step: 2
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [11, 12]
       new_capacity: 0.0
       new_weight: 0.0
-      description: "Pagi hari pasar: Jl. Singaperbangsa ditutup, kapasitas turun dari 698,3 menjadi 0 skr/jam sehingga jalur utara menuju PUSDAI terputus (skenario A)."
+      description: "Pagi hari pasar: Jl. Singaperbangsa ditutup, kapasitas turun dari 674,2 menjadi 0 skr/jam sehingga jalur utara menuju PUSDAI terputus (skenario A)."
     - step: 3
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [11, 12]
-      new_capacity: 698.3
-      new_weight: 698.3
-      description: "Sekitar pukul 11.00-12.00 Jl. Singaperbangsa dibuka kembali, kapasitas pulih dari 0 menjadi 698,3 skr/jam (skenario B)."
+      new_capacity: 674.2
+      new_weight: 674.2
+      description: "Sekitar pukul 11.00-12.00 Jl. Singaperbangsa dibuka kembali, kapasitas pulih dari 0 menjadi 674,2 skr/jam (skenario B)."
     - step: 4
       type: "DYNAMIC_EDGE_CAPACITY"
       target_edge: [24, 25]
-      new_capacity: 4684.7
-      new_weight: 4684.7
-      description: "Pasar bubar dan pedagang beres-beres, hambatan samping Jl. Gasibu Atas kembali sedang sehingga kapasitasnya pulih dari 4169,9 menjadi 4684,7 skr/jam."
+      new_capacity: 4826.6
+      new_weight: 4826.6
+      description: "Pasar bubar dan pedagang beres-beres, hambatan samping Jl. Gasibu Atas kembali sedang sehingga kapasitasnya pulih dari 4.295,7 menjadi 4.826,6 skr/jam."
 
 # CATATAN PERBAIKAN DARI GRAPH_SPEC_LLM.md (konfirmasi ke penyusun spec):
 #  FIX-1  S1->V_Sulanjana melewati V_Cikapayang (satu Jl. Tamansari). Dirantai S1->Cikapayang->Sulanjana.
