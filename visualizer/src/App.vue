@@ -35,6 +35,9 @@ const isIterativeOnly = ref(
   initialMode === 'iterative' || initialMode === 'embed' || hasIterativeHash
 )
 const viewMode = ref<'single' | 'iterative'>(isIterativeOnly.value ? 'iterative' : 'single')
+// Iterative tidak lagi ditampilkan di situs (keputusan kelompok 20 Nov), tombol tabnya disembunyikan.
+// Kodenya tetap ada dan masih bisa dibuka lewat ?mode=iterative.
+const tampilkanTabIterative = false
 
 const topology = ref<Topology | null>(null)
 const manifest = ref<Manifest | null>(null)
@@ -387,7 +390,7 @@ const isMarketActive = computed(() =>
         </div>
 
         <!-- Mode Selector: Alifah vs Ganesh -->
-        <div v-if="!isIterativeOnly" class="inline-flex rounded-xl bg-stone-100 border border-stone-200 p-1 text-xs font-bold shadow-2xs">
+        <div v-if="tampilkanTabIterative && !isIterativeOnly" class="inline-flex rounded-xl bg-stone-100 border border-stone-200 p-1 text-xs font-bold shadow-2xs">
           <button
             type="button"
             class="px-4 py-1.5 rounded-lg transition-all"

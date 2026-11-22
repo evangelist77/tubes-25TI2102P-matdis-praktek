@@ -818,12 +818,12 @@ const TIM = [
     tugas: 'Membuat visualisasi Ford-Fulkerson di atas peta dari augmenting path dan residual sampai min cut, lalu ikut mengecek ulang CCTV yang bermasalah pada 1 November.' },
   { num: 'II', panggilan: 'Elang', nama: 'Elang Permadi Lau', foto: 'elang.webp', peran: 'Ford-Fulkerson', url: 'https://portfolio-blond-mu-7zngw837ue.vercel.app/', suit: 's-garis', acc: '#2e9184', accL: '#cdebe0',
     tugas: 'Mengerjakan algoritma Ford-Fulkerson untuk tiap pasangan source dan sink sambil mengubah faktor penyempitan di ruas Jl. Gasibu Atas.' },
-  { num: 'III', panggilan: 'Ganesh', nama: 'Ganesh Diyan Khansa Khairunnisa', foto: 'ganesh.webp', peran: 'Visualisasi Iterative', url: null, suit: 's-kurva', acc: '#6d4bb3', accL: '#ddd2f3',
-    tugas: 'Membuat visualisasi Iterative Ford-Fulkerson dan ikut mengecek arah serta kondisi CCTV pada 31 Oktober.' },
+  { num: 'III', panggilan: 'Ganesh', nama: 'Ganesh Diyan Khansa Khairunnisa', foto: 'ganesh.webp', peran: 'Analisis rute alternatif', url: null, suit: 's-kurva', acc: '#6d4bb3', accL: '#ddd2f3',
+    tugas: 'Menganalisis pengaruh rute alternatif terhadap max flow dan penyempitan Gasibu Atas, membuat visualisasi awal arus per pasangan, dan ikut mengecek arah serta kondisi CCTV pada 31 Oktober.' },
   { num: 'IV', panggilan: 'Ghaisan', nama: 'Ghaisan Khoirul Badruzaman', foto: 'ghaisan.webp', peran: 'Data CCTV dan YOLO', url: 'https://ghaisan.vercel.app', suit: 's-bidang', acc: '#d6537a', accL: '#fad7da',
     tugas: 'Mengurus data CCTV dan rekaman HP lalu membuat program hitung kendaraan dengan YOLO, sekaligus menyusun situs ini dan bahan presentasi.' },
-  { num: 'V', panggilan: 'Hafiz', nama: 'Hafiz Fauzan Syafrudin', foto: 'hafiz.webp', peran: 'Iterative Ford-Fulkerson', url: 'https://hafizfs.my.id/', suit: 's-cahaya', acc: '#c98a1f', accL: '#f8e6b8',
-    tugas: 'Mengerjakan algoritma Iterative Ford-Fulkerson dan Dinic, menyusun graf {rute} rute beserta spesifikasi jalannya, sekaligus mengelola repositori kelompok.' }
+  { num: 'V', panggilan: 'Hafiz', nama: 'Hafiz Fauzan Syafrudin', foto: 'hafiz.webp', peran: 'Algoritma Dinic', url: 'https://hafizfs.my.id/', suit: 's-cahaya', acc: '#c98a1f', accL: '#f8e6b8',
+    tugas: 'Mengerjakan algoritma Dinic, menyusun graf {rute} rute beserta spesifikasi jalannya, sekaligus mengelola repositori kelompok.' }
 ];
 const tugasTxt = c => c.tugas.replace('{rute}', D ? D.n.rute : '');
 const domain = u => { try { return new URL(u).host; } catch (e) { return u; } };
